@@ -3,7 +3,11 @@ package net.lomeli.modjam4;
 import net.lomeli.modjam4.core.CreativeRing;
 import net.lomeli.modjam4.core.Proxy;
 import net.lomeli.modjam4.lib.ModLibs;
+import net.lomeli.modjam4.network.PacketClear;
+import net.lomeli.modjam4.network.PacketConnect;
 import net.lomeli.modjam4.network.PacketHandler;
+import net.lomeli.modjam4.network.PacketUpdateClientList;
+import net.lomeli.modjam4.network.PacketUpdatePlayerMP;
 import net.minecraft.creativetab.CreativeTabs;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
@@ -30,7 +34,7 @@ public class Rings {
     
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        packetHandler = new PacketHandler();
+        packetHandler = new PacketHandler(PacketClear.class, PacketConnect.class, PacketUpdateClientList.class, PacketUpdatePlayerMP.class);
         proxy.init();
     }
     

@@ -9,10 +9,13 @@ import cpw.mods.fml.common.gameevent.PlayerEvent;
 public class GameEventHandler {
     @SubscribeEvent
     public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
-        PacketConnect packet = new PacketConnect(event.player);
-        PacketHandler.sendToServer(packet);
+        if (event.player != null) {
+            PacketConnect packet = new PacketConnect(event.player);
+            //if (packet != null)
+            //    PacketHandler.sendToServer(packet);
+        }
     }
-    
+
     @SubscribeEvent
     public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
         PacketHandler.sendTo(new PacketClear(), event.player);

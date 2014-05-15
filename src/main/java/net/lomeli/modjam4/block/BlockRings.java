@@ -11,7 +11,7 @@ public class BlockRings extends Block{
     protected String blockTexture;
     protected IIcon blankIcon;
 
-    protected BlockRings(Material material, String texture) {
+    public BlockRings(Material material, String texture) {
         super(material);
         this.setCreativeTab(Rings.modTab);
         this.blockTexture = texture;

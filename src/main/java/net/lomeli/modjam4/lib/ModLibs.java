@@ -26,4 +26,6 @@ public class ModLibs {
     public static final String CONTAINERS = MOD_ID.toLowerCase() + ".container.";
     public static final String ALTAR = CONTAINERS + "altar";
     public static final String RING_FORGE = CONTAINERS + "ringForge";
+    
+    public static int altarRenderID;
 }

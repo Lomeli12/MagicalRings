@@ -39,7 +39,7 @@ public class PacketUpdatePlayerMP implements ISimplePacket{
         PlayerMagic pl = MagicHandler.getPlayerData(playerUUID);
         if (pl != null) {
             MinecraftServer ms = MinecraftServer.getServer();
-            for (Object obj : ms.getEntityWorld().playerEntities) {
+            for (Object obj : ms.getConfigurationManager().playerEntityList) {
                 if (obj instanceof EntityPlayer) {
                     EntityPlayer p = (EntityPlayer) obj;
                     if (p.getGameProfile().getId().equals(playerUUID))

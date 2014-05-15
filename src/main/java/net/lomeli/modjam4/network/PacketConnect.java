@@ -44,7 +44,7 @@ public class PacketConnect implements ISimplePacket {
                 }
             }
         }
-        if (pl != null)
+        if (pl != null && packet != null)
             PacketHandler.sendTo(packet, pl);
     }
 
