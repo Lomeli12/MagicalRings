@@ -1,10 +1,15 @@
 package net.lomeli.modjam4.magic;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
 public interface ISpell {
-    public void activateSpell(World world, EntityPlayer player, int x, int y, int z, int side, int hitX, int hitY, int hitZ);
+    public boolean activateSpell(World world, EntityPlayer player, int x, int y, int z, int side, float hitX, float hitY, float hitZ);
+    
+    public void applyToMob(EntityPlayer player, Entity target);
     
     public String getUnlocalizedName();
+    
+    public int cost();
 }
