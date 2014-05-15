@@ -2,6 +2,7 @@ package net.lomeli.modjam4.network;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
 
@@ -12,6 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import net.lomeli.modjam4.Rings;
+import net.lomeli.modjam4.lib.ModLibs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.NetHandlerPlayServer;
@@ -23,8 +25,9 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.internal.FMLProxyPacket;
 import cpw.mods.fml.relauncher.Side;
 
+@ChannelHandler.Sharable
 public class PacketHandler extends MessageToMessageCodec<FMLProxyPacket, ISimplePacket> {
-    protected EnumMap<Side, FMLEmbeddedChannel> channels;
+    public EnumMap<Side, FMLEmbeddedChannel> channels;
     protected LinkedList<Class<? extends ISimplePacket>> packets = new LinkedList<Class<? extends ISimplePacket>>();
     private boolean isInitialized = false;
 
@@ -32,6 +35,7 @@ public class PacketHandler extends MessageToMessageCodec<FMLProxyPacket, ISimple
         for (Class<? extends ISimplePacket> pkt : msg) {
             this.registerPacket(pkt);
         }
+        this.channels = NetworkRegistry.INSTANCE.newChannel(ModLibs.MOD_ID, this);
     }
 
     public void init() {

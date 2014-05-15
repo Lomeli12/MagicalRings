@@ -54,21 +54,24 @@ public class BlockAltars extends BlockRings implements ITileEntityProvider {
         ItemStack stack = player.getCurrentEquippedItem();
         if (tile != null) {
             world.func_147479_m(x, y, z);
+            System.out.println(tile.toString());
+         
             if (tile instanceof TileAltar) {
                 // TODO activate infusion ritual
             }
 
             if (stack != null) {
                 if (((IInventory) tile).getStackInSlot(0) == null) {
-                    ((IInventory) tile).setInventorySlotContents(0, new ItemStack(stack.getItem(), 1, stack.getItemDamage()));
+                    ItemStack tileStack = new ItemStack(stack.getItem(), 1, stack.getItemDamage());
+                    tileStack.stackTagCompound = stack.getTagCompound();
+                    ((IInventory) tile).setInventorySlotContents(0, tileStack);
                     player.getCurrentEquippedItem().stackSize--;
                     world.func_147479_m(x, y, z);
                     return true;
                 }
             }else {
                 if (((IInventory) tile).getStackInSlot(0) != null) {
-                    ItemStack item = ((IInventory) tile).getStackInSlot(0).copy();
-                    System.out.println(item.getDisplayName());
+                    ItemStack item = ((IInventory) tile).getStackInSlot(0);
                     EntityItem entity = new EntityItem(world, x, y + 2, z, item);
                     if (!world.isRemote)
                         world.spawnEntityInWorld(entity);

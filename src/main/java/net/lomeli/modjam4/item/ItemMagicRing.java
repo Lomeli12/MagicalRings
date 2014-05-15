@@ -5,7 +5,8 @@ import java.awt.Color;
 import net.lomeli.modjam4.lib.ModLibs;
 import net.lomeli.modjam4.magic.ISpell;
 import net.lomeli.modjam4.magic.MagicHandler;
-import net.lomeli.modjam4.magic.PlayerMagic;
+import net.lomeli.modjam4.network.PacketHandler;
+import net.lomeli.modjam4.network.PacketUpdatePlayerMP;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -67,6 +68,10 @@ public class ItemMagicRing extends ItemRings {
             tag.setInteger(ModLibs.GEM_RGB, Color.YELLOW.getRGB());
             stack.getTagCompound().setTag(ModLibs.RING_TAG, tag);
         }
+        if (!player.getEntityData().hasKey(ModLibs.PLAYER_DATA)) {
+            PacketHandler.sendToServer(new PacketUpdatePlayerMP(player, 0, ModLibs.BASE_MP));
+            PacketHandler.sendToAll(new PacketUpdatePlayerMP(player, 0, ModLibs.BASE_MP));
+        }
         return stack;
     }
 
@@ -83,11 +88,8 @@ public class ItemMagicRing extends ItemRings {
                 ISpell spell = MagicHandler.getSpellLazy(0);// MagicHandler.getSpellLazy(spellID);
                 if (spell != null) {
                     if (MagicHandler.canUse(player, spell.cost())) {
-                        PlayerMagic pm = MagicHandler.getMagicHandler().getPlayer(player);
-                        if (pm != null) {
-                            pm.updateMP(-spell.cost());
-                            return spell.activateSpell(world, player, x, y, z, side, hitX, hitY, hitZ);
-                        }
+                        MagicHandler.modifyPlayerMP(player, -spell.cost());
+                        return spell.activateSpell(world, player, x, y, z, side, hitX, hitY, hitZ);
                     }
                 }else {
                     if (this.isEdible(tag)) {

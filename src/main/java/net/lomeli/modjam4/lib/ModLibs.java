@@ -27,5 +27,10 @@ public class ModLibs {
     public static final String ALTAR = CONTAINERS + "altar";
     public static final String RING_FORGE = CONTAINERS + "ringForge";
     
+    // Player NBTTags
+    public static final String PLAYER_DATA = MOD_ID + "_PlayerMagicData";
+    public static final String PLAYER_MP = "mp";
+    public static final String PLAYER_MAX = "max";
+    
     public static int altarRenderID;
 }
