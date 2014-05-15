@@ -21,4 +21,5 @@ public class ModLibs {
     public static final String HAS_GEM = "hasGem";
     public static final String GEM_RGB = "gem_rgb";
     public static final String EDIBLE = "edible";
+    public static final String MATERIAL_BOOST = "boost";
 }

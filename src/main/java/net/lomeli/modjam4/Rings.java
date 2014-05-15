@@ -1,8 +1,10 @@
 package net.lomeli.modjam4;
 
+import net.lomeli.modjam4.core.CreativeRing;
 import net.lomeli.modjam4.core.Proxy;
 import net.lomeli.modjam4.lib.ModLibs;
 import net.lomeli.modjam4.network.PacketHandler;
+import net.minecraft.creativetab.CreativeTabs;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -18,6 +20,8 @@ public class Rings {
     public static Proxy proxy;
     
     public static PacketHandler packetHandler;
+    
+    public static final CreativeTabs modTab = new CreativeRing(ModLibs.MOD_ID.toLowerCase() + ".tab");
     
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {

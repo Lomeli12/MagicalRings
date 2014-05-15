@@ -12,4 +12,10 @@ public interface ISpell {
     public String getUnlocalizedName();
     
     public int cost();
+    
+    public float spellStrength();
+    
+    public void setSpellStrength(float boost);
+    
+    public void addBoost(float boost);
 }

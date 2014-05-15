@@ -11,12 +11,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemMagicRing extends ItemRings {
-//eating chicken
     @SideOnly(Side.CLIENT)
     private IIcon rl1, rl2, gem;
 
@@ -45,7 +45,7 @@ public class ItemMagicRing extends ItemRings {
     public int getGemRGB(NBTTagCompound nbt) {
         return nbt.getInteger(ModLibs.GEM_RGB);
     }
-    
+
     @SideOnly(Side.CLIENT)
     @Override
     public void registerIcons(IIconRegister register) {
@@ -58,6 +58,15 @@ public class ItemMagicRing extends ItemRings {
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         this.useRing(stack, player, world, (int) player.posX, (int) player.posY, (int) player.posZ, 0, 0, 0, 0);
+        if(stack.getTagCompound() == null) {
+            stack.stackTagCompound = new NBTTagCompound();
+            NBTTagCompound tag = new NBTTagCompound();
+            tag.setInteger(ModLibs.L1RGB, Color.RED.getRGB());
+            tag.setInteger(ModLibs.L2RGB, Color.GREEN.getRGB());
+            tag.setBoolean(ModLibs.HAS_GEM, true);
+            tag.setInteger(ModLibs.GEM_RGB, Color.CYAN.getRGB());
+            stack.getTagCompound().setTag(ModLibs.RING_TAG, tag);
+        }
         return stack;
     }
 
@@ -67,17 +76,15 @@ public class ItemMagicRing extends ItemRings {
     }
 
     public boolean useRing(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-        if (stack.getTagCompound() == null) {
-            stack.stackTagCompound = new NBTTagCompound();
-            return false;
-        }else {
+        if (stack.getTagCompound() != null) {
             NBTTagCompound tag = stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG);
             if (tag != null) {
                 int spellID = tag.getInteger(ModLibs.SPELL_ID);
-                ISpell spell = MagicHandler.getSpellLazy(0);//MagicHandler.getSpellLazy(spellID);
-                if (spell != null)
-                    return spell.activateSpell(world, player, x, y, z, side, hitX, hitY, hitZ);
-                else {
+                ISpell spell = MagicHandler.getSpellLazy(0);// MagicHandler.getSpellLazy(spellID);
+                if (spell != null) {
+                    if (MagicHandler.canUse(player, spell.cost()))
+                        return spell.activateSpell(world, player, x, y, z, side, hitX, hitY, hitZ);
+                }else {
                     if (this.isEdible(tag)) {
                         world.playSoundAtEntity(player, "random.burp", 0.5F, world.rand.nextFloat() * 0.1F + 0.9F);
                         stack.stackSize--;
@@ -94,6 +101,11 @@ public class ItemMagicRing extends ItemRings {
     public boolean requiresMultipleRenderPasses() {
         return true;
     }
+    
+    @Override
+    public int getRenderPasses(int meta){
+        return 3;
+    }
 
     @Override
     @SideOnly(Side.CLIENT)
@@ -101,11 +113,10 @@ public class ItemMagicRing extends ItemRings {
         if (renderPass == 1)
             return rl2;
         else if (renderPass == 2) {
-            if (stack.getTagCompound() == null)
-                stack.stackTagCompound = new NBTTagCompound();
             if (this.hasGem(stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG)))
                 return gem;
-            return this.blankIcon;
+            else
+                return this.blankIcon;
         }else
             return rl1;
     }
@@ -113,20 +124,32 @@ public class ItemMagicRing extends ItemRings {
     @Override
     @SideOnly(Side.CLIENT)
     public int getColorFromItemStack(ItemStack stack, int renderPass) {
-        if (stack.getTagCompound() == null) {
-            stack.stackTagCompound = new NBTTagCompound();
-            return Color.RED.getRGB();//super.getColorFromItemStack(stack, renderPass);
-        }else if (renderPass == 2) {
-            if (stack.getTagCompound() == null)
-                stack.stackTagCompound = new NBTTagCompound();
+        if (stack.getTagCompound() == null)
+            return Color.RED.getRGB();
+        else if (renderPass == 2) {
             if (this.hasGem(stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG)))
                 return this.getGemRGB(stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG));
-            return Color.RED.getRGB();//super.getColorFromItemStack(stack, renderPass);
+            else
+                return Color.RED.getRGB();
         }else {
             if (renderPass == 1)
-                return this.getLayer2RGB(stack.getTagCompound());
+                return this.getLayer2RGB(stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG));
             else
-                return this.getLayer1RGB(stack.getTagCompound());
+                return this.getLayer1RGB(stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG));
         }
+    }
+
+    @Override
+    public String getItemStackDisplayName(ItemStack stack) {
+        if (stack.getTagCompound() != null) {
+            NBTTagCompound tag = stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG);
+            if (tag != null) {
+                int spellID = tag.getInteger(ModLibs.SPELL_ID);
+                ISpell spell = MagicHandler.getSpellLazy(0);
+                if (spell != null)
+                    return StatCollector.translateToLocal(spell.getUnlocalizedName()) + " " + super.getItemStackDisplayName(stack);
+            }
+        }
+        return super.getItemStackDisplayName(stack);
     }
 }

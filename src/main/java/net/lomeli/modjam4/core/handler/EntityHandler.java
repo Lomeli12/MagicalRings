@@ -12,7 +12,7 @@ import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class EntityHandler {
-    
+
     @SubscribeEvent
     public void onEntityInteract(EntityInteractEvent event) {
         Entity target = event.target;
@@ -20,13 +20,11 @@ public class EntityHandler {
         if (target != null && player != null) {
             ItemStack stack = player.getCurrentEquippedItem();
             if (stack != null && stack.getItem() instanceof ItemMagicRing) {
-                if (stack.getTagCompound() == null)
-                    stack.stackTagCompound = new NBTTagCompound();
-                else {
+                if (stack.getTagCompound() != null) {
                     NBTTagCompound tag = stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG);
                     if (tag != null) {
                         int spellID = tag.getInteger(ModLibs.SPELL_ID);
-                        ISpell spell = MagicHandler.getSpellLazy(0);//MagicHandler.getSpellLazy(spellID);
+                        ISpell spell = MagicHandler.getSpellLazy(0);// MagicHandler.getSpellLazy(spellID);
                         if (spell != null)
                             spell.applyToMob(player, target);
                     }

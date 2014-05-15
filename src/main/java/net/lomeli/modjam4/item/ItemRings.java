@@ -1,5 +1,6 @@
 package net.lomeli.modjam4.item;
 
+import net.lomeli.modjam4.Rings;
 import net.lomeli.modjam4.lib.ModLibs;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.Item;
@@ -13,7 +14,13 @@ public class ItemRings extends Item{
     
     public ItemRings(String texture) {
         super();
+        this.setCreativeTab(Rings.modTab);
         this.itemTexture = texture;
+    }
+    
+    @Override
+    public Item setUnlocalizedName(String name) {
+        return super.setUnlocalizedName(ModLibs.MOD_ID.toLowerCase() + "." + name);
     }
     
     @SideOnly(Side.CLIENT)
