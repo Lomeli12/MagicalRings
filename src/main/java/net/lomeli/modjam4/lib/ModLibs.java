@@ -22,4 +22,8 @@ public class ModLibs {
     public static final String GEM_RGB = "gem_rgb";
     public static final String EDIBLE = "edible";
     public static final String MATERIAL_BOOST = "boost";
+    
+    public static final String CONTAINERS = MOD_ID.toLowerCase() + ".container.";
+    public static final String ALTAR = CONTAINERS + "altar";
+    public static final String RING_FORGE = CONTAINERS + "ringForge";
 }

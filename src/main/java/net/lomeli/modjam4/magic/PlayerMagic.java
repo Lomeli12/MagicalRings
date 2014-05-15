@@ -22,11 +22,11 @@ public class PlayerMagic {
         NBTTagCompound modTag = new NBTTagCompound();
         modTag.setInteger("MP", this.mp);
         modTag.setInteger("MaxMP", this.max);
-        tag.setTag(ModLibs.MOD_ID + "_Data", modTag);
+        tag.setTag(ModLibs.MOD_ID + "_" + player.getGameProfile().getId() + "_Data", modTag);
     }
 
     public void readFromNBT(NBTTagCompound tag) {
-        NBTTagCompound modTag = tag.getCompoundTag(ModLibs.MOD_ID + "_Data");
+        NBTTagCompound modTag = tag.getCompoundTag(ModLibs.MOD_ID + "_" + player.getGameProfile().getId() + "_Data");
         if (modTag == null) {
             this.mp = 0;
             this.max = ModLibs.BASE_MP;
@@ -35,11 +35,23 @@ public class PlayerMagic {
             this.max = modTag.getInteger("MaxMP");
         }
     }
-
-    public void sendPacket() {
-
+    
+    public int updateMP(int amount) {
+        this.mp += amount;
+        if (this.mp < 0)
+            this.mp = 0;
+        if (this.mp > this.max)
+            this.mp = this.max;
+        return this.mp;
     }
-
+    
+    public int setMax(int max) {
+        this.max = max;
+        if (this.mp > this.max)
+            this.mp = this.max;
+        return this.max;
+    }
+    
     public int getMP() {
         return this.mp;
     }

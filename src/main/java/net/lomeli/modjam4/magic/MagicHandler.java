@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.lomeli.modjam4.Rings;
+import net.lomeli.modjam4.lib.ModLibs;
 import net.minecraft.entity.player.EntityPlayer;
 
 public class MagicHandler {
@@ -14,7 +15,7 @@ public class MagicHandler {
         this.registerSpell(new DebugSpell());
     }
     
-    private static MagicHandler getMagicHandler(){
+    public static MagicHandler getMagicHandler(){
         return Rings.proxy.magicHandler;
     }
     
@@ -30,6 +31,10 @@ public class MagicHandler {
         return can;
     }
     
+    public static PlayerMagic getPlayerData(String uuid) {
+        return getMagicHandler().getPlayer(uuid);
+    }
+    
     public void registerSpell(ISpell spell) {
         if (this.registeredSpells.contains(spell))
             return;
@@ -40,6 +45,18 @@ public class MagicHandler {
         if (index < this.registeredSpells.size())
             return this.registeredSpells.get(index);
         return null;
+    }
+    
+    public void updatePlayerMP(EntityPlayer player, int amount) {
+        PlayerMagic pl = getPlayer(player);
+        if (pl != null)
+            pl.updateMP(amount);
+    }
+    
+    public void givePlayerMagicSession(EntityPlayer player) {
+        PlayerMagic pl = new PlayerMagic(player, 0, ModLibs.BASE_MP);
+        if (!this.playerMG.contains(pl))
+            this.playerMG.add(pl);
     }
     
     public PlayerMagic getPlayer(EntityPlayer player) {

@@ -11,12 +11,14 @@ import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import net.lomeli.modjam4.Rings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.NetHandlerPlayServer;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.FMLEmbeddedChannel;
+import cpw.mods.fml.common.network.FMLOutboundHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.internal.FMLProxyPacket;
 import cpw.mods.fml.relauncher.Side;
@@ -92,5 +94,26 @@ public class PacketHandler extends MessageToMessageCodec<FMLProxyPacket, ISimple
             break;
         }
         out.add(packet);
+    }
+    
+    public static void sendToAll(ISimplePacket packet) {
+        Rings.packetHandler.channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALL);
+        Rings.packetHandler.channels.get(Side.SERVER).writeAndFlush(packet);
+    }
+    
+    public static void sendTo(ISimplePacket packet, EntityPlayer player) {
+        Rings.packetHandler.channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.PLAYER);
+        Rings.packetHandler.channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(player);
+        Rings.packetHandler.channels.get(Side.SERVER).writeAndFlush(packet);
+    }
+    
+    public static void sendToServer(ISimplePacket packet) {
+        Rings.packetHandler.channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.TOSERVER);
+        Rings.packetHandler.channels.get(Side.SERVER).writeAndFlush(packet);
+    }
+    
+    public static void sendEverywhere(ISimplePacket packet) {
+        sendToAll(packet);
+        sendToServer(packet);
     }
 }

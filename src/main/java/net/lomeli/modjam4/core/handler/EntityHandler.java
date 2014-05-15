@@ -4,6 +4,7 @@ import net.lomeli.modjam4.item.ItemMagicRing;
 import net.lomeli.modjam4.lib.ModLibs;
 import net.lomeli.modjam4.magic.ISpell;
 import net.lomeli.modjam4.magic.MagicHandler;
+import net.lomeli.modjam4.magic.PlayerMagic;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -25,8 +26,13 @@ public class EntityHandler {
                     if (tag != null) {
                         int spellID = tag.getInteger(ModLibs.SPELL_ID);
                         ISpell spell = MagicHandler.getSpellLazy(0);// MagicHandler.getSpellLazy(spellID);
-                        if (spell != null)
-                            spell.applyToMob(player, target);
+                        if (spell != null) {
+                            PlayerMagic pm = MagicHandler.getMagicHandler().getPlayer(player);
+                            if (pm != null && MagicHandler.canUse(player, spell.cost())) {
+                                pm.updateMP(-spell.cost());
+                                spell.applyToMob(player, target);
+                            }
+                        }
                     }
                 }
             }

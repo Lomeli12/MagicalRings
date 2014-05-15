@@ -2,10 +2,10 @@ package net.lomeli.modjam4.item;
 
 import java.awt.Color;
 
-import net.lomeli.modjam4.Rings;
 import net.lomeli.modjam4.lib.ModLibs;
 import net.lomeli.modjam4.magic.ISpell;
 import net.lomeli.modjam4.magic.MagicHandler;
+import net.lomeli.modjam4.magic.PlayerMagic;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -58,13 +58,13 @@ public class ItemMagicRing extends ItemRings {
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         this.useRing(stack, player, world, (int) player.posX, (int) player.posY, (int) player.posZ, 0, 0, 0, 0);
-        if(stack.getTagCompound() == null) {
+        if (stack.getTagCompound() == null) {
             stack.stackTagCompound = new NBTTagCompound();
             NBTTagCompound tag = new NBTTagCompound();
-            tag.setInteger(ModLibs.L1RGB, Color.RED.getRGB());
-            tag.setInteger(ModLibs.L2RGB, Color.GREEN.getRGB());
+            tag.setInteger(ModLibs.L1RGB, Color.MAGENTA.getRGB());
+            tag.setInteger(ModLibs.L2RGB, Color.DARK_GRAY.getRGB());
             tag.setBoolean(ModLibs.HAS_GEM, true);
-            tag.setInteger(ModLibs.GEM_RGB, Color.CYAN.getRGB());
+            tag.setInteger(ModLibs.GEM_RGB, Color.YELLOW.getRGB());
             stack.getTagCompound().setTag(ModLibs.RING_TAG, tag);
         }
         return stack;
@@ -82,8 +82,13 @@ public class ItemMagicRing extends ItemRings {
                 int spellID = tag.getInteger(ModLibs.SPELL_ID);
                 ISpell spell = MagicHandler.getSpellLazy(0);// MagicHandler.getSpellLazy(spellID);
                 if (spell != null) {
-                    if (MagicHandler.canUse(player, spell.cost()))
-                        return spell.activateSpell(world, player, x, y, z, side, hitX, hitY, hitZ);
+                    if (MagicHandler.canUse(player, spell.cost())) {
+                        PlayerMagic pm = MagicHandler.getMagicHandler().getPlayer(player);
+                        if (pm != null) {
+                            pm.updateMP(-spell.cost());
+                            return spell.activateSpell(world, player, x, y, z, side, hitX, hitY, hitZ);
+                        }
+                    }
                 }else {
                     if (this.isEdible(tag)) {
                         world.playSoundAtEntity(player, "random.burp", 0.5F, world.rand.nextFloat() * 0.1F + 0.9F);
@@ -101,9 +106,9 @@ public class ItemMagicRing extends ItemRings {
     public boolean requiresMultipleRenderPasses() {
         return true;
     }
-    
+
     @Override
-    public int getRenderPasses(int meta){
+    public int getRenderPasses(int meta) {
         return 3;
     }
 
@@ -113,7 +118,7 @@ public class ItemMagicRing extends ItemRings {
         if (renderPass == 1)
             return rl2;
         else if (renderPass == 2) {
-            if (this.hasGem(stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG)))
+            if (stack.getTagCompound() != null && this.hasGem(stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG)))
                 return gem;
             else
                 return this.blankIcon;
@@ -125,12 +130,12 @@ public class ItemMagicRing extends ItemRings {
     @SideOnly(Side.CLIENT)
     public int getColorFromItemStack(ItemStack stack, int renderPass) {
         if (stack.getTagCompound() == null)
-            return Color.RED.getRGB();
+            return Color.LIGHT_GRAY.getRGB();
         else if (renderPass == 2) {
             if (this.hasGem(stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG)))
                 return this.getGemRGB(stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG));
             else
-                return Color.RED.getRGB();
+                return Color.CYAN.getRGB();
         }else {
             if (renderPass == 1)
                 return this.getLayer2RGB(stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG));
