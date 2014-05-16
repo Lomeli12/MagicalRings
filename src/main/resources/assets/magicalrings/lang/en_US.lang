@@ -1,1 +1,5 @@
 itemGroup.magicalrings.tab=Magical Rings
+
+
+magicalrings.message.enoughEXP=Not enough experience. Requires 30 levels.
+magicalrings.message.effect=Continuously Cast Spell
