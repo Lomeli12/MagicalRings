@@ -2,12 +2,14 @@ package net.lomeli.ring;
 
 import java.io.File;
 
+import net.lomeli.ring.client.handler.GuiHandler;
 import net.lomeli.ring.core.CommandRing;
 import net.lomeli.ring.core.CreativeRing;
 import net.lomeli.ring.core.Proxy;
 import net.lomeli.ring.lib.ModLibs;
 import net.lomeli.ring.network.PacketAdjustClientPos;
 import net.lomeli.ring.network.PacketHandler;
+import net.lomeli.ring.network.PacketRingName;
 import net.lomeli.ring.network.PacketUpdatePlayerMP;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.common.config.Configuration;
@@ -17,10 +19,11 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
 
 @Mod(modid = ModLibs.MOD_ID, name=ModLibs.MOD_NAME, version=ModLibs.VERSION)
 public class Rings {
-    @Mod.Instance("temp")
+    @Mod.Instance(ModLibs.MOD_ID)
     public static Rings instance;
     
     @SidedProxy(clientSide = ModLibs.PROXY_CLIENT, serverSide = ModLibs.PROXY_SERVER)
@@ -45,7 +48,8 @@ public class Rings {
     
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        packetHandler = new PacketHandler(PacketUpdatePlayerMP.class, PacketAdjustClientPos.class);
+        NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
+        packetHandler = new PacketHandler(PacketUpdatePlayerMP.class, PacketAdjustClientPos.class, PacketRingName.class);
         proxy.init();
     }
     

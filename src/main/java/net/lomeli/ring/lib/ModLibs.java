@@ -37,6 +37,8 @@ public class ModLibs {
     public static final String NO_EXP = MESSAGE + "enoughEXP";
     public static final String ACTIVE_EFFECT = MESSAGE + "effect";
     
+    public static final int RING_FORGE_GUI = 0;
+    
     public static int RECHARGE_WAIT_TIME;
     public static int DISPLAY_X;
     public static int DISPLAY_Y;

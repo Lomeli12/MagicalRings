@@ -1,5 +1,13 @@
 itemGroup.magicalrings.tab=Magical Rings
 
+magicalrings.container.ringForge=Ring Forge
+
+tile.magicalrings.altar.0.name=Infusion Altar
+tile.magicalrings.altar.1.name=Stone Altar
+
+item.magicalrings.ironHammer.name=Iron Hammer
+item.magicalrings.diamondHammer.name=Diamond Hammer
+item.magicalrings.magicRing.name=Ring
 
 magicalrings.message.enoughEXP=Not enough experience. Requires 30 levels.
 magicalrings.message.effect=Continuously Cast Spell

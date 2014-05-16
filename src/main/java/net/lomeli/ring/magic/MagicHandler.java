@@ -29,7 +29,7 @@ public class MagicHandler {
     public static ISpell getSpellLazy(int index) {
         return getMagicHandler().getSpell(index);
     }
-
+    
     public static void modifyPlayerMP(EntityPlayer player, int cost) {
         if (player.getEntityData().hasKey(ModLibs.PLAYER_DATA)) {
             NBTTagCompound tag = player.getEntityData().getCompoundTag(ModLibs.PLAYER_DATA);

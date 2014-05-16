@@ -82,7 +82,7 @@ public class TileAltar extends TileEntity implements IInventory {
                             EntityLightningBolt light = new EntityLightningBolt(worldObj, xCoord, yCoord, zCoord);
                             this.spawnEffects();
                             worldObj.spawnEntityInWorld(light);
-                            reset();
+                            simpleReset();
                         }
                     }
                 }
@@ -111,6 +111,20 @@ public class TileAltar extends TileEntity implements IInventory {
                 tiles.add((TileItemAltar) tile);
         }
     }
+    
+    public void simpleReset() {
+        this.spellID = -1;
+        this.timer = 0;
+        this.tiles.clear();
+        for (TileItemAltar tile : this.tilesToGetFrom) {
+            tile.setInventorySlotContents(0, null);
+        }
+        this.tilesToGetFrom.clear();
+        this.startInfusion = false;
+        this.infoCollected = false;
+        this.tempInventory.clear();
+    }
+    
 
     public void reset() {
         this.spellID = -1;
@@ -131,6 +145,7 @@ public class TileAltar extends TileEntity implements IInventory {
                 }
             }
         }
+        this.tempInventory.clear();
     }
 
     public void matchRecipe() {

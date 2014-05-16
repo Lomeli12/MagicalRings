@@ -42,7 +42,7 @@ public class ItemMagicRing extends ItemRings {
     }
 
     public boolean hasGem(NBTTagCompound nbt) {
-        return nbt.getBoolean(ModLibs.HAS_GEM);
+        return nbt.hasKey(ModLibs.HAS_GEM) ? nbt.getBoolean(ModLibs.HAS_GEM) : false;
     }
 
     public int getGemRGB(NBTTagCompound nbt) {
@@ -56,9 +56,9 @@ public class ItemMagicRing extends ItemRings {
             if (tag != null) {
                 if (tag.hasKey(ModLibs.SPELL_ID)) {
                     int spellID = tag.getInteger(ModLibs.SPELL_ID);
-                    ISpell spell = MagicHandler.getSpellLazy(0);// MagicHandler.getSpellLazy(spellID);
+                    ISpell spell = MagicHandler.getSpellLazy(spellID);
                     if (spell != null && tag.getBoolean(ModLibs.ACTIVE_EFFECT_ENABLED))
-                        spell.onUpdateTick(stack, world, entity, par4, par5);
+                        spell.onUpdateTick(stack, world, entity, par4, par5, tag.getInteger(ModLibs.MATERIAL_BOOST));
                 }
             }
         }
@@ -87,7 +87,7 @@ public class ItemMagicRing extends ItemRings {
             }
         }else {
             this.useRing(stack, player, world, (int) player.posX, (int) player.posY, (int) player.posZ, 0, 0, 0, 0);
-            if (stack.getTagCompound() == null) {
+            /*if (stack.getTagCompound() == null) {
                 stack.stackTagCompound = new NBTTagCompound();
                 NBTTagCompound tag = new NBTTagCompound();
                 tag.setInteger(ModLibs.L1RGB, Color.MAGENTA.getRGB());
@@ -98,7 +98,7 @@ public class ItemMagicRing extends ItemRings {
             }
             if (!player.getEntityData().hasKey(ModLibs.PLAYER_DATA)) {
                 PacketHandler.sendToServer(new PacketUpdatePlayerMP(player, 0, ModLibs.BASE_MP));
-            }
+            }*/
         }
         return stack;
     }
@@ -114,11 +114,11 @@ public class ItemMagicRing extends ItemRings {
             if (tag != null) {
                 if (tag.hasKey(ModLibs.SPELL_ID)) {
                     int spellID = tag.getInteger(ModLibs.SPELL_ID);
-                    ISpell spell = MagicHandler.getSpellLazy(0);// MagicHandler.getSpellLazy(spellID);
+                    ISpell spell = MagicHandler.getSpellLazy(spellID);
                     if (spell != null) {
                         if (MagicHandler.canUse(player, spell.cost())) {
-                            MagicHandler.modifyPlayerMP(player, -spell.cost());
-                            return spell.activateSpell(world, player, x, y, z, side, hitX, hitY, hitZ);
+                            MagicHandler.modifyPlayerMP(player, -spell.cost() + (tag.getInteger(ModLibs.MATERIAL_BOOST) * 2));
+                            return spell.activateSpell(world, player, x, y, z, side, hitX, hitY, hitZ, tag.getInteger(ModLibs.MATERIAL_BOOST));
                         }
                     }else {
                         if (this.isEdible(tag)) {
@@ -162,12 +162,12 @@ public class ItemMagicRing extends ItemRings {
     @SideOnly(Side.CLIENT)
     public int getColorFromItemStack(ItemStack stack, int renderPass) {
         if (stack.getTagCompound() == null)
-            return Color.LIGHT_GRAY.getRGB();
+            return Color.WHITE.getRGB();
         else if (renderPass == 2) {
             if (this.hasGem(stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG)))
                 return this.getGemRGB(stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG));
             else
-                return Color.CYAN.getRGB();
+                return this.getLayer1RGB(stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG));
         }else {
             if (renderPass == 1)
                 return this.getLayer2RGB(stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG));
@@ -176,6 +176,7 @@ public class ItemMagicRing extends ItemRings {
         }
     }
 
+    /*
     @Override
     public String getItemStackDisplayName(ItemStack stack) {
         if (stack.getTagCompound() != null) {
@@ -190,5 +191,5 @@ public class ItemMagicRing extends ItemRings {
             }
         }
         return super.getItemStackDisplayName(stack);
-    }
+    }*/
 }
