@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.lomeli.modjam4.lib.ModLibs;
+import net.lomeli.modjam4.magic.ISpell;
+import net.lomeli.modjam4.magic.MagicHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -17,13 +19,47 @@ import net.minecraft.tileentity.TileEntity;
 public class TileAltar extends TileEntity implements IInventory {
 
     private ItemStack[] inventory;
-
+    private int timer, tileCount, spellID;
+    private boolean startInfusion, infoCollected;
+    private List<TileItemAltar> tiles = new ArrayList<TileItemAltar>(), tilesToGetFrom = new ArrayList<TileItemAltar>();
+    
     public TileAltar() {
         this.inventory = new ItemStack[1];
     }
+    
+    public void updateEntity() {
+        super.updateEntity();
+        for (int x = -2; x < 2; x++) {
+            for (int z = -2; z < 2; z++) {
+                if (x != 0 && z != 0) {
+                    TileEntity tile = worldObj.getTileEntity(xCoord + x, yCoord, zCoord + z);
+                    if (tile != null && tile instanceof TileItemAltar)
+                        tiles.add((TileItemAltar)tile);
+                }
+                z++;
+            }
+            x++;
+        }
+        
+        if (this.startInfusion) {
+            ISpell spell = MagicHandler.getSpellLazy(spellID);
+            if (spell != null) {
+                if (!this.infoCollected) {
+                    Object[] ingredients = MagicHandler.getMagicHandler().getSpellRecipe(spellID);
+                } else {
+                    if (++timer >= 25) {
+                        if (tileCount < tilesToGetFrom.size()) {
+                            tilesToGetFrom.get(tileCount).setInventorySlotContents(0, null);
+                        }
+                        timer = 0;
+                    }
+                }
+            }
+        }
+    }
 
-    public void startInfusion() {
-        TileEntity[] tiles = new TileEntity[4];
+    public void startInfusion(int spellId) {
+        /*TileEntity[] tiles = new TileEntity[4];
         tiles[0] = worldObj.getTileEntity(xCoord + 1, yCoord, zCoord);
         tiles[1] = worldObj.getTileEntity(xCoord - 1, yCoord, zCoord);
         tiles[2] = worldObj.getTileEntity(xCoord, yCoord, zCoord + 1);
@@ -31,14 +67,54 @@ public class TileAltar extends TileEntity implements IInventory {
 
         List<ItemStack> items = new ArrayList<ItemStack>();
         for (TileEntity tile : tiles) {
-            if (tile instanceof TileItemAltar) {
+            if (tile != null && tile instanceof TileItemAltar) {
                 TileItemAltar itemAltar = (TileItemAltar) tile;
                 if (itemAltar.getStackInSlot(0) != null)
                     items.add(itemAltar.getStackInSlot(0));
             }
         }
-        // TODO something something something find spell that matches
-        // corresponding items
+        ISpell spell = MagicHandler.getSpellLazy(spellId);
+        if (spell != null) {
+            List<ItemStack> ingred = new ArrayList<ItemStack>();
+
+            
+            for (int j = 0; j < ingredients.length; j++) {
+                Object i = ingredients[j];
+                ItemStack item = null;
+                if (i instanceof ItemStack)
+                    item = (ItemStack) i;
+                else if (i instanceof Item)
+                    item = new ItemStack((Item) i);
+                else if (i instanceof Block)
+                    item = new ItemStack((Block) i);
+                if (item != null)
+                    ingred.add(item);
+            }
+
+            List<ItemStack> ing = ingred;
+            for (int i = 0; i < ingred.size(); i++) {
+                ItemStack stack = ingred.get(i);
+                if (items.contains(stack))
+                    ingred.remove(i);
+            }
+
+            if (ingred.isEmpty()) {
+                for (TileEntity tile : tiles) {
+                    if (tile instanceof TileItemAltar) {
+                        TileItemAltar itemAltar = (TileItemAltar) tile;
+                        ItemStack stack = itemAltar.getStackInSlot(0);
+                        if (stack != null && ing.contains(stack)){
+                            ing.remove(stack);
+                            itemAltar.setInventorySlotContents(0, null);
+                        }
+                    }
+                }
+                if (ing.isEmpty()) {
+                    
+                }
+            }
+        }
+        */
     }
 
     @Override

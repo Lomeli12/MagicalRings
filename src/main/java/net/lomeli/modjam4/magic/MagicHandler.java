@@ -1,6 +1,7 @@
 package net.lomeli.modjam4.magic;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import net.lomeli.modjam4.Rings;
@@ -8,13 +9,16 @@ import net.lomeli.modjam4.lib.ModLibs;
 import net.lomeli.modjam4.network.PacketHandler;
 import net.lomeli.modjam4.network.PacketUpdatePlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class MagicHandler {
     private List<ISpell> registeredSpells = new ArrayList<ISpell>();
+    private HashMap<ISpell, Object[]> spellRecipes = new HashMap<ISpell, Object[]>();
 
     public MagicHandler() {
-        //this.registerSpell(new DebugSpell());
+        this.registerSpell(new DebugSpell(), Items.apple);
     }
 
     public static MagicHandler getMagicHandler() {
@@ -56,16 +60,22 @@ public class MagicHandler {
         return false;
     }
 
-    public void registerSpell(ISpell spell) {
+    public void registerSpell(ISpell spell, Object...obj) {
         if (this.registeredSpells.contains(spell))
             return;
         this.registeredSpells.add(spell);
+        this.spellRecipes.put(spell, obj);
     }
 
     public ISpell getSpell(int index) {
         if (index < this.registeredSpells.size())
             return this.registeredSpells.get(index);
         return null;
+    }
+    
+    public Object[] getSpellRecipe(int index) {
+        ISpell spell = getSpell(index);
+        return spell == null ? null : this.spellRecipes.get(spell);
     }
 
 }

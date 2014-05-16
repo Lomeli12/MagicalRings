@@ -36,13 +36,14 @@ public class PacketUpdatePlayerMP implements ISimplePacket {
 
     @Override
     public void readClient(EntityPlayer player) {
-        System.out.println("running client");
-        update();
+        NBTTagCompound tag = player.getEntityData().hasKey(ModLibs.PLAYER_DATA) ? player.getEntityData().getCompoundTag(ModLibs.PLAYER_DATA) : new NBTTagCompound();
+        tag.setInteger(ModLibs.PLAYER_MP, this.mp);
+        tag.setInteger(ModLibs.PLAYER_MAX, this.max);
+        player.getEntityData().setTag(ModLibs.PLAYER_DATA, tag);
     }
 
     @Override
     public void readServer(EntityPlayer player) {
-        System.out.println("running server");
         update();
     }
 
@@ -55,12 +56,6 @@ public class PacketUpdatePlayerMP implements ISimplePacket {
             tag.setInteger(ModLibs.PLAYER_MAX, this.max);
             player.getEntityData().setTag(ModLibs.PLAYER_DATA, tag);
         }
-        /*
-         * for (Object obj : ms.getConfigurationManager().playerEntityList) { if
-         * (obj instanceof EntityPlayer) { EntityPlayer p = (EntityPlayer) obj;
-         * 
-         * } }
-         */
+        PacketHandler.sendTo(new PacketUpdatePlayerMP(player, this.mp, this.max), player);
     }
-
 }

@@ -112,12 +112,17 @@ public class PacketHandler extends MessageToMessageCodec<FMLProxyPacket, ISimple
     }
     
     public static void sendToServer(ISimplePacket packet) {
-        Rings.packetHandler.channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.TOSERVER);
-        Rings.packetHandler.channels.get(Side.SERVER).writeAndFlush(packet);
+        Rings.packetHandler.channels.get(Side.CLIENT).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.TOSERVER);
+        Rings.packetHandler.channels.get(Side.CLIENT).writeAndFlush(packet);
     }
     
     public static void sendEverywhere(ISimplePacket packet) {
         sendToAll(packet);
         sendToServer(packet);
+    }
+    
+    public static void sendToPlayerAndServer(ISimplePacket packet, EntityPlayer player) {
+        sendToServer(packet);
+        sendTo(packet, player);
     }
 }

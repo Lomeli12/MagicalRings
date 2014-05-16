@@ -69,8 +69,7 @@ public class ItemMagicRing extends ItemRings {
             stack.getTagCompound().setTag(ModLibs.RING_TAG, tag);
         }
         if (!player.getEntityData().hasKey(ModLibs.PLAYER_DATA)) {
-            PacketHandler.sendToServer(new PacketUpdatePlayerMP(player, 0, ModLibs.BASE_MP));
-            PacketHandler.sendToAll(new PacketUpdatePlayerMP(player, 0, ModLibs.BASE_MP));
+            PacketHandler.sendToServer(new PacketUpdatePlayerMP(player, 0, 1000));
         }
         return stack;
     }

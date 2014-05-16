@@ -32,7 +32,8 @@ public class TickHandlerClient {
                             int mp = tag.getInteger(ModLibs.PLAYER_MP);
                             int max = tag.getInteger(ModLibs.PLAYER_MAX);
                             String mpInfo = "MP: " + mp + " / " + max;
-                            gui.drawString(mc.fontRenderer, mpInfo, 2, mc.displayHeight / 4, 0xffffff);
+                            mc.fontRenderer.drawString(mpInfo, 3, (mc.displayHeight / 4) + 1, 0x000000);
+                            mc.fontRenderer.drawString(mpInfo, 2, mc.displayHeight / 4, 0x00C4C4);
                         }
                     }
                 }
