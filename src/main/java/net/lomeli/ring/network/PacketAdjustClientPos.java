@@ -10,7 +10,7 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.common.config.Property.Type;
 
-public class PacketAdjustClientPos implements ISimplePacket {
+public class PacketAdjustClientPos implements IPacket {
 
     private int x, y;
 

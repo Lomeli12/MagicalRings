@@ -9,6 +9,7 @@ import net.lomeli.ring.Rings;
 import net.lomeli.ring.item.ModItems;
 import net.lomeli.ring.lib.ModLibs;
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -24,20 +25,22 @@ public class RingMaterialRecipe {
     public RingMaterialRecipe() {
         this.registerItem(Items.iron_ingot, Color.LIGHT_GRAY.getRGB(), 0);
         this.registerItem(Items.gold_ingot, new Color(237, 237, 0).getRGB(), 1);
+        this.registerItem(Blocks.obsidian, new Color(60, 0, 95).getRGB(), 2);
         this.registerItem("ingotCopper", new Color(190, 120, 0).getRGB(), 0);
         this.registerItem("ingotTin", new Color(220, 255, 245).getRGB(), 1);
         this.registerItem("ingotSteel", new Color(45, 45, 45).getRGB(), 2);
         this.registerItem("ingotSilver", new Color(165, 165, 165).getRGB(), 3);
-        this.registerItem("ingotTungsten", new Color(59, 56, 51).getRGB(), 5);
+        this.registerItem("ingotTungsten", new Color(59, 46, 74).getRGB(), 5);
         this.registerItem("ingotPlatinum", new Color(232, 232, 232).getRGB(), 4);
 
         this.registerMaterial("gemDiamond", new Color(100, 220, 255).getRGB(), 5);
         this.registerMaterial("gemEmerald", new Color(0, 210, 0).getRGB(), 6);
-        this.registerMaterial("gemJade", new Color(140, 0, 210).getRGB(), 3);
+        this.registerMaterial("gemJade", new Color(0, 210, 80).getRGB(), 4);
+        this.registerMaterial("gemAmethyst", new Color(140, 0, 210).getRGB(), 3);
         this.registerMaterial("gemAmber", new Color(240, 170, 0).getRGB(), 2);
         this.registerMaterial("gemPeridot", new Color(0, 160, 0).getRGB(), 1);
         this.registerMaterial("gemRuby", new Color(215, 0, 0).getRGB(), 1);
-        this.registerMaterial("gemSapphire", new Color(130, 0, 0).getRGB(), 1);
+        this.registerMaterial("gemSapphire", new Color(0, 0, 130).getRGB(), 1);
         this.registerMaterial("ingotQuartz", new Color(230, 230, 230).getRGB(), 3);
     }
 
@@ -89,14 +92,7 @@ public class RingMaterialRecipe {
     }
 
     public static int getAverageBoost(int par0, int par1, int par2) {
-        int totalBoosts = 0;
-        if (par0 != 0)
-            totalBoosts++;
-        if (par1 != 0)
-            totalBoosts++;
-        if (par2 != 0)
-            totalBoosts++;
-        return totalBoosts != 0 ? (par0 + par1 + par2) / totalBoosts : 0;
+        return (int) Math.floor(Math.round(((double) (par0 + par1 + par2)) / 3d));
     }
 
     public void registerMaterial(ItemStack stack, int rgb, int boost) {
@@ -159,7 +155,7 @@ public class RingMaterialRecipe {
                             return set.getValue();
                     }
                     if (obj instanceof String) {
-                        for (ItemStack st : OreDictionary.getOres((String)obj)){
+                        for (ItemStack st : OreDictionary.getOres((String) obj)) {
                             if ((st.getItem() == stack.getItem()) && (st.getItemDamage() == stack.getItemDamage()))
                                 return set.getValue();
                         }
@@ -182,7 +178,7 @@ public class RingMaterialRecipe {
                             return set.getValue();
                     }
                     if (obj instanceof String) {
-                        for (ItemStack st : OreDictionary.getOres((String)obj)){
+                        for (ItemStack st : OreDictionary.getOres((String) obj)) {
                             if ((st.getItem() == stack.getItem()) && (st.getItemDamage() == stack.getItemDamage()))
                                 return set.getValue();
                         }
@@ -203,7 +199,7 @@ public class RingMaterialRecipe {
                     match = (st.getItem() == stack.getItem()) && (st.getItemDamage() == stack.getItemDamage());
                 }
                 if (obj instanceof String) {
-                    for (ItemStack st : OreDictionary.getOres((String)obj)){
+                    for (ItemStack st : OreDictionary.getOres((String) obj)) {
                         if ((st.getItem() == stack.getItem()) && (st.getItemDamage() == stack.getItemDamage())) {
                             match = true;
                             break;
@@ -227,7 +223,7 @@ public class RingMaterialRecipe {
                     match = (st.getItem() == stack.getItem()) && (st.getItemDamage() == stack.getItemDamage());
                 }
                 if (obj instanceof String) {
-                    for (ItemStack st : OreDictionary.getOres((String)obj)){
+                    for (ItemStack st : OreDictionary.getOres((String) obj)) {
                         if ((st.getItem() == stack.getItem()) && (st.getItemDamage() == stack.getItemDamage())) {
                             match = true;
                             break;
@@ -253,7 +249,7 @@ public class RingMaterialRecipe {
                             return set.getValue();
                     }
                     if (obj instanceof String) {
-                        for (ItemStack st : OreDictionary.getOres((String)obj)){
+                        for (ItemStack st : OreDictionary.getOres((String) obj)) {
                             if ((st.getItem() == stack.getItem()) && (st.getItemDamage() == stack.getItemDamage()))
                                 return set.getValue();
                         }
@@ -276,7 +272,7 @@ public class RingMaterialRecipe {
                             return set.getValue();
                     }
                     if (obj instanceof String) {
-                        for (ItemStack st : OreDictionary.getOres((String)obj)){
+                        for (ItemStack st : OreDictionary.getOres((String) obj)) {
                             if ((st.getItem() == stack.getItem()) && (st.getItemDamage() == stack.getItemDamage()))
                                 return set.getValue();
                         }

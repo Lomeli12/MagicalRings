@@ -1,6 +1,7 @@
 package net.lomeli.ring.core.handler;
 
 import net.lomeli.ring.lib.ModLibs;
+import net.lomeli.ring.network.PacketClientJoined;
 import net.lomeli.ring.network.PacketHandler;
 import net.lomeli.ring.network.PacketUpdatePlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,6 +21,10 @@ public class GameEventHandler {
                 NBTTagCompound tag = player.getEntityData().getCompoundTag(ModLibs.PLAYER_DATA);
                 int mp = tag.getInteger(ModLibs.PLAYER_MP), max = tag.getInteger(ModLibs.PLAYER_MAX);
                 if (mp < max) {
+                    if (player.capabilities.isCreativeMode) {
+                        PacketHandler.sendToPlayerAndServer(new PacketUpdatePlayerMP(player, max, max), player);
+                        return;
+                    }
                     if (++this.tick >= ModLibs.RECHARGE_WAIT_TIME) {
                         if (player.getFoodStats().getFoodLevel() > 6) {
                             mp += ((player.getFoodStats().getFoodLevel() - 3) / 5);
@@ -34,14 +39,10 @@ public class GameEventHandler {
             }
         }
     }
-
+    
     @SubscribeEvent
-    public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
-
-    }
-
-    @SubscribeEvent
-    public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
-
+    public void onPlayerJoined(PlayerEvent.PlayerLoggedInEvent event) {
+        if (event.player != null) 
+            PacketHandler.sendToServer(new PacketClientJoined(event.player));
     }
 }

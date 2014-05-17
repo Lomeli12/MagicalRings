@@ -8,7 +8,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import cpw.mods.fml.common.network.ByteBufUtils;
 
-public class PacketRingName implements ISimplePacket {
+public class PacketRingName implements IPacket {
     private String name;
     private int x, y, z;
 

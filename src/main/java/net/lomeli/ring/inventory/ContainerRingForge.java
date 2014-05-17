@@ -62,17 +62,17 @@ public class ContainerRingForge extends Container {
             itemstack = itemstack1.copy();
 
             if (par2 == 0) {
-                if (!this.mergeItemStack(itemstack1, 4, 40, true))
+                if (!this.mergeItemStack(itemstack1, 5, 41, true))
                     return null;
 
                 slot.onSlotChange(itemstack1, itemstack);
-            }else if (par2 >= 4 && par2 < 31) {
-                if (!this.mergeItemStack(itemstack1, 31, 40, false)) 
+            }else if (par2 >= 5 && par2 < 32) {
+                if (!this.mergeItemStack(itemstack1, 32, 41, false)) 
                     return null;
-            }else if (par2 >= 31 && par2 < 40) {
-                if (!this.mergeItemStack(itemstack1, 4, 31, false))
+            }else if (par2 >= 32 && par2 < 41) {
+                if (!this.mergeItemStack(itemstack1, 5, 32, false))
                     return null;
-            }else if (!this.mergeItemStack(itemstack1, 4, 40, false))
+            }else if (!this.mergeItemStack(itemstack1, 5, 41, false))
                 return null;
 
             if (itemstack1.stackSize == 0)

@@ -29,9 +29,12 @@ public class SlotRingCrafting extends Slot {
                     inventory.setInventorySlotContents(0, null);
             }
         }
-        if (inventory.getStackInSlot(2) != null)
-            inventory.setInventorySlotContents(2, null);
-        
+        if (inventory.getStackInSlot(2) != null) {
+            inventory.getStackInSlot(2).stackSize--;
+            if (inventory.getStackInSlot(2).stackSize <= 0)
+                inventory.setInventorySlotContents(2, null);
+        }
+
         ItemStack hammer = inventory.getStackInSlot(3);
         if (hammer != null) {
             hammer.setItemDamage(hammer.getItemDamage() + 1);

@@ -4,10 +4,40 @@ magicalrings.container.ringForge=Ring Forge
 
 tile.magicalrings.altar.0.name=Infusion Altar
 tile.magicalrings.altar.1.name=Stone Altar
+tile.magicalrings.ringForge.name=Ring Forge
+tile.magicalrings.ore.0.name=Tungsten Ore
+tile.magicalrings.ore.1.name=Platinum Ore
+tile.magicalrings.ore.2.name=Jade Ore
+tile.magicalrings.ore.3.name=Amber Ore
+tile.magicalrings.ore.4.name=Peridot Ore
+tile.magicalrings.ore.5.name=Ruby Ore
+tile.magicalrings.ore.6.name=Sapphire Ore
+tile.magicalrings.ore.7.name=Amethyst Ore
 
 item.magicalrings.ironHammer.name=Iron Hammer
 item.magicalrings.diamondHammer.name=Diamond Hammer
 item.magicalrings.magicRing.name=Ring
+item.magicalrings.spellParchment.name=Spell Parchment
+item.magicalrings.book.name=Mystical Accessories - Vol.1
+item.magicalrings.ingot.0.name=Tungsten Ingot
+item.magicalrings.ingot.1.name=Platinum Ingot
+item.magicalrings.ingot.2.name=Steel Ingot
+item.magicalrings.ingot.3.name=Jade
+item.magicalrings.ingot.4.name=Amber
+item.magicalrings.ingot.5.name=Peridot
+item.magicalrings.ingot.6.name=Ruby
+item.magicalrings.ingot.7.name=Sapphire
+item.magicalrings.ingot.8.name=Amethyst
 
 magicalrings.message.enoughEXP=Not enough experience. Requires 30 levels.
 magicalrings.message.effect=Continuously Cast Spell
+magicalrings.message.spell=Spell
+magicalrings.message.magicBoost=Power Boost
+magicalrings.message.requiedItems=Need for Infusion:
+
+spell.enderPort=Enderport
+spell.blazingWrath=Blazing Wrath
+spell.healTouch=Angel's Kiss
+spell.skyAnger=Heaven's Strike
+spell.friendly=Friendly Fire
+

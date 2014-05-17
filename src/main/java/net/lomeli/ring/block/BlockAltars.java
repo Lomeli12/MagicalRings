@@ -6,6 +6,7 @@ import java.util.List;
 import net.lomeli.ring.Rings;
 import net.lomeli.ring.block.tile.TileAltar;
 import net.lomeli.ring.block.tile.TileItemAltar;
+import net.lomeli.ring.item.ItemSpellParchment;
 import net.lomeli.ring.lib.ModLibs;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
@@ -30,6 +31,7 @@ public class BlockAltars extends BlockRings implements ITileEntityProvider {
         super(Material.rock, texture);
         this.setHardness(4f);
         this.setResistance(20);
+        this.setBlockBounds(0.145F, 0.0F, 0.145F, 0.855F, 0.76F, 0.855F);
         this.setTickRandomly(true);
     }
 
@@ -50,7 +52,6 @@ public class BlockAltars extends BlockRings implements ITileEntityProvider {
 
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitx, float hity, float hitz) {
-
         TileEntity tile = world.getTileEntity(x, y, z);
         ItemStack stack = player.getCurrentEquippedItem();
         if (tile != null && tile instanceof IInventory) {
@@ -58,38 +59,32 @@ public class BlockAltars extends BlockRings implements ITileEntityProvider {
             world.func_147479_m(x, y, z);
 
             if (stack != null) {
-                if (player.isSneaking()) {
+                if (stack.getItem() instanceof ItemSpellParchment) {
                     if (tile instanceof TileAltar && tileStack != null) {
-                        ((TileAltar) tile).startInfusion(player, 0);
-                        return true;
-                    }
-                }else {
-                    if (tileStack == null) {
-                        tileStack = new ItemStack(stack.getItem(), 1, stack.getItemDamage());
-                        tileStack.stackTagCompound = stack.getTagCompound();
-                        ((IInventory) tile).setInventorySlotContents(0, tileStack);
+                        ((TileAltar) tile).startInfusion(player, stack.getItemDamage());
                         if (!player.capabilities.isCreativeMode)
                             player.getCurrentEquippedItem().stackSize--;
-                        world.func_147479_m(x, y, z);
                         return true;
                     }
                 }
+                if (tileStack == null) {
+                    tileStack = new ItemStack(stack.getItem(), 1, stack.getItemDamage());
+                    tileStack.stackTagCompound = stack.getTagCompound();
+                    ((IInventory) tile).setInventorySlotContents(0, tileStack);
+                    if (!player.capabilities.isCreativeMode)
+                        player.getCurrentEquippedItem().stackSize--;
+                    world.func_147479_m(x, y, z);
+                    return true;
+                }
             }else {
-                if (player.isSneaking()) {
-                    if (tile instanceof TileAltar && tileStack != null) {
-                        ((TileAltar) tile).startInfusion(player, 0);
-                        return true;
-                    }
-                }else {
-                    if (tileStack != null) {
-                        ItemStack item = tileStack;
-                        EntityItem entity = new EntityItem(world, x, y + 2, z, item);
-                        if (!world.isRemote)
-                            world.spawnEntityInWorld(entity);
-                        ((IInventory) tile).setInventorySlotContents(0, null);
-                        world.func_147479_m(x, y, z);
-                        return true;
-                    }
+                if (tileStack != null) {
+                    ItemStack item = tileStack;
+                    EntityItem entity = new EntityItem(world, x, y + 2, z, item);
+                    if (!world.isRemote)
+                        world.spawnEntityInWorld(entity);
+                    ((IInventory) tile).setInventorySlotContents(0, null);
+                    world.func_147479_m(x, y, z);
+                    return true;
                 }
             }
         }
@@ -196,5 +191,9 @@ public class BlockAltars extends BlockRings implements ITileEntityProvider {
             list.add(new ItemStack(item, 1, 1));
         }
 
+        @Override
+        public String getUnlocalizedName(ItemStack stack) {
+            return this.getUnlocalizedName() + "." + stack.getItemDamage();
+        }
     }
 }

@@ -6,12 +6,13 @@ import java.util.List;
 
 import net.lomeli.ring.Rings;
 import net.lomeli.ring.lib.ModLibs;
+import net.lomeli.ring.magic.spells.EnderPort;
+import net.lomeli.ring.magic.spells.FriendlyFire;
 import net.lomeli.ring.network.PacketHandler;
 import net.lomeli.ring.network.PacketUpdatePlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class MagicHandler {
@@ -20,6 +21,12 @@ public class MagicHandler {
 
     public MagicHandler() {
         this.registerSpell(new DebugSpell(), Items.apple, Items.paper, Items.baked_potato, Items.blaze_rod, Items.book);
+        this.registerSpell(new EnderPort(), Items.ender_pearl, Items.ender_eye, Blocks.end_stone, Blocks.diamond_block);
+        this.registerSpell(new FriendlyFire(), Items.ender_pearl, Items.rotten_flesh, Items.bone, Items.spider_eye, Items.gunpowder, Items.blaze_rod, Items.ghast_tear, Items.magma_cream);
+    }
+
+    public static List<ISpell> getReisteredSpells() {
+        return getMagicHandler().registeredSpells;
     }
 
     public static MagicHandler getMagicHandler() {
@@ -29,9 +36,9 @@ public class MagicHandler {
     public static ISpell getSpellLazy(int index) {
         return getMagicHandler().getSpell(index);
     }
-    
+
     public static void modifyPlayerMP(EntityPlayer player, int cost) {
-        if (player.getEntityData().hasKey(ModLibs.PLAYER_DATA)) {
+        if (!player.capabilities.isCreativeMode && player.getEntityData().hasKey(ModLibs.PLAYER_DATA)) {
             NBTTagCompound tag = player.getEntityData().getCompoundTag(ModLibs.PLAYER_DATA);
             int mp = tag.getInteger(ModLibs.PLAYER_MP), max = tag.getInteger(ModLibs.PLAYER_MAX);
             mp += cost;
@@ -50,6 +57,8 @@ public class MagicHandler {
             if (mp > newMax)
                 mp = newMax;
             PacketHandler.sendEverywhere(new PacketUpdatePlayerMP(player, mp, newMax));
+        }else {
+            PacketHandler.sendEverywhere(new PacketUpdatePlayerMP(player, 0, newMax));
         }
     }
 
@@ -61,7 +70,7 @@ public class MagicHandler {
         return false;
     }
 
-    public void registerSpell(ISpell spell, Object...obj) {
+    public void registerSpell(ISpell spell, Object... obj) {
         if (this.registeredSpells.contains(spell))
             return;
         this.registeredSpells.add(spell);
@@ -81,7 +90,7 @@ public class MagicHandler {
             return this.registeredSpells.get(index);
         return null;
     }
-    
+
     public Object[] getSpellRecipe(int index) {
         ISpell spell = getSpell(index);
         return spell == null ? null : this.spellRecipes.get(spell);

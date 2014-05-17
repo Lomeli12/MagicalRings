@@ -7,7 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 
-public class PacketUpdatePlayerMP implements ISimplePacket {
+public class PacketUpdatePlayerMP implements IPacket {
 
     private int id, mp, max;
 

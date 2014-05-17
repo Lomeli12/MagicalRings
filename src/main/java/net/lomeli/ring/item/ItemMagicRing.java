@@ -1,12 +1,16 @@
 package net.lomeli.ring.item;
 
 import java.awt.Color;
+import java.util.List;
+
+import org.lwjgl.input.Keyboard;
 
 import net.lomeli.ring.lib.ModLibs;
 import net.lomeli.ring.magic.ISpell;
 import net.lomeli.ring.magic.MagicHandler;
 import net.lomeli.ring.network.PacketHandler;
 import net.lomeli.ring.network.PacketUpdatePlayerMP;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -52,13 +56,17 @@ public class ItemMagicRing extends ItemRings {
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) {
         if (stack.getTagCompound() != null) {
-            NBTTagCompound tag = stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG);
-            if (tag != null) {
-                if (tag.hasKey(ModLibs.SPELL_ID)) {
-                    int spellID = tag.getInteger(ModLibs.SPELL_ID);
-                    ISpell spell = MagicHandler.getSpellLazy(spellID);
-                    if (spell != null && tag.getBoolean(ModLibs.ACTIVE_EFFECT_ENABLED))
-                        spell.onUpdateTick(stack, world, entity, par4, par5, tag.getInteger(ModLibs.MATERIAL_BOOST));
+            if (Keyboard.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode())) {
+                NBTTagCompound tag = stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG);
+                if (tag != null) {
+                    if (tag.hasKey(ModLibs.SPELL_ID)) {
+                        int spellID = tag.getInteger(ModLibs.SPELL_ID);
+                        ISpell spell = MagicHandler.getSpellLazy(spellID);
+                        if (spell != null && tag.getBoolean(ModLibs.ACTIVE_EFFECT_ENABLED)) {
+                            int trueCost = -spell.cost() + (tag.getInteger(ModLibs.MATERIAL_BOOST) * 5);
+                            spell.onUpdateTick(stack, world, entity, par4, par5, tag.getInteger(ModLibs.MATERIAL_BOOST), trueCost);
+                        }
+                    }
                 }
             }
         }
@@ -85,21 +93,8 @@ public class ItemMagicRing extends ItemRings {
                         player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal(ModLibs.ACTIVE_EFFECT) + ": " + !active));
                 }
             }
-        }else {
+        }else
             this.useRing(stack, player, world, (int) player.posX, (int) player.posY, (int) player.posZ, 0, 0, 0, 0);
-            /*if (stack.getTagCompound() == null) {
-                stack.stackTagCompound = new NBTTagCompound();
-                NBTTagCompound tag = new NBTTagCompound();
-                tag.setInteger(ModLibs.L1RGB, Color.MAGENTA.getRGB());
-                tag.setInteger(ModLibs.L2RGB, Color.DARK_GRAY.getRGB());
-                tag.setBoolean(ModLibs.HAS_GEM, true);
-                tag.setInteger(ModLibs.GEM_RGB, Color.YELLOW.getRGB());
-                stack.getTagCompound().setTag(ModLibs.RING_TAG, tag);
-            }
-            if (!player.getEntityData().hasKey(ModLibs.PLAYER_DATA)) {
-                PacketHandler.sendToServer(new PacketUpdatePlayerMP(player, 0, ModLibs.BASE_MP));
-            }*/
-        }
         return stack;
     }
 
@@ -116,17 +111,18 @@ public class ItemMagicRing extends ItemRings {
                     int spellID = tag.getInteger(ModLibs.SPELL_ID);
                     ISpell spell = MagicHandler.getSpellLazy(spellID);
                     if (spell != null) {
-                        if (MagicHandler.canUse(player, spell.cost())) {
-                            MagicHandler.modifyPlayerMP(player, -spell.cost() + (tag.getInteger(ModLibs.MATERIAL_BOOST) * 2));
-                            return spell.activateSpell(world, player, x, y, z, side, hitX, hitY, hitZ, tag.getInteger(ModLibs.MATERIAL_BOOST));
-                        }
-                    }else {
-                        if (this.isEdible(tag)) {
-                            world.playSoundAtEntity(player, "random.burp", 0.5F, world.rand.nextFloat() * 0.1F + 0.9F);
-                            stack.stackSize--;
+                        int trueCost = -spell.cost() + (tag.getInteger(ModLibs.MATERIAL_BOOST) * 5);
+                        if (spell.activateSpell(world, player, x, y, z, side, hitX, hitY, hitZ, tag.getInteger(ModLibs.MATERIAL_BOOST), trueCost))
                             return true;
+                        else {
+                            if (this.isEdible(tag)) {
+                                world.playSoundAtEntity(player, "random.burp", 0.5F, world.rand.nextFloat() * 0.1F + 0.9F);
+                                stack.stackSize--;
+                                return true;
+                            }
                         }
                     }
+
                 }
             }
         }
@@ -176,20 +172,31 @@ public class ItemMagicRing extends ItemRings {
         }
     }
 
-    /*
+    @SideOnly(Side.CLIENT)
     @Override
-    public String getItemStackDisplayName(ItemStack stack) {
-        if (stack.getTagCompound() != null) {
+    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
+        if (stack.getTagCompound() != null && stack.getTagCompound().hasKey(ModLibs.RING_TAG)) {
             NBTTagCompound tag = stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG);
-            if (tag != null) {
-                if (tag.hasKey(ModLibs.SPELL_ID)) {
-                    int spellID = tag.getInteger(ModLibs.SPELL_ID);
-                    ISpell spell = MagicHandler.getSpellLazy(0);
-                    if (spell != null)
-                        return StatCollector.translateToLocal(spell.getUnlocalizedName()) + " " + super.getItemStackDisplayName(stack);
-                }
+            if (tag.hasKey(ModLibs.SPELL_ID)) {
+                int id = tag.getInteger(ModLibs.SPELL_ID);
+                ISpell spell = MagicHandler.getSpellLazy(id);
+                if (spell != null)
+                    list.add(StatCollector.translateToLocal(ModLibs.SPELL) + ": " + StatCollector.translateToLocal(spell.getUnlocalizedName()));
             }
+            if (tag.hasKey(ModLibs.MATERIAL_BOOST))
+                list.add("+" + tag.getInteger(ModLibs.MATERIAL_BOOST) + " " + StatCollector.translateToLocal(ModLibs.BOOST));
         }
-        return super.getItemStackDisplayName(stack);
-    }*/
+    }
+
+    /*
+     * @Override public String getItemStackDisplayName(ItemStack stack) { if
+     * (stack.getTagCompound() != null) { NBTTagCompound tag =
+     * stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG); if (tag != null)
+     * { if (tag.hasKey(ModLibs.SPELL_ID)) { int spellID =
+     * tag.getInteger(ModLibs.SPELL_ID); ISpell spell =
+     * MagicHandler.getSpellLazy(0); if (spell != null) return
+     * StatCollector.translateToLocal(spell.getUnlocalizedName()) + " " +
+     * super.getItemStackDisplayName(stack); } } } return
+     * super.getItemStackDisplayName(stack); }
+     */
 }

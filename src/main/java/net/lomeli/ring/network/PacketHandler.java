@@ -26,13 +26,13 @@ import cpw.mods.fml.common.network.internal.FMLProxyPacket;
 import cpw.mods.fml.relauncher.Side;
 
 @ChannelHandler.Sharable
-public class PacketHandler extends MessageToMessageCodec<FMLProxyPacket, ISimplePacket> {
+public class PacketHandler extends MessageToMessageCodec<FMLProxyPacket, IPacket> {
     public EnumMap<Side, FMLEmbeddedChannel> channels;
-    protected LinkedList<Class<? extends ISimplePacket>> packets = new LinkedList<Class<? extends ISimplePacket>>();
+    protected LinkedList<Class<? extends IPacket>> packets = new LinkedList<Class<? extends IPacket>>();
     private boolean isInitialized = false;
 
-    public PacketHandler(Class<? extends ISimplePacket>... msg) {
-        for (Class<? extends ISimplePacket> pkt : msg) {
+    public PacketHandler(Class<? extends IPacket>... msg) {
+        for (Class<? extends IPacket> pkt : msg) {
             this.registerPacket(pkt);
         }
         this.channels = NetworkRegistry.INSTANCE.newChannel(ModLibs.MOD_ID, this);
@@ -42,9 +42,9 @@ public class PacketHandler extends MessageToMessageCodec<FMLProxyPacket, ISimple
         if (this.isInitialized)
             return;
         this.isInitialized = true;
-        Collections.sort(this.packets, new Comparator<Class<? extends ISimplePacket>>() {
+        Collections.sort(this.packets, new Comparator<Class<? extends IPacket>>() {
             @Override
-            public int compare(Class<? extends ISimplePacket> cl0, Class<? extends ISimplePacket> cl1) {
+            public int compare(Class<? extends IPacket> cl0, Class<? extends IPacket> cl1) {
                 int com = String.CASE_INSENSITIVE_ORDER.compare(cl0.getCanonicalName(), cl1.getCanonicalName());
                 if (com == 0)
                     com = cl0.getCanonicalName().compareTo(cl1.getCanonicalName());
@@ -53,7 +53,7 @@ public class PacketHandler extends MessageToMessageCodec<FMLProxyPacket, ISimple
         });
     }
 
-    public void registerPacket(Class<? extends ISimplePacket> clazz) {
+    public void registerPacket(Class<? extends IPacket> clazz) {
         if (this.packets.size() > 256)
             return;
         if (this.packets.contains(clazz))
@@ -64,9 +64,9 @@ public class PacketHandler extends MessageToMessageCodec<FMLProxyPacket, ISimple
     }
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, ISimplePacket msg, List<Object> out) throws Exception {
+    protected void encode(ChannelHandlerContext ctx, IPacket msg, List<Object> out) throws Exception {
         ByteBuf buffer = Unpooled.buffer();
-        Class<? extends ISimplePacket> clazz = msg.getClass();
+        Class<? extends IPacket> clazz = msg.getClass();
         if (!this.packets.contains(clazz))
             return;
         byte b0 = (byte) this.packets.indexOf(clazz);
@@ -80,10 +80,10 @@ public class PacketHandler extends MessageToMessageCodec<FMLProxyPacket, ISimple
     protected void decode(ChannelHandlerContext ctx, FMLProxyPacket msg, List<Object> out) throws Exception {
         ByteBuf payload = msg.payload();
         byte b0 = payload.readByte();
-        Class<? extends ISimplePacket> clazz = this.packets.get(b0);
+        Class<? extends IPacket> clazz = this.packets.get(b0);
         if (clazz == null)
             return;
-        ISimplePacket packet = clazz.newInstance();
+        IPacket packet = clazz.newInstance();
         packet.fromByte(ctx, payload);
         EntityPlayer player;
         switch(FMLCommonHandler.instance().getEffectiveSide()) {
@@ -100,28 +100,28 @@ public class PacketHandler extends MessageToMessageCodec<FMLProxyPacket, ISimple
         out.add(packet);
     }
     
-    public static void sendToAll(ISimplePacket packet) {
+    public static void sendToAll(IPacket packet) {
         Rings.packetHandler.channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALL);
         Rings.packetHandler.channels.get(Side.SERVER).writeAndFlush(packet);
     }
     
-    public static void sendTo(ISimplePacket packet, EntityPlayer player) {
+    public static void sendTo(IPacket packet, EntityPlayer player) {
         Rings.packetHandler.channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.PLAYER);
         Rings.packetHandler.channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(player);
         Rings.packetHandler.channels.get(Side.SERVER).writeAndFlush(packet);
     }
     
-    public static void sendToServer(ISimplePacket packet) {
+    public static void sendToServer(IPacket packet) {
         Rings.packetHandler.channels.get(Side.CLIENT).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.TOSERVER);
         Rings.packetHandler.channels.get(Side.CLIENT).writeAndFlush(packet);
     }
     
-    public static void sendEverywhere(ISimplePacket packet) {
+    public static void sendEverywhere(IPacket packet) {
         sendToAll(packet);
         sendToServer(packet);
     }
     
-    public static void sendToPlayerAndServer(ISimplePacket packet, EntityPlayer player) {
+    public static void sendToPlayerAndServer(IPacket packet, EntityPlayer player) {
         sendToServer(packet);
         sendTo(packet, player);
     }

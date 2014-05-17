@@ -33,16 +33,15 @@ public class CommandRing extends CommandBase {
                     if (y < 0)
                         y = ModLibs.DISPLAY_Y;
                     EntityPlayer player = cSender.getEntityWorld().getPlayerEntityByName(cSender.getCommandSenderName());
-                    if (player != null) {
-                        System.out.println("Sending to client");
+                    if (player != null) 
                         PacketHandler.sendTo(new PacketAdjustClientPos(x, y), player);
-                    }
                 }else {
                     this.sendMessage(cSender, "\u00a7c/rings statPosition [xPosition] [yPosition]");
                 }
             }else if (command.equalsIgnoreCase("help") || command.equalsIgnoreCase("?")) {
                 this.sendMessage(cSender, "/rings statPosition [xPosition] [yPosition] - Adjusts on screen position of your MP stats.");
-            }
+            } else
+                this.sendMessage(cSender, "\u00a7cUnknow command! Type /rings ? or /rings help for more info");
         } else
             this.sendMessage(cSender, "Type /rings ? or /rings help for more info");
     }

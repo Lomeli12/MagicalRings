@@ -28,7 +28,6 @@ public class TickHandlerClient {
                     GuiIngame gui = mc.ingameGUI;
                     if (hand != null) {
                         if (hand.getItem() instanceof ItemMagicRing) {
-                            
                             int mp = tag.getInteger(ModLibs.PLAYER_MP);
                             int max = tag.getInteger(ModLibs.PLAYER_MAX);
                             String mpInfo = "MP: " + mp + " / " + max;

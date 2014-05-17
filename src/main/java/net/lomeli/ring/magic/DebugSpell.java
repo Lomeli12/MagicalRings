@@ -13,7 +13,7 @@ import net.minecraft.world.World;
 public class DebugSpell implements ISpell {
 
     @Override
-    public boolean activateSpell(World world, EntityPlayer player, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost) {
+    public boolean activateSpell(World world, EntityPlayer player, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost, int cost) {
         player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 1000, 1000));
         return false;
     }
@@ -29,20 +29,20 @@ public class DebugSpell implements ISpell {
     }
 
     @Override
-    public void applyToMob(EntityPlayer player, Entity target) {
+    public void applyToMob(EntityPlayer player, Entity target, int cost) {
         target.motionY += 0.5f;
     }
 
     @Override
-    public void onUpdateTick(ItemStack stack, World world, Entity entity, int par4, boolean par5, int boost) {
+    public void onUpdateTick(ItemStack stack, World world, Entity entity, int par4, boolean par5, int boost, int cost) {
         NBTTagCompound tag = stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG);
         if (entity instanceof EntityLivingBase) {
             EntityLivingBase living = (EntityLivingBase) entity;
             if (!living.isPotionActive(Potion.nightVision)) {
                 if (living instanceof EntityPlayer) {
                     EntityPlayer player = (EntityPlayer) living;
-                    if (MagicHandler.canUse(player, cost())) {
-                        MagicHandler.modifyPlayerMP(player, -cost() + (tag.getInteger(ModLibs.MATERIAL_BOOST) * 2));
+                    if (MagicHandler.canUse(player, cost)) {
+                        MagicHandler.modifyPlayerMP(player, -cost);
                         player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 1000, 1000));
                     }
                 }else

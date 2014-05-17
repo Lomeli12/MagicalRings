@@ -24,12 +24,10 @@ public class EntityHandler {
                     NBTTagCompound tag = stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG);
                     if (tag != null) {
                         int spellID = tag.getInteger(ModLibs.SPELL_ID);
-                        ISpell spell = MagicHandler.getSpellLazy(0);// MagicHandler.getSpellLazy(spellID);
+                        ISpell spell = MagicHandler.getSpellLazy(spellID);// MagicHandler.getSpellLazy(spellID);
                         if (spell != null) {
-                            if (MagicHandler.canUse(player, spell.cost())) {
-                                MagicHandler.modifyPlayerMaxMP(player, -spell.cost());
-                                spell.applyToMob(player, target);
-                            }
+                            int trueCost = -spell.cost() + (tag.getInteger(ModLibs.MATERIAL_BOOST) * 5);
+                            spell.applyToMob(player, target, trueCost);
                         }
                     }
                 }

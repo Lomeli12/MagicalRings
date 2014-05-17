@@ -25,14 +25,19 @@ public class TileRingForge extends TileEntity implements IInventory {
         super.updateEntity();
         if (!worldObj.isRemote) {
             ItemStack hammer = this.getStackInSlot(3);
-            
+
             if (hammer != null && hammer.getItemDamage() < hammer.getMaxDamage() && hammer.getItem() instanceof ItemHammer) {
-                this.setInventorySlotContents(4, RingMaterialRecipe.getNewRing(getStackInSlot(0), getStackInSlot(1), getStackInSlot(2), name));
+                ItemStack stack1 = inventory[0];
+                ItemStack stack2 = inventory[1];
+                if ((stack1 != null && stack1.stackSize >= 10) && (stack2 != null && stack2.stackSize >= 10))
+                    this.setInventorySlotContents(4, RingMaterialRecipe.getNewRing(getStackInSlot(0), getStackInSlot(1), getStackInSlot(2), name));
+                else
+                    this.setInventorySlotContents(4, null);
             }else {
                 this.setInventorySlotContents(4, null);
                 this.name = "";
             }
-            
+
             if (this.getStackInSlot(4) == null)
                 this.name = "";
         }
