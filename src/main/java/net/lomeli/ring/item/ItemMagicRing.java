@@ -31,6 +31,7 @@ public class ItemMagicRing extends ItemRings {
         super(texture);
         this.setMaxStackSize(1);
         this.setHasSubtypes(true);
+        this.setCreativeTab(null);
     }
 
     public int getLayer1RGB(NBTTagCompound nbt) {

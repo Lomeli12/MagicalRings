@@ -17,7 +17,7 @@ public class BlockOnion extends BlockCrops {
     public BlockOnion() {
         super();
         this.setBlockTextureName("potatoes");
-        this.setCreativeTab(Rings.modTab);
+        this.setCreativeTab(null);
     }
 
     @SideOnly(Side.CLIENT)
