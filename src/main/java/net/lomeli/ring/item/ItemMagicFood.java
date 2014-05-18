@@ -5,7 +5,8 @@ import java.util.List;
 import net.lomeli.ring.Rings;
 import net.lomeli.ring.block.ModBlocks;
 import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.MagicHandler;
+import net.lomeli.ring.network.PacketHandler;
+import net.lomeli.ring.network.PacketIncreaseMP;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,7 +15,6 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
@@ -24,7 +24,7 @@ public class ItemMagicFood extends ItemFood {
     protected String itemTexture;
 
     @SideOnly(Side.CLIENT)
-    private IIcon[] iconArray = new IIcon[3];
+    private IIcon[] iconArray;
 
     public ItemMagicFood() {
         super(0, 0, false);
@@ -39,8 +39,6 @@ public class ItemMagicFood extends ItemFood {
             par3EntityPlayer.setItemInUse(par1ItemStack, this.getMaxItemUseDuration(par1ItemStack));
         return super.onItemRightClick(par1ItemStack, par2World, par3EntityPlayer);
     }
-    
-    
 
     @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float par8, float par9, float par10) {
@@ -73,19 +71,15 @@ public class ItemMagicFood extends ItemFood {
     @Override
     public ItemStack onEaten(ItemStack stack, World world, EntityPlayer player) {
         if (stack.getItemDamage() == 2) {
-            if (player.getEntityData().hasKey(ModLibs.PLAYER_DATA)) {
-                NBTTagCompound tag = player.getEntityData().getCompoundTag(ModLibs.PLAYER_DATA);
-                int max = tag.getInteger(ModLibs.PLAYER_MAX);
-                if (max < 1500)
-                    MagicHandler.modifyPlayerMaxMP(player, max + 100);
-                stack.stackSize--;
-                return stack;
-            }
+            PacketHandler.sendToServer(new PacketIncreaseMP(player, 100));
+            stack.stackSize--;
+            return stack;
         }
         return super.onEaten(stack, world, player);
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public IIcon getIconFromDamage(int par1) {
         return par1 < iconArray.length ? iconArray[par1] : iconArray[0];
     }
@@ -116,6 +110,7 @@ public class ItemMagicFood extends ItemFood {
     @SideOnly(Side.CLIENT)
     @Override
     public void registerIcons(IIconRegister register) {
+        iconArray = new IIcon[3];
         for (int i = 0; i < iconArray.length; i++) {
             iconArray[i] = register.registerIcon(ModLibs.MOD_ID.toLowerCase() + ":food_" + i);
         }

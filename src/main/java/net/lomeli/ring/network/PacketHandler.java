@@ -14,16 +14,17 @@ import java.util.List;
 
 import net.lomeli.ring.Rings;
 import net.lomeli.ring.lib.ModLibs;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.NetHandlerPlayServer;
-import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.FMLEmbeddedChannel;
 import cpw.mods.fml.common.network.FMLOutboundHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.internal.FMLProxyPacket;
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @ChannelHandler.Sharable
 public class PacketHandler extends MessageToMessageCodec<FMLProxyPacket, IPacket> {
@@ -88,7 +89,7 @@ public class PacketHandler extends MessageToMessageCodec<FMLProxyPacket, IPacket
         EntityPlayer player;
         switch(FMLCommonHandler.instance().getEffectiveSide()) {
         case CLIENT :
-            player = FMLClientHandler.instance().getClientPlayerEntity();
+            player = this.getClient();
             packet.readClient(player);
             break;
         case SERVER :
@@ -98,6 +99,11 @@ public class PacketHandler extends MessageToMessageCodec<FMLProxyPacket, IPacket
             break;
         }
         out.add(packet);
+    }
+    
+    @SideOnly(Side.CLIENT)
+    private EntityPlayer getClient(){
+        return Minecraft.getMinecraft().thePlayer;
     }
     
     public static void sendToAll(IPacket packet) {

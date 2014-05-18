@@ -24,16 +24,16 @@ public class GuiSpellBook extends GuiScreen {
     private Page currentPage;
 
     public GuiSpellBook(int i) {
-        Page.loadPages(this);
         this.pageNumber = i;
     }
-    
+
     public GuiSpellBook() {
         this(0);
     }
 
     public void initGui() {
         super.initGui();
+        Page.loadPages(this);
         this.buttonList.clear();
         int k = (this.width - this.bookImageWidth) / 2;
         int b0 = (this.height - this.bookImageHeight) / 2;
@@ -47,7 +47,7 @@ public class GuiSpellBook extends GuiScreen {
         super.actionPerformed(button);
         if (button != null) {
             if (button.id == this.nextPage.id) {
-                if (this.pageNumber < avaliablePages.size() -1)
+                if (this.pageNumber < avaliablePages.size() - 1)
                     this.pageNumber++;
             }else if (button.id == this.previousPage.id) {
                 if (this.pageNumber > 0)

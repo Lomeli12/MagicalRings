@@ -16,8 +16,8 @@ public class Harvest implements ISpell {
 
     @Override
     public boolean activateSpell(World world, EntityPlayer player, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost, int cost) {
-        for (int j = -1; j < 1; j++)
-            for (int k = -1; k < 1; k++) {
+        for (int j = -1; j < 2; j++)
+            for (int k = -1; k < 2; k++) {
                 if (MagicHandler.canUse(player, cost())) {
                     Block blk = world.getBlock(x + j, y, z + k);
                     if (blk != null && !world.isAirBlock(x + j, y, z + k)) {

@@ -2,15 +2,14 @@ package net.lomeli.ring.client.gui;
 
 import java.util.Random;
 
-import org.lwjgl.opengl.GL11;
-
 import net.lomeli.ring.block.ModBlocks;
 import net.lomeli.ring.item.ModItems;
 import net.lomeli.ring.lib.BookText;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+
+import org.lwjgl.opengl.GL11;
 
 public abstract class Page {
     public GuiSpellBook gui;
@@ -21,8 +20,8 @@ public abstract class Page {
 
     public Page(GuiSpellBook screen) {
         this.gui = screen;
-        this.drawX = (screen.width - screen.bookImageWidth) / 2;// + 250;
-        this.drawY = (screen.height - screen.bookImageHeight) / 2;// + 135;
+        this.drawX = (screen.width - screen.bookImageWidth) / 2 + 35;
+        this.drawY = (screen.height - screen.bookImageHeight) / 2 + 15;
         this.wordWrap = this.gui.bookImageWidth - 75;
     }
 
@@ -50,7 +49,9 @@ public abstract class Page {
         GuiSpellBook.avaliablePages.add(new PageRecipe(screen, new ItemStack(ModBlocks.altar), BookText.ALTAR3));
         GuiSpellBook.avaliablePages.add(new PageItem(screen, new ItemStack(ModBlocks.altar, 1, 1), BookText.ITEM_ALTAR));
         GuiSpellBook.avaliablePages.add(new PageRecipe(screen, new ItemStack(ModBlocks.altar, 1, 1)));
+        GuiSpellBook.avaliablePages.add(new PageInfusionSetup(screen));
         GuiSpellBook.avaliablePages.add(new PageItem(screen, new ItemStack(ModItems.spellParchment), BookText.SPELL));
         GuiSpellBook.avaliablePages.add(new PageRecipe(screen, new ItemStack(ModItems.spellParchment), BookText.SPELL2));
+        GuiSpellBook.avaliablePages.add(new PageText(screen, BookText.RING_USE));
     }
 }

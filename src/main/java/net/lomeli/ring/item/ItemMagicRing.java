@@ -62,7 +62,7 @@ public class ItemMagicRing extends ItemRings {
                     int spellID = tag.getInteger(ModLibs.SPELL_ID);
                     ISpell spell = MagicHandler.getSpellLazy(spellID);
                     if (spell != null) {
-                        int trueCost = -spell.cost() + (tag.getInteger(ModLibs.MATERIAL_BOOST) * 5);
+                        int trueCost = spell.cost() + (tag.getInteger(ModLibs.MATERIAL_BOOST) * 5);
                         spell.onUpdateTick(stack, world, entity, par4, par5, tag.getInteger(ModLibs.MATERIAL_BOOST), trueCost, tag.getBoolean(ModLibs.ACTIVE_EFFECT_ENABLED));
                     }
                 }

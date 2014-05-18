@@ -8,7 +8,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.RenderTickEvent;
 
 public class TickHandlerClient {
@@ -22,11 +21,16 @@ public class TickHandlerClient {
                 GuiIngame gui = mc.ingameGUI;
                 if (hand != null && tag != null) {
                     if (hand.getItem() instanceof ItemMagicRing) {
-                        int mp = tag.getInteger(ModLibs.PLAYER_MP);
-                        int max = tag.getInteger(ModLibs.PLAYER_MAX);
-                        String mpInfo = "MP: " + mp + " / " + max;
-                        mc.fontRenderer.drawString(mpInfo, ModLibs.DISPLAY_X + 1, ModLibs.DISPLAY_Y + 1, 0x000000);
-                        mc.fontRenderer.drawString(mpInfo, ModLibs.DISPLAY_X, ModLibs.DISPLAY_Y, 0x00C4C4);
+                        if (hand.getTagCompound() != null) {
+                            NBTTagCompound handtag = hand.getTagCompound().hasKey(ModLibs.RING_TAG) ? hand.getTagCompound().getCompoundTag(ModLibs.RING_TAG) : null;
+                            if (handtag != null && handtag.hasKey(ModLibs.SPELL_ID)) {
+                                int mp = tag.getInteger(ModLibs.PLAYER_MP);
+                                int max = tag.getInteger(ModLibs.PLAYER_MAX);
+                                String mpInfo = "MP: " + mp + " / " + max;
+                                mc.fontRenderer.drawString(mpInfo, ModLibs.DISPLAY_X + 1, ModLibs.DISPLAY_Y + 1, 0x000000);
+                                mc.fontRenderer.drawString(mpInfo, ModLibs.DISPLAY_X, ModLibs.DISPLAY_Y, 0x00C4C4);
+                            }
+                        }
                     }
                 }
             }

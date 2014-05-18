@@ -13,4 +13,7 @@ public class BookText {
     public static final String ITEM_ALTAR = BASE + "itemAltar";
     public static final String SPELL = BASE + "spell";
     public static final String SPELL2 = BASE + "spell2";
+    public static final String RING_USE = BASE + "using";
+    public static final String INFUSE = BASE + "infuseConstruct";
+    public static final String INFUSE2 = BASE + "infuseConstruct2";
 }

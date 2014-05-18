@@ -62,3 +62,6 @@ magicalrings.book.altar3=It is important to note that it costs 30 levels of expe
 magicalrings.book.itemAltar=An Stone Altar is simply used for cosmetics and to hold items for use during the Infusion Ritual. They can only hold a single item at a time.
 magicalrings.book.spell=Spell Parchment contain spells for use in the infusion process. They are required for starting the process by right-clicking the Infusion Altar with it. Though, you should be warned that the parchment is consumed in the process. 
 magicalrings.book.spell2=Parchments can easily duplicated with this recipe. Holding shift over a parchment will tell you what items are required.
+magicalrings.book.using=It should be noted that rings can be used in 4 different ways. You can simply right click with it, you can right click a block, you can right click a target, or you can have it actively run applying magic to you (can be enabled/disabled by sneak+right-click).
+magicalrings.book.infuseConstruct=Ring Infusion Setup
+magicalrings.book.infuseConstruct2=Up to 8x

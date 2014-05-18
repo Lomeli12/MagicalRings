@@ -9,8 +9,10 @@ import net.lomeli.ring.core.Proxy;
 import net.lomeli.ring.lib.ModLibs;
 import net.lomeli.ring.network.PacketAdjustClientPos;
 import net.lomeli.ring.network.PacketAllowFlying;
+import net.lomeli.ring.network.PacketCheckPlayerMP;
 import net.lomeli.ring.network.PacketClientJoined;
 import net.lomeli.ring.network.PacketHandler;
+import net.lomeli.ring.network.PacketIncreaseMP;
 import net.lomeli.ring.network.PacketRemovePlayer;
 import net.lomeli.ring.network.PacketRingName;
 import net.lomeli.ring.network.PacketUpdateClient;
@@ -54,7 +56,7 @@ public class Rings {
     public void init(FMLInitializationEvent event) {
         NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
         packetHandler = new PacketHandler(PacketUpdatePlayerMP.class, PacketAdjustClientPos.class, PacketRingName.class, PacketClientJoined.class, PacketUpdateClient.class, PacketAllowFlying.class,
-                PacketRemovePlayer.class);
+                PacketRemovePlayer.class, PacketCheckPlayerMP.class, PacketIncreaseMP.class);
         proxy.init();
     }
 

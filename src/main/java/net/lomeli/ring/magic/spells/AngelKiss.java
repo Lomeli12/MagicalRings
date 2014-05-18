@@ -13,11 +13,11 @@ public class AngelKiss implements ISpell {
 
     @Override
     public boolean activateSpell(World world, EntityPlayer player, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost, int cost) {
+        System.out.println(cost);
         if (MagicHandler.canUse(player, cost)) {
             if (player.getHealth() < player.getMaxHealth()) {
-                player.heal(1.5f + (boost/2));
-                MagicHandler.modifyPlayerMP(player, -cost);
-                return true;
+                MagicHandler.modifyPlayerMP(player, cost);
+                player.heal(1.5f + (boost / 2));
             }
         }
         return false;
@@ -30,7 +30,7 @@ public class AngelKiss implements ISpell {
                 EntityLivingBase living = (EntityLivingBase) target;
                 if (living.getHealth() < living.getMaxHealth()) {
                     MagicHandler.modifyPlayerMP(player, -cost);
-                    living.heal(1.5f + (boost/2));
+                    living.heal(1.5f + (boost / 2));
                 }
             }
         }

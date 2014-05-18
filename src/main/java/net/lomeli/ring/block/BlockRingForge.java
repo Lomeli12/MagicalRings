@@ -25,8 +25,10 @@ public class BlockRingForge extends BlockRings implements ITileEntityProvider, I
 
     public BlockRingForge(String texture) {
         super(Material.iron, texture);
+        this.setHardness(4f);
+        this.setResistance(20);
     }
-    
+
     @Override
     public int getPage(int metadata) {
         return 3;
@@ -58,6 +60,8 @@ public class BlockRingForge extends BlockRings implements ITileEntityProvider, I
     public TileEntity createNewTileEntity(World var1, int var2) {
         return new TileRingForge();
     }
+    
+    
 
     public void breakBlock(World world, int x, int y, int z, Block block, int meta) {
         TileEntity tile = world.getTileEntity(x, y, z);
@@ -89,10 +93,8 @@ public class BlockRingForge extends BlockRings implements ITileEntityProvider, I
                     }
                 }
             }
-
             world.func_147453_f(x, y, z, block);
         }
-
         super.breakBlock(world, x, y, z, block, meta);
     }
 

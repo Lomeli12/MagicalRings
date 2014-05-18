@@ -14,7 +14,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemOreItems extends ItemRings {
 
     @SideOnly(Side.CLIENT)
-    private IIcon[] iconArray = new IIcon[9];
+    private IIcon[] iconArray;
 
     public ItemOreItems(String texture) {
         super(texture);
@@ -22,13 +22,16 @@ public class ItemOreItems extends ItemRings {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister register) {
+        iconArray = new IIcon[9];
         for (int i = 0; i < iconArray.length; i++) {
             iconArray[i] = register.registerIcon(ModLibs.MOD_ID.toLowerCase() + ":ores/" + this.itemTexture + "_" + i);
         }
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public IIcon getIconFromDamage(int par1) {
         return par1 < iconArray.length ? iconArray[par1] : iconArray[0];
     }

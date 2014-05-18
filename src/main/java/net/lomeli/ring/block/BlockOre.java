@@ -18,7 +18,7 @@ import net.minecraft.world.World;
 public class BlockOre extends BlockRings {
 
     @SideOnly(Side.CLIENT)
-    private IIcon[] iconArray= new IIcon[8];
+    private IIcon[] iconArray;
 
     public BlockOre(String texture) {
         super(Material.rock, texture);
@@ -27,7 +27,9 @@ public class BlockOre extends BlockRings {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister register) {
+        iconArray = new IIcon[8];
         for (int i = 0; i < iconArray.length; i++) {
             iconArray[i] = register.registerIcon(ModLibs.MOD_ID.toLowerCase() + ":ores/" + this.blockTexture + "_" + i);
         }
@@ -41,6 +43,7 @@ public class BlockOre extends BlockRings {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int meta) {
         return this.iconArray[meta % this.iconArray.length];
     }
@@ -69,6 +72,7 @@ public class BlockOre extends BlockRings {
         }
 
         @Override
+        @SideOnly(Side.CLIENT)
         public IIcon getIconFromDamage(int par1) {
             return this.field_150939_a.getIcon(0, par1);
         }
