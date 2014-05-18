@@ -23,9 +23,13 @@ public class GuiSpellBook extends GuiScreen {
     private GuiSpellBook.NextPageButton nextPage, previousPage;
     private Page currentPage;
 
-    public GuiSpellBook() {
+    public GuiSpellBook(int i) {
         Page.loadPages(this);
-        this.pageNumber = 0;
+        this.pageNumber = i;
+    }
+    
+    public GuiSpellBook() {
+        this(0);
     }
 
     public void initGui() {

@@ -25,7 +25,7 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockAltars extends BlockRings implements ITileEntityProvider {
+public class BlockAltars extends BlockRings implements ITileEntityProvider, IBookEntry {
 
     public BlockAltars(String texture) {
         super(Material.rock, texture);
@@ -33,6 +33,11 @@ public class BlockAltars extends BlockRings implements ITileEntityProvider {
         this.setResistance(20);
         this.setBlockBounds(0.145F, 0.0F, 0.145F, 0.855F, 0.76F, 0.855F);
         this.setTickRandomly(true);
+    }
+
+    @Override
+    public int getPage(int metadata) {
+        return metadata == 1 ? 11 : 9;
     }
 
     @Override

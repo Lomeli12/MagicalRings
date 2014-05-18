@@ -18,13 +18,18 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockRingForge extends BlockRings implements ITileEntityProvider {
+public class BlockRingForge extends BlockRings implements ITileEntityProvider, IBookEntry {
 
     @SideOnly(Side.CLIENT)
     private IIcon top, sides, bottom;
 
     public BlockRingForge(String texture) {
         super(Material.iron, texture);
+    }
+    
+    @Override
+    public int getPage(int metadata) {
+        return 3;
     }
 
     @Override
