@@ -65,3 +65,4 @@ magicalrings.book.spell2=Parchments can easily duplicated with this recipe. Hold
 magicalrings.book.using=It should be noted that rings can be used in 4 different ways. You can simply right click with it, you can right click a block, you can right click a target, or you can have it actively run applying magic to you (can be enabled/disabled by sneak+right-click).
 magicalrings.book.infuseConstruct=Ring Infusion Setup
 magicalrings.book.infuseConstruct2=Up to 8x
+magicalrings.book.mp=As stated in the intro, you have gained the ability to use rings in the form of MP. MP is used up when using the rings. By default, you start out with a small amount of MP, but you can increase it by drinking a Mysterious Potion.

@@ -25,14 +25,14 @@ public class ModRecipe {
     public static void addChestLoot() {
         for (int i = 0; i < MagicHandler.getReisteredSpells().size(); i++) {
             if (MagicHandler.getSpellLazy(i) != null) {
-                ChestGenHooks.getInfo(ChestGenHooks.DUNGEON_CHEST).addItem(new WeightedRandomChestContent(new ItemStack(ModItems.spellParchment, 1, i), 30, 50, 30));
-                ChestGenHooks.getInfo(ChestGenHooks.MINESHAFT_CORRIDOR).addItem(new WeightedRandomChestContent(new ItemStack(ModItems.spellParchment, 1, i), 30, 50, 30));
-                ChestGenHooks.getInfo(ChestGenHooks.PYRAMID_DESERT_CHEST).addItem(new WeightedRandomChestContent(new ItemStack(ModItems.spellParchment, 1, i), 30, 50, 30));
-                ChestGenHooks.getInfo(ChestGenHooks.PYRAMID_JUNGLE_CHEST).addItem(new WeightedRandomChestContent(new ItemStack(ModItems.spellParchment, 1, i), 30, 50, 30));
-                ChestGenHooks.getInfo(ChestGenHooks.STRONGHOLD_LIBRARY).addItem(new WeightedRandomChestContent(new ItemStack(ModItems.spellParchment, 1, i), 30, 50, 30));
+                ChestGenHooks.getInfo(ChestGenHooks.DUNGEON_CHEST).addItem(new WeightedRandomChestContent(new ItemStack(ModItems.spellParchment, 1, i), 0, 1, 10));
+                ChestGenHooks.getInfo(ChestGenHooks.MINESHAFT_CORRIDOR).addItem(new WeightedRandomChestContent(new ItemStack(ModItems.spellParchment, 1, i), 0, 1, 10));
+                ChestGenHooks.getInfo(ChestGenHooks.PYRAMID_DESERT_CHEST).addItem(new WeightedRandomChestContent(new ItemStack(ModItems.spellParchment, 1, i), 0, 1, 10));
+                ChestGenHooks.getInfo(ChestGenHooks.PYRAMID_JUNGLE_CHEST).addItem(new WeightedRandomChestContent(new ItemStack(ModItems.spellParchment, 1, i), 0, 1, 10));
+                ChestGenHooks.getInfo(ChestGenHooks.STRONGHOLD_LIBRARY).addItem(new WeightedRandomChestContent(new ItemStack(ModItems.spellParchment, 1, i), 0, 1, 10));
             }
         }
-        ChestGenHooks.getInfo(ChestGenHooks.VILLAGE_BLACKSMITH).addItem(new WeightedRandomChestContent(new ItemStack(ModItems.food), 50, 70, 100));
+        ChestGenHooks.getInfo(ChestGenHooks.VILLAGE_BLACKSMITH).addItem(new WeightedRandomChestContent(new ItemStack(ModItems.food), 1, 5, 100));
     }
 
     private static void shapedRecipes() {

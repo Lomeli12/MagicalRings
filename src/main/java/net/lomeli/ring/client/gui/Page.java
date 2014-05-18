@@ -53,5 +53,7 @@ public abstract class Page {
         GuiSpellBook.avaliablePages.add(new PageItem(screen, new ItemStack(ModItems.spellParchment), BookText.SPELL));
         GuiSpellBook.avaliablePages.add(new PageRecipe(screen, new ItemStack(ModItems.spellParchment), BookText.SPELL2));
         GuiSpellBook.avaliablePages.add(new PageText(screen, BookText.RING_USE));
+        GuiSpellBook.avaliablePages.add(new PageText(screen, BookText.POTION));
+        GuiSpellBook.avaliablePages.add(new PageRecipe(screen, new ItemStack(ModItems.food, 1, 2)));
     }
 }

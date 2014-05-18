@@ -75,7 +75,7 @@ public class Rings {
 
         String modOptions = "Options";
 
-        ModLibs.BASE_MP = config.get(modOptions, "StartingValue", 200, "The base Max MP players start with").getInt(200);
+        ModLibs.BASE_MP = config.get(modOptions, "StartingValue", 100, "The base Max MP players start with").getInt(100);
         ModLibs.RECHARGE_WAIT_TIME = config.get(modOptions, "rechargeWaitTime", 70, "Number of ticks between a player's MP recharging. 20 ticks per second").getInt(70);
 
         String world = "WorldGen";
