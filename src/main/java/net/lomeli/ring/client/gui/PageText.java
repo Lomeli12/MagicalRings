@@ -17,6 +17,7 @@ public class PageText extends Page {
     @Override
     public void draw() {
         super.draw();
+        
         mc.fontRenderer.drawSplitString(StatCollector.translateToLocal(text), this.drawX, this.drawY, this.wordWrap, 0);
     }
 }
