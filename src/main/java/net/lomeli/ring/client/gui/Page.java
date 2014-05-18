@@ -21,8 +21,8 @@ public abstract class Page {
 
     public Page(GuiSpellBook screen) {
         this.gui = screen;
-        this.drawX = ((screen.width - screen.bookImageWidth) / 2) + 250;
-        this.drawY = ((screen.height - screen.bookImageHeight) / 2) + 135;
+        this.drawX = (screen.width - screen.bookImageWidth) / 2;// + 250;
+        this.drawY = (screen.height - screen.bookImageHeight) / 2;// + 135;
         this.wordWrap = this.gui.bookImageWidth - 75;
     }
 

@@ -220,7 +220,7 @@ public class TileAltar extends TileEntity implements IInventory {
     }
 
     public boolean hasBeenInfused(ItemStack stack) {
-        if (stack != null) {
+        if (stack != null && stack.getTagCompound() != null) {
             NBTTagCompound tag = stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG);
             return tag.hasKey(ModLibs.SPELL_ID);
         }

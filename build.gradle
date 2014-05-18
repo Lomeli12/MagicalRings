@@ -30,8 +30,8 @@ def loadProperties(String sourceFileName) {
 
 loadProperties 'build.properties'
 
-group = 'net.lomeli.modjam4'
-archivesBaseName = 'ModJam4'
+group = 'net.lomeli.ring'
+archivesBaseName = 'Magical Rings'
 version = "$releaseVersion"
 
 minecraft {
