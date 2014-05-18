@@ -22,6 +22,7 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.StatCollector;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class TileAltar extends TileEntity implements IInventory {
 
@@ -46,6 +47,7 @@ public class TileAltar extends TileEntity implements IInventory {
             this.addPossibleTile(2, -2);
             this.addPossibleTile(2, 0);
             this.addPossibleTile(2, 2);
+
             if (inventory[0] == null || tiles.isEmpty()) {
                 reset();
                 return;
@@ -53,15 +55,17 @@ public class TileAltar extends TileEntity implements IInventory {
             ISpell spell = MagicHandler.getSpellLazy(spellID);
             if (spell != null) {
 
-                if (!this.infoCollected) {
+                if (!this.infoCollected)
                     this.matchRecipe();
-                }else {
+                else {
                     if (++timer >= 30) {
                         if (!tilesToGetFrom.isEmpty()) {
                             if (tilesToGetFrom.get(0).getStackInSlot(0) == null) {
                                 reset();
+                                tilesToGetFrom.clear();
                                 return;
                             }
+                            tempInventory.add(tilesToGetFrom.get(0).getStackInSlot(0));
                             tilesToGetFrom.get(0).spawnEffects();
                             tilesToGetFrom.get(0).setInventorySlotContents(0, null);
                             tilesToGetFrom.get(0).markDirty();
@@ -111,7 +115,7 @@ public class TileAltar extends TileEntity implements IInventory {
                 tiles.add((TileItemAltar) tile);
         }
     }
-    
+
     public void simpleReset() {
         this.spellID = -1;
         this.timer = 0;
@@ -124,15 +128,11 @@ public class TileAltar extends TileEntity implements IInventory {
         this.infoCollected = false;
         this.tempInventory.clear();
     }
-    
 
     public void reset() {
         this.spellID = -1;
         this.timer = 0;
         this.tiles.clear();
-        for (TileItemAltar tile : this.tilesToGetFrom) {
-            tile.setInventorySlotContents(0, null);
-        }
         this.tilesToGetFrom.clear();
         this.startInfusion = false;
         this.infoCollected = false;
@@ -154,24 +154,30 @@ public class TileAltar extends TileEntity implements IInventory {
             reset();
             return;
         }
-        List<ItemStack> itemList = new ArrayList<ItemStack>();
+        List<Object> itemList = new ArrayList<Object>();
         for (Object obj : ingredients) {
-            ItemStack item = null;
-            if (obj instanceof ItemStack)
-                item = (ItemStack) obj;
-            else if (obj instanceof Item)
-                item = new ItemStack((Item) obj);
-            else if (obj instanceof Block)
-                item = new ItemStack((Block) obj);
-            if (item != null) {
-                itemList.add(item);
+            if (obj != null) {
+                if (obj instanceof String) {
+                    itemList.add((String) obj);
+                }else {
+                    ItemStack item = null;
+                    if (obj instanceof ItemStack)
+                        item = (ItemStack) obj;
+                    else if (obj instanceof Item)
+                        item = new ItemStack((Item) obj);
+                    else if (obj instanceof Block)
+                        item = new ItemStack((Block) obj);
+                    if (item != null)
+                        itemList.add(item);
+                }
             }
         }
+
         if (itemList.isEmpty()) {
             reset();
             return;
         }
-        this.tempInventory.addAll(itemList);
+
         for (int i = 0; i < tiles.size(); i++) {
             TileItemAltar tile = tiles.get(i);
             if (tile != null) {
@@ -180,11 +186,27 @@ public class TileAltar extends TileEntity implements IInventory {
                     if (itemList.isEmpty())
                         break;
                     for (int j = 0; j < itemList.size(); j++) {
-                        ItemStack ingredient = itemList.get(j);
-                        if (ingredient != null) {
-                            if (tileItem.getItem() == ingredient.getItem() && tileItem.getItemDamage() == ingredient.getItemDamage()) {
-                                itemList.remove(j);
-                                tilesToGetFrom.add(tile);
+                        Object obj = itemList.get(j);
+                        if (obj != null) {
+                            if (obj instanceof ItemStack) {
+                                ItemStack ingredient = (ItemStack) obj;
+                                if (tileItem.getItem() == ingredient.getItem() && tileItem.getItemDamage() == ingredient.getItemDamage()) {
+                                    itemList.remove(j);
+                                    tilesToGetFrom.add(tile);
+                                }
+                            }
+                            if (obj instanceof String) {
+                                String oreName = (String) obj;
+                                List<ItemStack> oreList = OreDictionary.getOres(oreName);
+                                if (oreList != null) {
+                                    oreLoop: for (ItemStack ingredient : oreList) {
+                                        if (tileItem.getItem() == ingredient.getItem() && tileItem.getItemDamage() == ingredient.getItemDamage()) {
+                                            itemList.remove(j);
+                                            tilesToGetFrom.add(tile);
+                                            break oreLoop;
+                                        }
+                                    }
+                                }
                             }
                         }else
                             itemList.remove(j);
@@ -192,23 +214,46 @@ public class TileAltar extends TileEntity implements IInventory {
                 }
             }
         }
+
         if (itemList.isEmpty())
             this.infoCollected = true;
     }
 
-    public void startInfusion(EntityPlayer player, int spellId) {
-        if (player.experienceTotal >= 825 || player.capabilities.isCreativeMode) {
-            if (!player.capabilities.isCreativeMode) {
-                player.addExperience(-825);
-                player.experienceLevel -= 30;
-            }
-            this.spellID = spellId;
-            this.startInfusion = true;
-        }else {
-            if (!worldObj.isRemote)
-                player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal(ModLibs.NO_EXP)));
+    public boolean hasBeenInfused(ItemStack stack) {
+        if (stack != null) {
+            NBTTagCompound tag = stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG);
+            return tag.hasKey(ModLibs.SPELL_ID);
         }
+        return true;
+    }
 
+    public void startInfusion(EntityPlayer player, int spellId) {
+
+        if (this.hasBeenInfused(inventory[0])) {
+            if (player.experienceTotal >= 1205 || player.capabilities.isCreativeMode) {
+                if (!player.capabilities.isCreativeMode) {
+                    player.addExperienceLevel(-35);
+                    player.getCurrentEquippedItem().stackSize--;
+                }
+                this.spellID = spellId;
+                this.startInfusion = true;
+            }else {
+                if (!worldObj.isRemote)
+                    player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal(ModLibs.NO_EXP_PLUS)));
+            }
+        }else {
+            if (player.experienceTotal >= 825 || player.capabilities.isCreativeMode) {
+                if (!player.capabilities.isCreativeMode) {
+                    player.addExperienceLevel(-30);
+                    player.getCurrentEquippedItem().stackSize--;
+                }
+                this.spellID = spellId;
+                this.startInfusion = true;
+            }else {
+                if (!worldObj.isRemote)
+                    player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal(ModLibs.NO_EXP)));
+            }
+        }
     }
 
     @Override

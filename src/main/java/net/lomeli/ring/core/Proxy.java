@@ -27,7 +27,7 @@ public class Proxy {
     
     public void init() {
         ModRecipe.addChestLoot();
-        GameRegistry.registerWorldGenerator(new WorldGenManager(), 2);
+        GameRegistry.registerWorldGenerator(new WorldGenManager(), 10);
         GameRegistry.registerTileEntity(TileAltar.class, TileAltar.class.getName().toLowerCase());
         GameRegistry.registerTileEntity(TileItemAltar.class, TileItemAltar.class.getName().toLowerCase());
         GameRegistry.registerTileEntity(TileRingForge.class, TileRingForge.class.getName().toLowerCase());

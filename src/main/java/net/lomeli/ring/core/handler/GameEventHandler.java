@@ -34,7 +34,6 @@ public class GameEventHandler {
                         }
                         this.tick = 0;
                     }
-                    
                 }
             }
         }

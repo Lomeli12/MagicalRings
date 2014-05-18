@@ -35,10 +35,12 @@ public class ModLibs {
 
     public static final String MESSAGE = MOD_ID.toLowerCase() + ".message.";
     public static final String NO_EXP = MESSAGE + "enoughEXP";
+    public static final String NO_EXP_PLUS = MESSAGE + "enoughEXP2";
     public static final String ACTIVE_EFFECT = MESSAGE + "effect";
     public static final String SPELL = MESSAGE + "spell";
     public static final String BOOST = MESSAGE + "magicBoost";
     public static final String REQUIRED_ITEMS = MESSAGE + "requiedItems";
+    public static final String ORE_DIC = MESSAGE + "oreDic";
 
     public static final int RING_FORGE_GUI = 0;
     public static final int BOOK_GUI = 1;
@@ -49,6 +51,10 @@ public class ModLibs {
     public static final String FIRE_WRATH = SPELL_NAME + "blazingWrath";
     public static final String THUNDER_SKY = SPELL_NAME + "skyAnger";
     public static final String FRIENDLY_FIRE = SPELL_NAME + "friendly";
+    public static final String ANGEL_KISS = SPELL_NAME + "healTouch";
+    public static final String FEAST = SPELL_NAME + "feast";
+    public static final String WING = SPELL_NAME + "wings";
+    public static final String HARVEST = SPELL_NAME + "harvest";
 
     public static int RECHARGE_WAIT_TIME;
     public static int DISPLAY_X;

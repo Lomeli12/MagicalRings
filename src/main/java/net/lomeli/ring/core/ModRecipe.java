@@ -30,10 +30,11 @@ public class ModRecipe {
     }
 
     private static void shapedRecipes() {
-        addShaped(ModItems.ironHammer, "I", "S", "S", 'S', Items.stick, 'I', Blocks.iron_block);
-        addShaped(ModItems.diamondHammer, "I", "S", "S", 'S', Items.stick, 'I', Blocks.diamond_block);
+        hammerRecipe(ModItems.ironHammer, Blocks.iron_block);
+        hammerRecipe(ModItems.diamondHammer, Blocks.diamond_block);
         addShaped(new ItemStack(ModBlocks.altar, 1, 1), "ISI", " I ", "ISI", 'I', Items.iron_ingot, 'S', Blocks.stone);
         addShaped(new ItemStack(ModBlocks.altar, 1, 0), "ISI", " I ", "IEI", 'I', Items.iron_ingot, 'S', Blocks.stone, 'E', Items.ender_pearl);
+        addShaped(ModBlocks.ringForge, "OOO", "ICI", "IAI", 'O', Blocks.obsidian, 'I', Items.iron_ingot, 'C', Blocks.crafting_table, 'A', Blocks.anvil);
     }
 
     private static void shapelessRecipes() {
@@ -41,7 +42,7 @@ public class ModRecipe {
             if (MagicHandler.getSpellLazy(i) != null)
                 addShapeless(new ItemStack(ModItems.spellParchment, 2, i), new ItemStack(ModItems.spellParchment, 1, i), Items.paper, Items.ender_pearl);
         }
-        addShapeless(ModItems.book, Items.redstone, Items.glowstone_dust, Items.book);
+        addShapeless(ModItems.book, "dyeRed", "dyeBlue");
     }
 
     private static void furnaceRecipes() {
@@ -56,6 +57,22 @@ public class ModRecipe {
         addSmelt(new ItemStack(ModItems.oreItems, 1, 6), new ItemStack(ModBlocks.oreBlocks, 1, 5), 4);
         addSmelt(new ItemStack(ModItems.oreItems, 1, 7), new ItemStack(ModBlocks.oreBlocks, 1, 6), 4);
         addSmelt(new ItemStack(ModItems.oreItems, 1, 8), new ItemStack(ModBlocks.oreBlocks, 1, 7), 4);
+    }
+
+    private static void hammerRecipe(Item hammer, Object obj) {
+        ItemStack stack = null;
+        if (obj instanceof ItemStack)
+            stack = (ItemStack) obj;
+        if (obj instanceof Block)
+            stack = new ItemStack((Block) obj);
+        if (obj instanceof Item)
+            stack = new ItemStack((Item) obj);
+        if (stack != null) {
+            addShaped(hammer, "I  ", "S  ", "S  ", 'S', "stickWood", 'I', stack);
+            addShaped(hammer, "  I", "  S", "  S", 'S', "stickWood", 'I', stack);
+            addShaped(hammer, " I ", " S ", " S ", 'S', "stickWood", 'I', stack);
+        }
+
     }
 
     private static void addShapeless(Object stack, Object... items) {

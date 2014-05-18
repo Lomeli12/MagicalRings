@@ -29,7 +29,7 @@ public class DebugSpell implements ISpell {
     }
 
     @Override
-    public void applyToMob(EntityPlayer player, Entity target, int cost) {
+    public void applyToMob(EntityPlayer player, Entity target, int boost, int cost) {
         target.motionY += 0.5f;
     }
 

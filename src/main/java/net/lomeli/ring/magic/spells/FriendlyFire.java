@@ -20,7 +20,7 @@ public class FriendlyFire implements ISpell {
     }
 
     @Override
-    public void applyToMob(EntityPlayer player, Entity target, int cost) {
+    public void applyToMob(EntityPlayer player, Entity target, int boost, int cost) {
         if (!player.worldObj.isRemote) {
             if (target instanceof EntityLivingBase) {
                 EntityLivingBase living = (EntityLivingBase) target;

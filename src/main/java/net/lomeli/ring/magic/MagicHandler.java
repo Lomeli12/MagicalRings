@@ -6,13 +6,17 @@ import java.util.List;
 
 import net.lomeli.ring.Rings;
 import net.lomeli.ring.lib.ModLibs;
+import net.lomeli.ring.magic.spells.AngelKiss;
 import net.lomeli.ring.magic.spells.EnderPort;
+import net.lomeli.ring.magic.spells.FireWrath;
 import net.lomeli.ring.magic.spells.FriendlyFire;
+import net.lomeli.ring.magic.spells.HeavenStrike;
 import net.lomeli.ring.network.PacketHandler;
 import net.lomeli.ring.network.PacketUpdatePlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class MagicHandler {
@@ -20,9 +24,11 @@ public class MagicHandler {
     private HashMap<ISpell, Object[]> spellRecipes = new HashMap<ISpell, Object[]>();
 
     public MagicHandler() {
-        this.registerSpell(new DebugSpell(), Items.apple, Items.paper, Items.baked_potato, Items.blaze_rod, Items.book);
         this.registerSpell(new EnderPort(), Items.ender_pearl, Items.ender_eye, Blocks.end_stone, Blocks.diamond_block);
-        this.registerSpell(new FriendlyFire(), Items.ender_pearl, Items.rotten_flesh, Items.bone, Items.spider_eye, Items.gunpowder, Items.blaze_rod, Items.ghast_tear, Items.magma_cream);
+        this.registerSpell(new FriendlyFire(), Items.ender_pearl, Items.iron_sword, Items.bone, Items.spider_eye, Items.gunpowder, Items.blaze_rod, Items.ghast_tear, Items.magma_cream);
+        this.registerSpell(new FireWrath(), Items.flint_and_steel, Items.blaze_powder, Items.blaze_rod, Items.fire_charge);
+        this.registerSpell(new HeavenStrike(), Items.iron_ingot, "gemDiamond", Items.water_bucket, Items.redstone);
+        this.registerSpell(new AngelKiss(), Items.feather, new ItemStack(Items.potionitem, 1, 8261));
     }
 
     public static List<ISpell> getReisteredSpells() {

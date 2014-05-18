@@ -13,11 +13,6 @@ import cpw.mods.fml.common.gameevent.TickEvent.RenderTickEvent;
 
 public class TickHandlerClient {
     @SubscribeEvent
-    public void clientTick(ClientTickEvent tick) {
-
-    }
-
-    @SubscribeEvent
     public void renderTick(RenderTickEvent tick) {
         if (tick.phase == TickEvent.Phase.END) {
             Minecraft mc = Minecraft.getMinecraft();

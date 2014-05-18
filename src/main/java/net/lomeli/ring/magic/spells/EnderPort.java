@@ -24,14 +24,14 @@ public class EnderPort implements ISpell {
 
     @Override
     public boolean activateSpell(World world, EntityPlayer player, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost, int cost) {
-        if (MagicHandler.canUse(player, cost)) {
+        if (MagicHandler.canUse(player, cost())) {
             MovingObjectPosition mop = RayTraceHelper.getRayTrace(player, world);
             if (mop != null) {
                 if (mop.typeOfHit == MovingObjectType.BLOCK) {
                     int newX = mop.blockX;
                     int newY = mop.blockY;
                     int newZ = mop.blockZ;
-                    MagicHandler.modifyPlayerMP(player, -cost);
+                    MagicHandler.modifyPlayerMP(player, -cost());
 
                     teleportTo(player, newX, newY + 3, newZ);
                     return true;
@@ -42,7 +42,7 @@ public class EnderPort implements ISpell {
     }
 
     @Override
-    public void applyToMob(EntityPlayer player, Entity target, int cost) {
+    public void applyToMob(EntityPlayer player, Entity target, int boost, int cost) {
         if (MagicHandler.canUse(player, cost)) {
             if (target instanceof EntityLivingBase) {
                 teleportRandomly((EntityLivingBase) target);

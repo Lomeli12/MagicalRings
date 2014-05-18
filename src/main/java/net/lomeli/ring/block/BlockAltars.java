@@ -6,6 +6,7 @@ import java.util.List;
 import net.lomeli.ring.Rings;
 import net.lomeli.ring.block.tile.TileAltar;
 import net.lomeli.ring.block.tile.TileItemAltar;
+import net.lomeli.ring.item.ItemMagicRing;
 import net.lomeli.ring.item.ItemSpellParchment;
 import net.lomeli.ring.lib.ModLibs;
 import net.minecraft.block.Block;
@@ -20,7 +21,6 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -50,6 +50,12 @@ public class BlockAltars extends BlockRings implements ITileEntityProvider {
         return ModLibs.altarRenderID;
     }
 
+    public boolean isRing(ItemStack stack) {
+        if (stack != null)
+            return (stack.getItem() instanceof ItemMagicRing);
+        return false;
+    }
+
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitx, float hity, float hitz) {
         TileEntity tile = world.getTileEntity(x, y, z);
@@ -59,22 +65,24 @@ public class BlockAltars extends BlockRings implements ITileEntityProvider {
             world.func_147479_m(x, y, z);
 
             if (stack != null) {
-                if (stack.getItem() instanceof ItemSpellParchment) {
-                    if (tile instanceof TileAltar && tileStack != null) {
-                        ((TileAltar) tile).startInfusion(player, stack.getItemDamage());
+                if (!player.isSneaking()) {
+                    if (stack.getItem() instanceof ItemSpellParchment) {
+                        if (tile instanceof TileAltar && tileStack != null) {
+                            if (isRing(tileStack)) {
+                                ((TileAltar) tile).startInfusion(player, stack.getItemDamage());
+                                return true;
+                            }
+                        }
+                    }
+                    if (tileStack == null) {
+                        tileStack = new ItemStack(stack.getItem(), 1, stack.getItemDamage());
+                        tileStack.stackTagCompound = stack.getTagCompound();
+                        ((IInventory) tile).setInventorySlotContents(0, tileStack);
                         if (!player.capabilities.isCreativeMode)
                             player.getCurrentEquippedItem().stackSize--;
+                        world.func_147479_m(x, y, z);
                         return true;
                     }
-                }
-                if (tileStack == null) {
-                    tileStack = new ItemStack(stack.getItem(), 1, stack.getItemDamage());
-                    tileStack.stackTagCompound = stack.getTagCompound();
-                    ((IInventory) tile).setInventorySlotContents(0, tileStack);
-                    if (!player.capabilities.isCreativeMode)
-                        player.getCurrentEquippedItem().stackSize--;
-                    world.func_147479_m(x, y, z);
-                    return true;
                 }
             }else {
                 if (tileStack != null) {

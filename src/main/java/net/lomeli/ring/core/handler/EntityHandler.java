@@ -27,7 +27,7 @@ public class EntityHandler {
                         ISpell spell = MagicHandler.getSpellLazy(spellID);// MagicHandler.getSpellLazy(spellID);
                         if (spell != null) {
                             int trueCost = -spell.cost() + (tag.getInteger(ModLibs.MATERIAL_BOOST) * 5);
-                            spell.applyToMob(player, target, trueCost);
+                            spell.applyToMob(player, target, tag.getInteger(ModLibs.MATERIAL_BOOST), trueCost);
                         }
                     }
                 }

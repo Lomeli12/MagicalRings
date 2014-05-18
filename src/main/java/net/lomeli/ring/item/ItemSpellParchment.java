@@ -58,15 +58,20 @@ public class ItemSpellParchment extends ItemRings {
                 if (required != null && required.length > 0) {
                     list.add(StatCollector.translateToLocal(ModLibs.REQUIRED_ITEMS));
                     for (Object obj : required) {
-                        ItemStack item = null;
-                        if (obj instanceof ItemStack)
-                            item = (ItemStack) stack;
-                        if (obj instanceof Item)
-                            item = new ItemStack((Item) obj);
-                        if (obj instanceof Block)
-                            item = new ItemStack((Block) obj);
-                        if (item != null)
-                            list.add(item.getDisplayName());
+                        if (obj instanceof String)
+                            list.add(StatCollector.translateToLocal(ModLibs.ORE_DIC) + (String) obj);
+                        else {
+                            ItemStack item = null;
+                            if (obj instanceof ItemStack)
+                                item = (ItemStack) obj;
+                            if (obj instanceof Item)
+                                item = new ItemStack((Item) obj);
+                            if (obj instanceof Block)
+                                item = new ItemStack((Block) obj);
+                            
+                            if (item != null) 
+                                list.add(item.getDisplayName());
+                        }
                     }
                 }
             }
