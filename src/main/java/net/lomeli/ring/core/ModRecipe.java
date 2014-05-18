@@ -24,9 +24,15 @@ public class ModRecipe {
 
     public static void addChestLoot() {
         for (int i = 0; i < MagicHandler.getReisteredSpells().size(); i++) {
-            if (MagicHandler.getSpellLazy(i) != null)
+            if (MagicHandler.getSpellLazy(i) != null) {
                 ChestGenHooks.getInfo(ChestGenHooks.DUNGEON_CHEST).addItem(new WeightedRandomChestContent(new ItemStack(ModItems.spellParchment, 1, i), 30, 50, 30));
+                ChestGenHooks.getInfo(ChestGenHooks.MINESHAFT_CORRIDOR).addItem(new WeightedRandomChestContent(new ItemStack(ModItems.spellParchment, 1, i), 30, 50, 30));
+                ChestGenHooks.getInfo(ChestGenHooks.PYRAMID_DESERT_CHEST).addItem(new WeightedRandomChestContent(new ItemStack(ModItems.spellParchment, 1, i), 30, 50, 30));
+                ChestGenHooks.getInfo(ChestGenHooks.PYRAMID_JUNGLE_CHEST).addItem(new WeightedRandomChestContent(new ItemStack(ModItems.spellParchment, 1, i), 30, 50, 30));
+                ChestGenHooks.getInfo(ChestGenHooks.STRONGHOLD_LIBRARY).addItem(new WeightedRandomChestContent(new ItemStack(ModItems.spellParchment, 1, i), 30, 50, 30));
+            }
         }
+        ChestGenHooks.getInfo(ChestGenHooks.VILLAGE_BLACKSMITH).addItem(new WeightedRandomChestContent(new ItemStack(ModItems.food), 50, 70, 100));
     }
 
     private static void shapedRecipes() {
@@ -43,6 +49,7 @@ public class ModRecipe {
                 addShapeless(new ItemStack(ModItems.spellParchment, 2, i), new ItemStack(ModItems.spellParchment, 1, i), Items.paper, Items.ender_pearl);
         }
         addShapeless(ModItems.book, "dyeRed", "dyeBlue");
+        addShapeless(new ItemStack(ModItems.food, 1, 2), new ItemStack(Items.potionitem, 1, 8261), Items.nether_star, Blocks.gold_block, Blocks.diamond_block);
     }
 
     private static void furnaceRecipes() {
@@ -57,6 +64,7 @@ public class ModRecipe {
         addSmelt(new ItemStack(ModItems.oreItems, 1, 6), new ItemStack(ModBlocks.oreBlocks, 1, 5), 4);
         addSmelt(new ItemStack(ModItems.oreItems, 1, 7), new ItemStack(ModBlocks.oreBlocks, 1, 6), 4);
         addSmelt(new ItemStack(ModItems.oreItems, 1, 8), new ItemStack(ModBlocks.oreBlocks, 1, 7), 4);
+        addSmelt(new ItemStack(ModItems.food, 1, 1), new ItemStack(ModItems.food, 1, 0), 2);
     }
 
     private static void hammerRecipe(Item hammer, Object obj) {

@@ -5,6 +5,7 @@ import net.lomeli.ring.network.PacketAdjustClientPos;
 import net.lomeli.ring.network.PacketHandler;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatComponentText;
 
@@ -37,6 +38,14 @@ public class CommandRing extends CommandBase {
                         PacketHandler.sendTo(new PacketAdjustClientPos(x, y), player);
                 }else {
                     this.sendMessage(cSender, "\u00a7c/rings statPosition [xPosition] [yPosition]");
+                }
+            }else if (command.equalsIgnoreCase("pig")) {
+                if (cSender.getEntityWorld().isRemote) {
+                    EntityPig pig = new EntityPig(cSender.getEntityWorld());
+                    pig.posX = cSender.getPlayerCoordinates().posX;
+                    pig.posY = cSender.getPlayerCoordinates().posY;
+                    pig.posZ = cSender.getPlayerCoordinates().posZ;
+                    cSender.getEntityWorld().spawnEntityInWorld(pig);
                 }
             }else if (command.equalsIgnoreCase("help") || command.equalsIgnoreCase("?")) {
                 this.sendMessage(cSender, "/rings statPosition [xPosition] [yPosition] - Adjusts on screen position of your MP stats.");

@@ -18,13 +18,12 @@ import net.minecraft.world.World;
 public class BlockOre extends BlockRings {
 
     @SideOnly(Side.CLIENT)
-    private IIcon[] iconArray;
+    private IIcon[] iconArray= new IIcon[8];
 
     public BlockOre(String texture) {
         super(Material.rock, texture);
         this.setHardness(4f);
         this.setResistance(20);
-        iconArray = new IIcon[8];
     }
 
     @Override
@@ -36,7 +35,7 @@ public class BlockOre extends BlockRings {
 
     @Override
     public void getSubBlocks(Item item, CreativeTabs tab, List list) {
-        for (int i = 0; i < iconArray.length; i++) {
+        for (int i = 0; i < 8; i++) {
             list.add(new ItemStack(item, 1, i));
         }
     }

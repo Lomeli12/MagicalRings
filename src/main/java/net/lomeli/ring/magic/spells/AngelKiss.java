@@ -15,8 +15,9 @@ public class AngelKiss implements ISpell {
     public boolean activateSpell(World world, EntityPlayer player, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost, int cost) {
         if (MagicHandler.canUse(player, cost)) {
             if (player.getHealth() < player.getMaxHealth()) {
-                player.heal(5 + boost);
+                player.heal(1.5f + (boost/2));
                 MagicHandler.modifyPlayerMP(player, -cost);
+                return true;
             }
         }
         return false;
@@ -29,14 +30,14 @@ public class AngelKiss implements ISpell {
                 EntityLivingBase living = (EntityLivingBase) target;
                 if (living.getHealth() < living.getMaxHealth()) {
                     MagicHandler.modifyPlayerMP(player, -cost);
-                    living.heal(5 + boost);
+                    living.heal(1.5f + (boost/2));
                 }
             }
         }
     }
 
     @Override
-    public void onUpdateTick(ItemStack stack, World world, Entity entity, int par4, boolean par5, int boost, int cost) {
+    public void onUpdateTick(ItemStack stack, World world, Entity entity, int par4, boolean par5, int boost, int cost, boolean bool) {
     }
 
     @Override

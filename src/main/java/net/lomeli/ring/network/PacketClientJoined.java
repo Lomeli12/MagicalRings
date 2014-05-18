@@ -9,9 +9,10 @@ import net.minecraft.server.MinecraftServer;
 
 public class PacketClientJoined implements IPacket {
     private int entityID;
-    
-    public PacketClientJoined(){}
-    
+
+    public PacketClientJoined() {
+    }
+
     public PacketClientJoined(EntityPlayer player) {
         this.entityID = player.getEntityId();
     }
@@ -33,7 +34,7 @@ public class PacketClientJoined implements IPacket {
     @Override
     public void readServer(EntityPlayer f) {
         MinecraftServer ms = MinecraftServer.getServer();
-        EntityPlayer player = (EntityPlayer)ms.getEntityWorld().getEntityByID(this.entityID);
+        EntityPlayer player = (EntityPlayer) ms.getEntityWorld().getEntityByID(this.entityID);
         if (player.getEntityData().hasKey(ModLibs.PLAYER_DATA)) {
             NBTTagCompound tag = player.getEntityData().getCompoundTag(ModLibs.PLAYER_DATA);
             if (tag != null) {

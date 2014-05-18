@@ -6,6 +6,7 @@ import net.lomeli.ring.block.tile.TileItemAltar;
 import net.lomeli.ring.block.tile.TileRingForge;
 import net.lomeli.ring.core.handler.EntityHandler;
 import net.lomeli.ring.core.handler.GameEventHandler;
+import net.lomeli.ring.core.handler.TickHandlerCore;
 import net.lomeli.ring.core.handler.WorldGenManager;
 import net.lomeli.ring.item.ModItems;
 import net.lomeli.ring.magic.MagicHandler;
@@ -17,10 +18,12 @@ import cpw.mods.fml.common.registry.GameRegistry;
 public class Proxy {
     public MagicHandler magicHandler;
     public RingMaterialRecipe ringMaterials;
+    public TickHandlerCore tickHandler;
     
     public void preInit() {
         magicHandler = new MagicHandler();
         ringMaterials = new RingMaterialRecipe();
+        FMLCommonHandler.instance().bus().register(tickHandler = new TickHandlerCore());
         ModItems.loadItems();
         ModBlocks.loadBlocks();
     }
@@ -34,6 +37,7 @@ public class Proxy {
         
         MinecraftForge.EVENT_BUS.register(new EntityHandler());
         FMLCommonHandler.instance().bus().register(new GameEventHandler());
+        
     }
     
     public void postInit() {

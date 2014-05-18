@@ -29,10 +29,11 @@ public class FriendlyFire implements ISpell {
                     if (entityList != null) {
                         Object obj = entityList.get(player.worldObj.rand.nextInt(entityList.size()));
                         if (obj instanceof EntityLivingBase) {
+                            EntityLivingBase newTarget = (EntityLivingBase) obj;
                             if (MagicHandler.canUse(player, cost)) {
                                 MagicHandler.modifyPlayerMP(player, -cost);
                                 if (living instanceof EntityCreature)
-                                    ((EntityCreature) living).setAttackTarget((EntityLivingBase) obj);
+                                    ((EntityCreature) living).setAttackTarget(newTarget.equals(living) ? null : newTarget);
                                 else
                                     living.setRevengeTarget((EntityLivingBase) obj);
                             }
@@ -44,7 +45,7 @@ public class FriendlyFire implements ISpell {
     }
 
     @Override
-    public void onUpdateTick(ItemStack stack, World world, Entity entity, int par4, boolean par5, int boost, int cost) {
+    public void onUpdateTick(ItemStack stack, World world, Entity entity, int par4, boolean par5, int boost, int cost, boolean bool) {
     }
 
     @Override

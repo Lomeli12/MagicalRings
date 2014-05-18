@@ -46,15 +46,16 @@ public class ModLibs {
     public static final int BOOK_GUI = 1;
     
     //Spell names
-    public static final String SPELL_NAME = "spell.";
+    public static final String SPELL_NAME = MOD_ID.toLowerCase() + ".spell.";
     public static final String ENDERPORT = SPELL_NAME + "enderPort";
     public static final String FIRE_WRATH = SPELL_NAME + "blazingWrath";
     public static final String THUNDER_SKY = SPELL_NAME + "skyAnger";
     public static final String FRIENDLY_FIRE = SPELL_NAME + "friendly";
     public static final String ANGEL_KISS = SPELL_NAME + "healTouch";
-    public static final String FEAST = SPELL_NAME + "feast";
     public static final String WING = SPELL_NAME + "wings";
     public static final String HARVEST = SPELL_NAME + "harvest";
+    public static final String DISARM = SPELL_NAME + "disarm";
+    public static final String REARM = SPELL_NAME + "rearm";
 
     public static int RECHARGE_WAIT_TIME;
     public static int DISPLAY_X;

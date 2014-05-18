@@ -56,16 +56,14 @@ public class ItemMagicRing extends ItemRings {
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) {
         if (stack.getTagCompound() != null) {
-            if (Keyboard.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode())) {
-                NBTTagCompound tag = stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG);
-                if (tag != null) {
-                    if (tag.hasKey(ModLibs.SPELL_ID)) {
-                        int spellID = tag.getInteger(ModLibs.SPELL_ID);
-                        ISpell spell = MagicHandler.getSpellLazy(spellID);
-                        if (spell != null && tag.getBoolean(ModLibs.ACTIVE_EFFECT_ENABLED)) {
-                            int trueCost = -spell.cost() + (tag.getInteger(ModLibs.MATERIAL_BOOST) * 5);
-                            spell.onUpdateTick(stack, world, entity, par4, par5, tag.getInteger(ModLibs.MATERIAL_BOOST), trueCost);
-                        }
+            NBTTagCompound tag = stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG);
+            if (tag != null) {
+                if (tag.hasKey(ModLibs.SPELL_ID)) {
+                    int spellID = tag.getInteger(ModLibs.SPELL_ID);
+                    ISpell spell = MagicHandler.getSpellLazy(spellID);
+                    if (spell != null) {
+                        int trueCost = -spell.cost() + (tag.getInteger(ModLibs.MATERIAL_BOOST) * 5);
+                        spell.onUpdateTick(stack, world, entity, par4, par5, tag.getInteger(ModLibs.MATERIAL_BOOST), trueCost, tag.getBoolean(ModLibs.ACTIVE_EFFECT_ENABLED));
                     }
                 }
             }
@@ -76,6 +74,8 @@ public class ItemMagicRing extends ItemRings {
     @Override
     public void registerIcons(IIconRegister register) {
         super.registerIcons(register);
+        // Uses textures from here: imgur.com/ianAIVE,7JoqqPp,TW4IRa2,sI9xD5N,jZGhRQ4,mLgOVCU
+        // After modjam. Thanks Drable
         rl1 = register.registerIcon(ModLibs.MOD_ID.toLowerCase() + ":ring/ringEdge");
         rl2 = register.registerIcon(ModLibs.MOD_ID.toLowerCase() + ":ring/ringInner");
         gem = register.registerIcon(ModLibs.MOD_ID.toLowerCase() + ":ring/ringGem");

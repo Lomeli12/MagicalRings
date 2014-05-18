@@ -26,6 +26,7 @@ public class RingMaterialRecipe {
         this.registerItem(Items.iron_ingot, Color.LIGHT_GRAY.getRGB(), 0);
         this.registerItem(Items.gold_ingot, new Color(237, 237, 0).getRGB(), 1);
         this.registerItem(Blocks.obsidian, new Color(60, 0, 95).getRGB(), 2);
+        this.registerItem(new ItemStack(ModItems.food, 1, 1), new Color(120, 85, 10).getRGB(), -2);
         this.registerItem("ingotCopper", new Color(190, 120, 0).getRGB(), 0);
         this.registerItem("ingotTin", new Color(220, 255, 245).getRGB(), 1);
         this.registerItem("ingotSteel", new Color(45, 45, 45).getRGB(), 2);
@@ -46,7 +47,7 @@ public class RingMaterialRecipe {
 
     public static ItemStack getNewRing(ItemStack material1, ItemStack material2, ItemStack gem, String customName) {
         ItemStack ring = null;
-
+        
         if ((material1 != null && getMaterialList().doesMaterialMatch(material1)) && (material2 != null && getMaterialList().doesMaterialMatch(material2))) {
             if (material1.stackSize >= 10 && material2.stackSize >= 10) {
                 ring = new ItemStack(ModItems.magicRing);
@@ -215,23 +216,24 @@ public class RingMaterialRecipe {
 
     public boolean doesMaterialMatch(ItemStack stack) {
         boolean match = false;
-        for (Entry<Object, Integer> set : this.validMaterial.entrySet()) {
+        materialLoop: for (Entry<Object, Integer> set : this.validMaterial.entrySet()) {
             Object obj = set.getKey();
             if (obj != null) {
                 if (obj instanceof ItemStack) {
                     ItemStack st = (ItemStack) obj;
-                    match = (st.getItem() == stack.getItem()) && (st.getItemDamage() == stack.getItemDamage());
+                    if (st.getItem() == stack.getItem() && st.getItemDamage() == stack.getItemDamage()) {
+                        match = true;
+                        break materialLoop;
+                    }
                 }
                 if (obj instanceof String) {
                     for (ItemStack st : OreDictionary.getOres((String) obj)) {
                         if ((st.getItem() == stack.getItem()) && (st.getItemDamage() == stack.getItemDamage())) {
                             match = true;
-                            break;
+                            break materialLoop;
                         }
                     }
                 }
-                if (match)
-                    break;
             }
         }
         return match;

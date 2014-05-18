@@ -52,7 +52,7 @@ public class EnderPort implements ISpell {
     }
 
     @Override
-    public void onUpdateTick(ItemStack stack, World world, Entity entity, int par4, boolean par5, int boost, int cost) {
+    public void onUpdateTick(ItemStack stack, World world, Entity entity, int par4, boolean par5, int boost, int cost, boolean bool) {
         if (entity instanceof EntityLivingBase) {
             if (!(entity instanceof EntityPlayer))
                 this.teleportRandomly((EntityLivingBase) entity);

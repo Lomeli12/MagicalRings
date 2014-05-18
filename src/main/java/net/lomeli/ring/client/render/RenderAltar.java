@@ -10,9 +10,9 @@ import net.lomeli.ring.lib.ModLibs;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.item.EntityItem;
@@ -30,9 +30,24 @@ public class RenderAltar extends TileEntitySpecialRenderer {
     private ModelAltar model = new ModelAltar();
     private Random random = new Random();
     private RenderBlocks renderBlock = new RenderBlocks();
+    private RenderItem renderItems = new RenderItem();
     private Minecraft mc = Minecraft.getMinecraft();
     private final float size = 0.0625f;
     private float angle = 0;
+    
+    public RenderAltar() {
+        renderItems = new RenderItem() {
+            @Override
+            public boolean shouldBob() {
+                return false;
+            }
+            
+            @Override
+            public boolean shouldSpreadItems() {
+                return false;
+            }
+        };
+    }
 
     @Override
     public void renderTileEntityAt(TileEntity var1, double var2, double var4, double var6, float var8) {
@@ -75,7 +90,6 @@ public class RenderAltar extends TileEntitySpecialRenderer {
             angle = 0;
         if (tile.getStackInSlot(0) != null) {
             ItemStack stack = tile.getStackInSlot(0);
-
             mc.renderEngine.bindTexture(stack.getItem() instanceof ItemBlock ? TextureMap.locationBlocksTexture : TextureMap.locationItemsTexture);
             if (!ForgeHooksClient.renderEntityItem(new EntityItem(tile.getWorldObj(), tile.xCoord, tile.yCoord, tile.zCoord, stack), stack, 0F, 0F, tile.getWorldObj().rand, mc.renderEngine, renderBlock, 1)) {
                 GL11.glRotatef(angle, 0, 1f, 0);

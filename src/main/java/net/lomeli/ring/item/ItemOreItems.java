@@ -14,12 +14,11 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemOreItems extends ItemRings {
 
     @SideOnly(Side.CLIENT)
-    private IIcon[] iconArray;
+    private IIcon[] iconArray = new IIcon[9];
 
     public ItemOreItems(String texture) {
         super(texture);
         this.setHasSubtypes(true);
-        iconArray = new IIcon[9];
     }
 
     @Override

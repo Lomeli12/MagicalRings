@@ -7,10 +7,13 @@ import java.util.List;
 import net.lomeli.ring.Rings;
 import net.lomeli.ring.lib.ModLibs;
 import net.lomeli.ring.magic.spells.AngelKiss;
+import net.lomeli.ring.magic.spells.Disarm;
 import net.lomeli.ring.magic.spells.EnderPort;
 import net.lomeli.ring.magic.spells.FireWrath;
 import net.lomeli.ring.magic.spells.FriendlyFire;
+import net.lomeli.ring.magic.spells.Harvest;
 import net.lomeli.ring.magic.spells.HeavenStrike;
+import net.lomeli.ring.magic.spells.Rearm;
 import net.lomeli.ring.network.PacketHandler;
 import net.lomeli.ring.network.PacketUpdatePlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,6 +32,10 @@ public class MagicHandler {
         this.registerSpell(new FireWrath(), Items.flint_and_steel, Items.blaze_powder, Items.blaze_rod, Items.fire_charge);
         this.registerSpell(new HeavenStrike(), Items.iron_ingot, "gemDiamond", Items.water_bucket, Items.redstone);
         this.registerSpell(new AngelKiss(), Items.feather, new ItemStack(Items.potionitem, 1, 8261));
+        this.registerSpell(new Harvest(), Items.bone, Items.iron_hoe, Blocks.grass, new ItemStack(Items.dye, 1, 15));
+        this.registerSpell(new Disarm(), Blocks.chest, Items.stone_sword, Items.bow, Items.redstone);
+        this.registerSpell(new Rearm(), Items.stone_sword, Items.bow, Items.arrow, Items.flint);
+        //this.registerSpell(new SwiftWind(), Items.nether_star, Blocks.diamond_block, Items.feather, Items.ender_pearl);
     }
 
     public static List<ISpell> getReisteredSpells() {
@@ -63,9 +70,8 @@ public class MagicHandler {
             if (mp > newMax)
                 mp = newMax;
             PacketHandler.sendEverywhere(new PacketUpdatePlayerMP(player, mp, newMax));
-        }else {
+        }else
             PacketHandler.sendEverywhere(new PacketUpdatePlayerMP(player, 0, newMax));
-        }
     }
 
     public static boolean canUse(EntityPlayer player, int cost) {

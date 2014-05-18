@@ -3,6 +3,7 @@ package net.lomeli.ring.core.handler;
 import net.lomeli.ring.lib.ModLibs;
 import net.lomeli.ring.network.PacketClientJoined;
 import net.lomeli.ring.network.PacketHandler;
+import net.lomeli.ring.network.PacketRemovePlayer;
 import net.lomeli.ring.network.PacketUpdatePlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -43,5 +44,10 @@ public class GameEventHandler {
     public void onPlayerJoined(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.player != null) 
             PacketHandler.sendToServer(new PacketClientJoined(event.player));
+    }
+    
+    public void onPlayerLeave(PlayerEvent.PlayerLoggedOutEvent event) {
+        if (event.player != null)
+            PacketHandler.sendToServer(new PacketRemovePlayer(event.player));
     }
 }
