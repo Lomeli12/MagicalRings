@@ -48,7 +48,7 @@ public class ModRecipe {
             if (MagicHandler.getSpellLazy(i) != null)
                 addShapeless(new ItemStack(ModItems.spellParchment, 2, i), new ItemStack(ModItems.spellParchment, 1, i), Items.paper, Items.ender_pearl);
         }
-        addShapeless(ModItems.book, "dyeRed", "dyeBlue");
+        addShapeless(ModItems.book, "dyeRed", "dyeBlue", Items.book);
         addShapeless(new ItemStack(ModItems.food, 1, 2), new ItemStack(Items.potionitem, 1, 8261), Items.nether_star, Blocks.gold_block, Blocks.diamond_block);
     }
 
