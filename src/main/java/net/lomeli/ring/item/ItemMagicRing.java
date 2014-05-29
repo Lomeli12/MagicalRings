@@ -3,16 +3,12 @@ package net.lomeli.ring.item;
 import java.awt.Color;
 import java.util.List;
 
-import org.lwjgl.input.Keyboard;
+import baubles.api.BaubleType;
+import baubles.api.IBauble;
 
-import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.ISpell;
-import net.lomeli.ring.magic.MagicHandler;
-import net.lomeli.ring.network.PacketHandler;
-import net.lomeli.ring.network.PacketUpdatePlayerMP;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -20,10 +16,17 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+
+import net.lomeli.ring.lib.ModLibs;
+import net.lomeli.ring.magic.ISpell;
+import net.lomeli.ring.magic.MagicHandler;
+
+import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemMagicRing extends ItemRings {
+@Interface(iface = "baubles.api.IBauble", modid = "Baubles")
+public class ItemMagicRing extends ItemRings implements IBauble {
     @SideOnly(Side.CLIENT)
     private IIcon rl1, rl2, gem;
 
@@ -56,15 +59,17 @@ public class ItemMagicRing extends ItemRings {
 
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) {
-        if (stack.getTagCompound() != null) {
-            NBTTagCompound tag = stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG);
-            if (tag != null) {
-                if (tag.hasKey(ModLibs.SPELL_ID)) {
-                    int spellID = tag.getInteger(ModLibs.SPELL_ID);
-                    ISpell spell = MagicHandler.getSpellLazy(spellID);
-                    if (spell != null) {
-                        int trueCost = spell.cost() + (tag.getInteger(ModLibs.MATERIAL_BOOST) * 5);
-                        spell.onUpdateTick(stack, world, entity, par4, par5, tag.getInteger(ModLibs.MATERIAL_BOOST), trueCost, tag.getBoolean(ModLibs.ACTIVE_EFFECT_ENABLED));
+        if (!(entity instanceof EntityPlayer)) {
+            if (stack.getTagCompound() != null) {
+                NBTTagCompound tag = stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG);
+                if (tag != null) {
+                    if (tag.hasKey(ModLibs.SPELL_ID)) {
+                        int spellID = tag.getInteger(ModLibs.SPELL_ID);
+                        ISpell spell = MagicHandler.getSpellLazy(spellID);
+                        if (spell != null) {
+                            int trueCost = spell.cost() + (tag.getInteger(ModLibs.MATERIAL_BOOST) * 5);
+                            spell.onUpdateTick(stack, world, entity, par4, par5, tag.getInteger(ModLibs.MATERIAL_BOOST), trueCost, tag.getBoolean(ModLibs.ACTIVE_EFFECT_ENABLED));
+                        }
                     }
                 }
             }
@@ -75,8 +80,7 @@ public class ItemMagicRing extends ItemRings {
     @Override
     public void registerIcons(IIconRegister register) {
         super.registerIcons(register);
-        // Uses textures from here: imgur.com/ianAIVE,7JoqqPp,TW4IRa2,sI9xD5N,jZGhRQ4,mLgOVCU
-        // After modjam. Thanks Drable
+        // Thanks Drable for the fancy new textures
         rl1 = register.registerIcon(ModLibs.MOD_ID.toLowerCase() + ":ring/ringEdge");
         rl2 = register.registerIcon(ModLibs.MOD_ID.toLowerCase() + ":ring/ringInner");
         gem = register.registerIcon(ModLibs.MOD_ID.toLowerCase() + ":ring/ringGem");
@@ -173,6 +177,7 @@ public class ItemMagicRing extends ItemRings {
         }
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
@@ -187,6 +192,52 @@ public class ItemMagicRing extends ItemRings {
             if (tag.hasKey(ModLibs.MATERIAL_BOOST))
                 list.add("+" + tag.getInteger(ModLibs.MATERIAL_BOOST) + " " + StatCollector.translateToLocal(ModLibs.BOOST));
         }
+    }
+
+    @Override
+    public BaubleType getBaubleType(ItemStack itemstack) {
+        return BaubleType.RING;
+    }
+
+    @Override
+    public void onWornTick(ItemStack stack, EntityLivingBase player) {
+        if (stack.getTagCompound() != null) {
+            NBTTagCompound tag = stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG);
+            if (tag != null) {
+                if (tag.hasKey(ModLibs.SPELL_ID)) {
+                    int spellID = tag.getInteger(ModLibs.SPELL_ID);
+                    ISpell spell = MagicHandler.getSpellLazy(spellID);
+                    if (spell != null) {
+                        int trueCost = spell.cost() + (tag.getInteger(ModLibs.MATERIAL_BOOST) * 5);
+                        spell.onUpdateTick(stack, player.worldObj, player, 0, true, tag.getInteger(ModLibs.MATERIAL_BOOST), trueCost, tag.getBoolean(ModLibs.ACTIVE_EFFECT_ENABLED));
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onEquipped(ItemStack itemstack, EntityLivingBase player) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public boolean canEquip(ItemStack itemstack, EntityLivingBase player) {
+        if (itemstack.getTagCompound() != null)
+            return itemstack.getTagCompound().hasKey(ModLibs.RING_TAG);
+        return false;
+    }
+
+    @Override
+    public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) {
+        return true;
     }
 
     /*
