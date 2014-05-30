@@ -21,6 +21,7 @@ import net.lomeli.ring.lib.ModLibs;
 import net.lomeli.ring.magic.ISpell;
 import net.lomeli.ring.magic.MagicHandler;
 
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -59,7 +60,7 @@ public class ItemMagicRing extends ItemRings implements IBauble {
 
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) {
-        if (!(entity instanceof EntityPlayer)) {
+        if (Loader.isModLoaded("Baubles") ? !(entity instanceof EntityPlayer) : true) {
             if (stack.getTagCompound() != null) {
                 NBTTagCompound tag = stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG);
                 if (tag != null) {
@@ -239,16 +240,4 @@ public class ItemMagicRing extends ItemRings implements IBauble {
     public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) {
         return true;
     }
-
-    /*
-     * @Override public String getItemStackDisplayName(ItemStack stack) { if
-     * (stack.getTagCompound() != null) { NBTTagCompound tag =
-     * stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG); if (tag != null)
-     * { if (tag.hasKey(ModLibs.SPELL_ID)) { int spellID =
-     * tag.getInteger(ModLibs.SPELL_ID); ISpell spell =
-     * MagicHandler.getSpellLazy(0); if (spell != null) return
-     * StatCollector.translateToLocal(spell.getUnlocalizedName()) + " " +
-     * super.getItemStackDisplayName(stack); } } } return
-     * super.getItemStackDisplayName(stack); }
-     */
 }

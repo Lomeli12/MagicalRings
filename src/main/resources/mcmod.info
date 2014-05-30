@@ -5,9 +5,7 @@
     "version" : "${version}",
     "url" : "http://www.lomeli12.net/",
     "credits" : "",
-    "authors" : [
-       "Lomeli12"
-    ],
+    "authors" : [ "Lomeli12" ],
     "description" : "Make rings and infuse them with magic!",
     "dependancies" : [
        "Forge"
