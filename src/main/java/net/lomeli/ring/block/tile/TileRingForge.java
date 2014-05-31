@@ -1,8 +1,5 @@
 package net.lomeli.ring.block.tile;
 
-import net.lomeli.ring.item.ItemHammer;
-import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.RingMaterialRecipe;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -13,6 +10,10 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 
+import net.lomeli.ring.item.ItemHammer;
+import net.lomeli.ring.lib.ModLibs;
+import net.lomeli.ring.magic.RingMaterialRecipe;
+
 public class TileRingForge extends TileEntity implements IInventory {
     private ItemStack[] inventory;
     private String name;
@@ -21,6 +22,7 @@ public class TileRingForge extends TileEntity implements IInventory {
         inventory = new ItemStack[5];
     }
 
+    @Override
     public void updateEntity() {
         super.updateEntity();
         if (!worldObj.isRemote) {

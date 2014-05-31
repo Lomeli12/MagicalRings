@@ -1,8 +1,5 @@
 package net.lomeli.ring.magic.spells;
 
-import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.ISpell;
-import net.lomeli.ring.magic.MagicHandler;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -15,6 +12,10 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+
+import net.lomeli.ring.api.ISpell;
+import net.lomeli.ring.lib.ModLibs;
+import net.lomeli.ring.magic.MagicHandler;
 
 public class FireWrath implements ISpell {
 

@@ -1,17 +1,20 @@
 package net.lomeli.ring.core;
 
-import net.lomeli.ring.block.ModBlocks;
-import net.lomeli.ring.item.ModItems;
-import net.lomeli.ring.magic.MagicHandler;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.WeightedRandomChestContent;
+
 import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
+
+import net.lomeli.ring.block.ModBlocks;
+import net.lomeli.ring.item.ModItems;
+import net.lomeli.ring.magic.MagicHandler;
+
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
 
@@ -23,7 +26,7 @@ public class ModRecipe {
     }
 
     public static void addChestLoot() {
-        for (int i = 0; i < MagicHandler.getReisteredSpells().size(); i++) {
+        for (int i = 0; i < MagicHandler.getAllSpells().size(); i++) {
             if (MagicHandler.getSpellLazy(i) != null) {
                 ChestGenHooks.getInfo(ChestGenHooks.DUNGEON_CHEST).addItem(new WeightedRandomChestContent(new ItemStack(ModItems.spellParchment, 1, i), 0, 1, 10));
                 ChestGenHooks.getInfo(ChestGenHooks.MINESHAFT_CORRIDOR).addItem(new WeightedRandomChestContent(new ItemStack(ModItems.spellParchment, 1, i), 0, 1, 10));
@@ -44,7 +47,7 @@ public class ModRecipe {
     }
 
     private static void shapelessRecipes() {
-        for (int i = 0; i < MagicHandler.getReisteredSpells().size(); i++) {
+        for (int i = 0; i < MagicHandler.getAllSpells().size(); i++) {
             if (MagicHandler.getSpellLazy(i) != null)
                 addShapeless(new ItemStack(ModItems.spellParchment, 2, i), new ItemStack(ModItems.spellParchment, 1, i), Items.paper, Items.ender_pearl);
         }
@@ -69,16 +72,17 @@ public class ModRecipe {
 
     private static void hammerRecipe(Item hammer, Object obj) {
         ItemStack stack = null;
+
         if (obj instanceof ItemStack)
             stack = (ItemStack) obj;
         if (obj instanceof Block)
             stack = new ItemStack((Block) obj);
         if (obj instanceof Item)
             stack = new ItemStack((Item) obj);
+
         if (stack != null) {
-            addShaped(hammer, "I  ", "S  ", "S  ", 'S', "stickWood", 'I', stack);
-            addShaped(hammer, "  I", "  S", "  S", 'S', "stickWood", 'I', stack);
             addShaped(hammer, " I ", " S ", " S ", 'S', "stickWood", 'I', stack);
+            addShaped(hammer, "I", "S", "S", 'S', "stickWood", 'I', stack);
         }
 
     }

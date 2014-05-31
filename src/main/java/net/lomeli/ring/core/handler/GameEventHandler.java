@@ -1,12 +1,14 @@
 package net.lomeli.ring.core.handler;
 
+import net.minecraft.entity.player.EntityPlayer;
+
 import net.lomeli.ring.lib.ModLibs;
+import net.lomeli.ring.magic.MagicHandler;
 import net.lomeli.ring.network.PacketClientJoined;
 import net.lomeli.ring.network.PacketHandler;
 import net.lomeli.ring.network.PacketRemovePlayer;
 import net.lomeli.ring.network.PacketUpdatePlayerMP;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -18,9 +20,8 @@ public class GameEventHandler {
     public void onPlayerTick(TickEvent.PlayerTickEvent tick) {
         EntityPlayer player = tick.player;
         if (tick.phase == TickEvent.Phase.END) {
-            if (player.getEntityData().hasKey(ModLibs.PLAYER_DATA)) {
-                NBTTagCompound tag = player.getEntityData().getCompoundTag(ModLibs.PLAYER_DATA);
-                int mp = tag.getInteger(ModLibs.PLAYER_MP), max = tag.getInteger(ModLibs.PLAYER_MAX);
+            if (MagicHandler.getMagicHandler().playerHasMP(player)) {
+                int mp = MagicHandler.getMagicHandler().getPlayerMP(player), max = MagicHandler.getMagicHandler().getPlayerMaxMP(player);
                 if (mp < max) {
                     if (player.capabilities.isCreativeMode) {
                         PacketHandler.sendToPlayerAndServer(new PacketUpdatePlayerMP(player, max, max), player);
@@ -39,13 +40,14 @@ public class GameEventHandler {
             }
         }
     }
-    
+
     @SubscribeEvent
     public void onPlayerJoined(PlayerEvent.PlayerLoggedInEvent event) {
-        if (event.player != null) 
+        if (event.player != null)
             PacketHandler.sendToServer(new PacketClientJoined(event.player));
     }
-    
+
+    @SubscribeEvent
     public void onPlayerLeave(PlayerEvent.PlayerLoggedOutEvent event) {
         if (event.player != null)
             PacketHandler.sendToServer(new PacketRemovePlayer(event.player));

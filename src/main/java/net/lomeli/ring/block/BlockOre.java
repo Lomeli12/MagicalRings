@@ -2,9 +2,6 @@ package net.lomeli.ring.block;
 
 import java.util.List;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.lomeli.ring.lib.ModLibs;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -14,6 +11,11 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
+
+import net.lomeli.ring.lib.ModLibs;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockOre extends BlockRings {
 
@@ -35,6 +37,7 @@ public class BlockOre extends BlockRings {
         }
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void getSubBlocks(Item item, CreativeTabs tab, List list) {
         for (int i = 0; i < 8; i++) {
@@ -77,6 +80,7 @@ public class BlockOre extends BlockRings {
             return this.field_150939_a.getIcon(0, par1);
         }
 
+        @SuppressWarnings({ "unchecked", "rawtypes" })
         @Override
         @SideOnly(Side.CLIENT)
         public void getSubItems(Item item, CreativeTabs tab, List list) {

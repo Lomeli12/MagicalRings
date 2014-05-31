@@ -2,7 +2,9 @@ package net.lomeli.ring.item;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+
 import net.minecraftforge.oredict.OreDictionary;
+
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class ModItems {
@@ -11,7 +13,7 @@ public class ModItems {
     public static void loadItems() {
         magicRing = new ItemMagicRing("ring").setUnlocalizedName("magicRing");
         GameRegistry.registerItem(magicRing, magicRing.getUnlocalizedName());
-        
+
         book = new ItemSpellBook("spellbook").setUnlocalizedName("book");
         GameRegistry.registerItem(book, book.getUnlocalizedName());
 
@@ -23,16 +25,16 @@ public class ModItems {
 
         spellParchment = new ItemSpellParchment("parchment").setUnlocalizedName("spellParchment");
         GameRegistry.registerItem(spellParchment, spellParchment.getUnlocalizedName());
-        
+
         oreItems = new ItemOreItems("ingot").setUnlocalizedName("ingot");
         GameRegistry.registerItem(oreItems, oreItems.getUnlocalizedName());
-        
+
         food = new ItemMagicFood().setUnlocalizedName("food");
         GameRegistry.registerItem(food, food.getUnlocalizedName());
-        
+
         ghostSword = new ItemGhostSword().setUnlocalizedName("ghostSword");
         GameRegistry.registerItem(ghostSword, ghostSword.getUnlocalizedName());
-        
+
         OreDictionary.registerOre("ingotTungsten", new ItemStack(oreItems, 1, 0));
         OreDictionary.registerOre("ingotPlatinum", new ItemStack(oreItems, 1, 1));
         OreDictionary.registerOre("ingotSteel", new ItemStack(oreItems, 1, 2));

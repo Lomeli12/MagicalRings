@@ -2,22 +2,21 @@ package net.lomeli.ring.magic.spells;
 
 import java.util.Random;
 
-import net.lomeli.ring.core.RayTraceHelper;
-import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.ISpell;
-import net.lomeli.ring.magic.MagicHandler;
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
-import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
+
+import net.lomeli.ring.api.ISpell;
+import net.lomeli.ring.core.RayTraceHelper;
+import net.lomeli.ring.lib.ModLibs;
+import net.lomeli.ring.magic.MagicHandler;
 
 public class EnderPort implements ISpell {
     private Random rand = new Random();
@@ -71,7 +70,7 @@ public class EnderPort implements ISpell {
 
     protected boolean teleportRandomly(EntityLivingBase entity) {
         double d0 = entity.posX + (this.rand.nextDouble() - 0.5D) * 64.0D;
-        double d1 = entity.posY + (double) (this.rand.nextInt(64) - 32);
+        double d1 = entity.posY + (this.rand.nextInt(64) - 32);
         double d2 = entity.posZ + (this.rand.nextDouble() - 0.5D) * 64.0D;
         return this.teleportTo(entity, d0, d1, d2);
     }
@@ -86,7 +85,7 @@ public class EnderPort implements ISpell {
         double newX = d0;
         double newY = d1;
         double newZ = d2;
-        if (!entity.worldObj.isAirBlock((int)d0, (int)(d1 + (entity.height/2)), (int)d2)) {
+        if (!entity.worldObj.isAirBlock((int) d0, (int) (d1 + (entity.height / 2)), (int) d2)) {
             newX = d0 + (this.rand.nextDouble() + 0.5D);
             newZ = d2 + (this.rand.nextDouble() + 0.5D);
         }

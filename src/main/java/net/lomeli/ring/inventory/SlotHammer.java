@@ -1,9 +1,10 @@
 package net.lomeli.ring.inventory;
 
-import net.lomeli.ring.item.ItemHammer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
+import net.lomeli.ring.item.ItemHammer;
 
 public class SlotHammer extends Slot {
 

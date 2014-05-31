@@ -1,28 +1,21 @@
 package net.lomeli.ring.inventory;
 
-import net.lomeli.ring.block.ModBlocks;
-import net.lomeli.ring.block.tile.TileRingForge;
-import net.lomeli.ring.item.ItemHammer;
-import net.lomeli.ring.magic.RingMaterialRecipe;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryCraftResult;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import net.lomeli.ring.block.ModBlocks;
+import net.lomeli.ring.block.tile.TileRingForge;
+
 public class ContainerRingForge extends Container {
 
-    private TileRingForge ringForge;
-    private InventoryPlayer player;
     private World world;
     private int x, y, z;
 
     public ContainerRingForge(TileRingForge tile, InventoryPlayer player, World world, int x, int y, int z) {
-        this.ringForge = tile;
-        this.player = player;
         this.world = world;
         this.x = x;
         this.y = y;
@@ -49,7 +42,7 @@ public class ContainerRingForge extends Container {
 
     @Override
     public boolean canInteractWith(EntityPlayer player) {
-        return this.world.getBlock(this.x, this.y, this.z) != ModBlocks.ringForge ? false : player.getDistanceSq((double) this.x + 0.5D, (double) this.y + 0.5D, (double) this.z + 0.5D) <= 64.0D;
+        return this.world.getBlock(this.x, this.y, this.z) != ModBlocks.ringForge ? false : player.getDistanceSq(this.x + 0.5D, this.y + 0.5D, this.z + 0.5D) <= 64.0D;
     }
 
     @Override
@@ -67,7 +60,7 @@ public class ContainerRingForge extends Container {
 
                 slot.onSlotChange(itemstack1, itemstack);
             }else if (par2 >= 5 && par2 < 32) {
-                if (!this.mergeItemStack(itemstack1, 32, 41, false)) 
+                if (!this.mergeItemStack(itemstack1, 32, 41, false))
                     return null;
             }else if (par2 >= 32 && par2 < 41) {
                 if (!this.mergeItemStack(itemstack1, 5, 32, false))

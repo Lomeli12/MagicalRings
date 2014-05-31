@@ -1,14 +1,14 @@
 package net.lomeli.ring.magic;
 
-import net.lomeli.ring.lib.ModLibs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
+
+import net.lomeli.ring.api.ISpell;
 
 public class DebugSpell implements ISpell {
 
@@ -36,7 +36,8 @@ public class DebugSpell implements ISpell {
     @Override
     public void onUpdateTick(ItemStack stack, World world, Entity entity, int par4, boolean par5, int boost, int cost, boolean bool) {
         if (bool) {
-            NBTTagCompound tag = stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG);
+            // NBTTagCompound tag =
+            // stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG);
             if (entity instanceof EntityLivingBase) {
                 EntityLivingBase living = (EntityLivingBase) entity;
                 if (!living.isPotionActive(Potion.nightVision)) {

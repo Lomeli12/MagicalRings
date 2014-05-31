@@ -17,8 +17,8 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
+import net.lomeli.ring.api.ISpell;
 import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.ISpell;
 import net.lomeli.ring.magic.MagicHandler;
 
 import cpw.mods.fml.common.Loader;
@@ -219,14 +219,10 @@ public class ItemMagicRing extends ItemRings implements IBauble {
 
     @Override
     public void onEquipped(ItemStack itemstack, EntityLivingBase player) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override

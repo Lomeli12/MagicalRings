@@ -1,10 +1,11 @@
 package net.lomeli.ring.core;
 
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 
-public class CreativeRing extends CreativeTabs{
+import net.lomeli.ring.block.ModBlocks;
+
+public class CreativeRing extends CreativeTabs {
 
     public CreativeRing(String lable) {
         super(lable);
@@ -12,7 +13,7 @@ public class CreativeRing extends CreativeTabs{
 
     @Override
     public Item getTabIconItem() {
-        return Item.getItemFromBlock(Blocks.enchanting_table);
+        return Item.getItemFromBlock(ModBlocks.ringForge);
     }
 
 }

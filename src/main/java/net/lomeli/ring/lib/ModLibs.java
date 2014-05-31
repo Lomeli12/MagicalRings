@@ -33,6 +33,7 @@ public class ModLibs {
     public static final String PLAYER_MP = "mp";
     public static final String PLAYER_MAX = "max";
 
+    // Message
     public static final String MESSAGE = MOD_ID.toLowerCase() + ".message.";
     public static final String NO_EXP = MESSAGE + "enoughEXP";
     public static final String NO_EXP_PLUS = MESSAGE + "enoughEXP2";
@@ -41,11 +42,15 @@ public class ModLibs {
     public static final String BOOST = MESSAGE + "magicBoost";
     public static final String REQUIRED_ITEMS = MESSAGE + "requiedItems";
     public static final String ORE_DIC = MESSAGE + "oreDic";
+    public static final String USES_LEFT = MESSAGE + "usesLeft";
+    public static final String HAMMER_INFO = MESSAGE + "hammer";
+    public static final String MORE_INFO = MESSAGE + "shift";
+    public static final String MANA = MESSAGE + "mana";
 
     public static final int RING_FORGE_GUI = 0;
     public static final int BOOK_GUI = 1;
-    
-    //Spell names
+
+    // Spell names
     public static final String SPELL_NAME = MOD_ID.toLowerCase() + ".spell.";
     public static final String ENDERPORT = SPELL_NAME + "enderPort";
     public static final String FIRE_WRATH = SPELL_NAME + "blazingWrath";
@@ -71,7 +76,9 @@ public class ModLibs {
     public static boolean rubySpawn;
     public static boolean sapphireSpawn;
     public static boolean amethystSpawn;
-    
+
+    public static boolean activateRetroGen;
+
     public static int tungstenSize;
     public static int platinumSize;
     public static int jadeSize;

@@ -1,6 +1,5 @@
 package net.lomeli.ring.block.tile;
 
-import net.lomeli.ring.lib.ModLibs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -10,6 +9,8 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+
+import net.lomeli.ring.lib.ModLibs;
 
 public class TileItemAltar extends TileEntity implements IInventory {
     private ItemStack[] inventory;
@@ -166,6 +167,6 @@ public class TileItemAltar extends TileEntity implements IInventory {
     }
 
     public void markForRenderUpdate() {
-        worldObj.func_147479_m((int) xCoord, (int) yCoord, (int) zCoord);
+        worldObj.func_147479_m(xCoord, yCoord, zCoord);
     }
 }

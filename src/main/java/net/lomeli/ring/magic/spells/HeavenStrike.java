@@ -1,9 +1,5 @@
 package net.lomeli.ring.magic.spells;
 
-import net.lomeli.ring.core.RayTraceHelper;
-import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.ISpell;
-import net.lomeli.ring.magic.MagicHandler;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.EntityLightningBolt;
@@ -13,7 +9,12 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 
-public class HeavenStrike implements ISpell{
+import net.lomeli.ring.api.ISpell;
+import net.lomeli.ring.core.RayTraceHelper;
+import net.lomeli.ring.lib.ModLibs;
+import net.lomeli.ring.magic.MagicHandler;
+
+public class HeavenStrike implements ISpell {
 
     @Override
     public boolean activateSpell(World world, EntityPlayer player, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost, int cost) {

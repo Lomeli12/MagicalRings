@@ -1,14 +1,15 @@
 package net.lomeli.ring.magic.spells;
 
-import net.lomeli.ring.Rings;
-import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.ISpell;
-import net.lomeli.ring.network.PacketAllowFlying;
-import net.lomeli.ring.network.PacketHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+
+import net.lomeli.ring.Rings;
+import net.lomeli.ring.api.ISpell;
+import net.lomeli.ring.lib.ModLibs;
+import net.lomeli.ring.network.PacketAllowFlying;
+import net.lomeli.ring.network.PacketHandler;
 
 public class SwiftWind implements ISpell {
 
@@ -26,7 +27,7 @@ public class SwiftWind implements ISpell {
         if (entity instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) entity;
             if (!player.capabilities.isCreativeMode) {
-                if (!Rings.proxy.tickHandler.flyingPlayerList.contains(entity.getEntityId())) 
+                if (!Rings.proxy.tickHandler.flyingPlayerList.contains(entity.getEntityId()))
                     PacketHandler.sendToPlayerAndServer(new PacketAllowFlying(player), player);
             }
         }

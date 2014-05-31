@@ -1,8 +1,5 @@
 package net.lomeli.ring.block;
 
-import net.lomeli.ring.Rings;
-import net.lomeli.ring.block.tile.TileRingForge;
-import net.lomeli.ring.lib.ModLibs;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -15,6 +12,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
+
+import net.lomeli.ring.Rings;
+import net.lomeli.ring.api.IBookEntry;
+import net.lomeli.ring.block.tile.TileRingForge;
+import net.lomeli.ring.lib.ModLibs;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -30,8 +33,8 @@ public class BlockRingForge extends BlockRings implements ITileEntityProvider, I
     }
 
     @Override
-    public int getPage(int metadata) {
-        return 3;
+    public String getBookPage(int metadata) {
+        return ModLibs.MOD_ID.toLowerCase() + ".ringForge";
     }
 
     @Override
@@ -60,9 +63,8 @@ public class BlockRingForge extends BlockRings implements ITileEntityProvider, I
     public TileEntity createNewTileEntity(World var1, int var2) {
         return new TileRingForge();
     }
-    
-    
 
+    @Override
     public void breakBlock(World world, int x, int y, int z, Block block, int meta) {
         TileEntity tile = world.getTileEntity(x, y, z);
 
@@ -82,11 +84,11 @@ public class BlockRingForge extends BlockRings implements ITileEntityProvider, I
                             j1 = itemstack.stackSize;
 
                         itemstack.stackSize -= j1;
-                        entityitem = new EntityItem(world, (double) ((float) x + f), (double) ((float) y + f1), (double) ((float) z + f2), new ItemStack(itemstack.getItem(), j1, itemstack.getItemDamage()));
+                        entityitem = new EntityItem(world, x + f, y + f1, z + f2, new ItemStack(itemstack.getItem(), j1, itemstack.getItemDamage()));
                         float f3 = 0.05F;
-                        entityitem.motionX = (double) ((float) world.rand.nextGaussian() * f3);
-                        entityitem.motionY = (double) ((float) world.rand.nextGaussian() * f3 + 0.2F);
-                        entityitem.motionZ = (double) ((float) world.rand.nextGaussian() * f3);
+                        entityitem.motionX = (float) world.rand.nextGaussian() * f3;
+                        entityitem.motionY = (float) world.rand.nextGaussian() * f3 + 0.2F;
+                        entityitem.motionZ = (float) world.rand.nextGaussian() * f3;
 
                         if (itemstack.hasTagCompound())
                             entityitem.getEntityItem().setTagCompound((NBTTagCompound) itemstack.getTagCompound().copy());
@@ -97,5 +99,4 @@ public class BlockRingForge extends BlockRings implements ITileEntityProvider, I
         }
         super.breakBlock(world, x, y, z, block, meta);
     }
-
 }

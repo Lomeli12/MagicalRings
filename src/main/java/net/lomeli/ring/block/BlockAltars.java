@@ -3,12 +3,6 @@ package net.lomeli.ring.block;
 import java.awt.Color;
 import java.util.List;
 
-import net.lomeli.ring.Rings;
-import net.lomeli.ring.block.tile.TileAltar;
-import net.lomeli.ring.block.tile.TileItemAltar;
-import net.lomeli.ring.item.ItemMagicRing;
-import net.lomeli.ring.item.ItemSpellParchment;
-import net.lomeli.ring.lib.ModLibs;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -22,6 +16,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+
+import net.lomeli.ring.Rings;
+import net.lomeli.ring.api.IBookEntry;
+import net.lomeli.ring.block.tile.TileAltar;
+import net.lomeli.ring.block.tile.TileItemAltar;
+import net.lomeli.ring.item.ItemMagicRing;
+import net.lomeli.ring.item.ItemSpellParchment;
+import net.lomeli.ring.lib.ModLibs;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -36,8 +39,8 @@ public class BlockAltars extends BlockRings implements ITileEntityProvider, IBoo
     }
 
     @Override
-    public int getPage(int metadata) {
-        return metadata == 1 ? 11 : 9;
+    public String getBookPage(int metadata) {
+        return metadata == 0 ? ModLibs.MOD_ID.toLowerCase() + ".infusionAltar" : ModLibs.MOD_ID.toLowerCase() + ".altar";
     }
 
     @Override
@@ -79,6 +82,7 @@ public class BlockAltars extends BlockRings implements ITileEntityProvider, IBoo
                             }
                         }
                     }
+
                     if (tileStack == null) {
                         tileStack = new ItemStack(stack.getItem(), 1, stack.getItemDamage());
                         tileStack.stackTagCompound = stack.getTagCompound();
@@ -87,12 +91,22 @@ public class BlockAltars extends BlockRings implements ITileEntityProvider, IBoo
                             player.getCurrentEquippedItem().stackSize--;
                         world.func_147479_m(x, y, z);
                         return true;
+                    }else {
+                        if (stack.getItem() != tileStack.getItem() && stack.getItemDamage() != tileStack.getItemDamage()) {
+                            ItemStack item = tileStack;
+                            EntityItem entity = new EntityItem(world, x, y, z, item);
+                            if (!world.isRemote)
+                                world.spawnEntityInWorld(entity);
+                            ((IInventory) tile).setInventorySlotContents(0, null);
+                            world.func_147479_m(x, y, z);
+                            return true;
+                        }
                     }
                 }
             }else {
                 if (tileStack != null) {
                     ItemStack item = tileStack;
-                    EntityItem entity = new EntityItem(world, x, y + 2, z, item);
+                    EntityItem entity = new EntityItem(world, x, y, z, item);
                     if (!world.isRemote)
                         world.spawnEntityInWorld(entity);
                     ((IInventory) tile).setInventorySlotContents(0, null);
@@ -114,6 +128,7 @@ public class BlockAltars extends BlockRings implements ITileEntityProvider, IBoo
         return metadata < 2 ? true : false;
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void getSubBlocks(Item item, CreativeTabs tab, List list) {
         list.add(new ItemStack(item, 1, 0));
@@ -142,6 +157,7 @@ public class BlockAltars extends BlockRings implements ITileEntityProvider, IBoo
         return this.damageDropped(world.getBlockMetadata(x, y, z));
     }
 
+    @Override
     public void breakBlock(World world, int x, int y, int z, Block block, int meta) {
         TileEntity tile = world.getTileEntity(x, y, z);
 
@@ -161,11 +177,11 @@ public class BlockAltars extends BlockRings implements ITileEntityProvider, IBoo
                             j1 = itemstack.stackSize;
 
                         itemstack.stackSize -= j1;
-                        entityitem = new EntityItem(world, (double) ((float) x + f), (double) ((float) y + f1), (double) ((float) z + f2), new ItemStack(itemstack.getItem(), j1, itemstack.getItemDamage()));
+                        entityitem = new EntityItem(world, x + f, y + f1, z + f2, new ItemStack(itemstack.getItem(), j1, itemstack.getItemDamage()));
                         float f3 = 0.05F;
-                        entityitem.motionX = (double) ((float) world.rand.nextGaussian() * f3);
-                        entityitem.motionY = (double) ((float) world.rand.nextGaussian() * f3 + 0.2F);
-                        entityitem.motionZ = (double) ((float) world.rand.nextGaussian() * f3);
+                        entityitem.motionX = (float) world.rand.nextGaussian() * f3;
+                        entityitem.motionY = (float) world.rand.nextGaussian() * f3 + 0.2F;
+                        entityitem.motionZ = (float) world.rand.nextGaussian() * f3;
 
                         if (itemstack.hasTagCompound())
                             entityitem.getEntityItem().setTagCompound((NBTTagCompound) itemstack.getTagCompound().copy());
@@ -197,6 +213,7 @@ public class BlockAltars extends BlockRings implements ITileEntityProvider, IBoo
             return par1ItemStack.getItemDamage() == 1 ? Color.WHITE.getRGB() : Color.BLUE.getRGB();
         }
 
+        @SuppressWarnings({ "unchecked", "rawtypes" })
         @Override
         @SideOnly(Side.CLIENT)
         public void getSubItems(Item item, CreativeTabs tab, List list) {

@@ -1,13 +1,14 @@
 package net.lomeli.ring.block;
 
-import net.lomeli.ring.Rings;
-import net.lomeli.ring.lib.ModLibs;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.util.IIcon;
 
-public class BlockRings extends Block{
+import net.lomeli.ring.Rings;
+import net.lomeli.ring.lib.ModLibs;
+
+public class BlockRings extends Block {
     protected String blockTexture;
     protected IIcon blankIcon;
 
@@ -27,7 +28,5 @@ public class BlockRings extends Block{
     public Block setBlockName(String p_149663_1_) {
         return super.setBlockName(ModLibs.MOD_ID.toLowerCase() + "." + p_149663_1_);
     }
-   
-    
 
 }

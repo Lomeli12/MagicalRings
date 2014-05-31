@@ -1,11 +1,12 @@
 package net.lomeli.ring.network;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
-import net.lomeli.ring.lib.ModLibs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
+
+import net.lomeli.ring.lib.ModLibs;
+
+import io.netty.buffer.ByteBuf;
 
 public class PacketClientJoined implements IPacket {
     private int entityID;
@@ -18,12 +19,12 @@ public class PacketClientJoined implements IPacket {
     }
 
     @Override
-    public void toByte(ChannelHandlerContext ctx, ByteBuf buffer) {
+    public void toByte(ByteBuf buffer) {
         buffer.writeInt(this.entityID);
     }
 
     @Override
-    public void fromByte(ChannelHandlerContext ctx, ByteBuf buffer) {
+    public void fromByte(ByteBuf buffer) {
         this.entityID = buffer.readInt();
     }
 
@@ -32,7 +33,7 @@ public class PacketClientJoined implements IPacket {
     }
 
     @Override
-    public void readServer(EntityPlayer f) {
+    public void readServer() {
         MinecraftServer ms = MinecraftServer.getServer();
         EntityPlayer player = (EntityPlayer) ms.getEntityWorld().getEntityByID(this.entityID);
         if (player.getEntityData().hasKey(ModLibs.PLAYER_DATA)) {

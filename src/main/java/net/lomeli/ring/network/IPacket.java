@@ -1,15 +1,16 @@
 package net.lomeli.ring.network;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.entity.player.EntityPlayer;
 
+import io.netty.buffer.ByteBuf;
+
 public interface IPacket {
-    public void toByte(ChannelHandlerContext ctx, ByteBuf buffer);
     
-    public void fromByte(ChannelHandlerContext ctx, ByteBuf buffer);
-    
+    public void toByte(ByteBuf buffer);
+
+    public void fromByte(ByteBuf buffer);
+
     public void readClient(EntityPlayer player);
-    
-    public void readServer(EntityPlayer player);
+
+    public void readServer();
 }

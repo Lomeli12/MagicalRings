@@ -1,11 +1,8 @@
 package net.lomeli.ring.client.gui;
 
-import net.lomeli.ring.block.tile.TileRingForge;
-import net.lomeli.ring.inventory.ContainerRingForge;
-import net.lomeli.ring.item.ItemHammer;
-import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.network.PacketHandler;
-import net.lomeli.ring.network.PacketRingName;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
@@ -14,8 +11,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
+import net.lomeli.ring.block.tile.TileRingForge;
+import net.lomeli.ring.inventory.ContainerRingForge;
+import net.lomeli.ring.item.ItemHammer;
+import net.lomeli.ring.lib.ModLibs;
+import net.lomeli.ring.network.PacketHandler;
+import net.lomeli.ring.network.PacketRingName;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -33,6 +34,7 @@ public class GuiRingForge extends GuiContainer {
 
     }
 
+    @Override
     public void initGui() {
         super.initGui();
         Keyboard.enableRepeatEvents(true);
@@ -45,11 +47,13 @@ public class GuiRingForge extends GuiContainer {
         this.textField.setMaxStringLength(40);
     }
 
+    @Override
     protected void mouseClicked(int par1, int par2, int par3) {
         super.mouseClicked(par1, par2, par3);
         this.textField.mouseClicked(par1, par2, par3);
     }
 
+    @Override
     protected void keyTyped(char par1, int par2) {
         if (this.textField.textboxKeyTyped(par1, par2))
             sendNamePacket();
@@ -58,7 +62,7 @@ public class GuiRingForge extends GuiContainer {
     }
 
     private void sendNamePacket() {
-        PacketHandler.sendToServer(new PacketRingName(this.textField.getText(), (int)this.tile.xCoord, (int)this.tile.yCoord, (int)this.tile.zCoord));
+        PacketHandler.sendToServer(new PacketRingName(this.textField.getText(), this.tile.xCoord, this.tile.yCoord, this.tile.zCoord));
     }
 
     @Override

@@ -1,14 +1,12 @@
 package net.lomeli.ring.block;
 
-import net.lomeli.ring.Rings;
-import net.lomeli.ring.item.ModItems;
-import net.lomeli.ring.lib.ModLibs;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockPotato;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+
 import net.minecraftforge.oredict.OreDictionary;
+
+import net.lomeli.ring.lib.ModLibs;
+
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class ModBlocks {

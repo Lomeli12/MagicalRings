@@ -1,31 +1,33 @@
 package net.lomeli.ring.client.gui;
 
 import java.awt.Color;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
+
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 public class PageRecipe extends Page {
-    private Object[] recipe;
+    private Object[] recipe, cache;
     private ItemStack output;
     private String itemDescription;
-    private int itemX = drawX + 25;
+    private int tick;
+    private int[] arrayIndex;
 
     public PageRecipe(GuiSpellBook screen, ItemStack item, String itemDescription) {
         super(screen);
+        this.cache = new Object[9];
+        this.arrayIndex = new int[9];
         if (item != null) {
             this.output = item;
             this.recipe = getItemRecipe(item);
@@ -36,61 +38,51 @@ public class PageRecipe extends Page {
     public PageRecipe(GuiSpellBook screen, ItemStack item) {
         this(screen, item, null);
     }
+    
+    @Override
+    public PageRecipe setID(String id) {
+        this.id = id;
+        return this;
+    }
 
     @Override
     public void draw() {
         super.draw();
         if (this.output != null && (this.recipe != null && this.recipe.length > 0)) {
-
-            this.renderItem(output, drawX, drawY - 5);
-            mc.fontRenderer.drawStringWithShadow(output.getDisplayName(), drawX + 20, drawY, Color.YELLOW.getRGB());
+            this.renderItem(output, drawX, drawY - 5, 0);
+            mc.fontRenderer.drawStringWithShadow(output.getDisplayName(), drawX + 20, drawY, Color.CYAN.getRGB());
 
             renderSlots();
-            
-            if (recipe[0] != null)
-                this.renderItem(recipe[0], itemX, drawY + 15);
-            if (recipe[1] != null)
-                this.renderItem(recipe[1], itemX + 20, drawY + 15);
-            if (recipe[2] != null)
-                this.renderItem(recipe[2], itemX + 40, drawY + 15);
 
-            if (recipe[3] != null)
-                this.renderItem(recipe[3], itemX, drawY + 35);
-            if (recipe[4] != null)
-                this.renderItem(recipe[4], itemX + 20, drawY + 35);
-            if (recipe[5] != null)
-                this.renderItem(recipe[5], itemX + 40, drawY + 35);
+            for (int x = 0; x < 3; x++) {
+                for (int y = 0; y < 3; y++) {
+                    int yOffset = drawY + 15 + (20 * y);
+                    int xOffset = (drawX + 25) + (20 * x);
+                    int index = x + (y * 3);
+                    if (recipe[index] != null)
+                        this.renderItem(recipe[index], xOffset, yOffset, index);
+                }
+            }
 
-            if (recipe[6] != null)
-                this.renderItem(recipe[6], itemX, drawY + 55);
-            if (recipe[7] != null)
-                this.renderItem(recipe[7], itemX + 20, drawY + 55);
-            if (recipe[8] != null)
-                this.renderItem(recipe[8], itemX + 40, drawY + 55);
-            
             if (this.itemDescription != null) {
-                mc.fontRenderer.drawSplitString(StatCollector.translateToLocal(this.itemDescription), this.drawX, this.drawY + 80, this.wordWrap, 0);
+                this.drawString(StatCollector.translateToLocal(this.itemDescription), this.drawX, this.drawY + 65, 0);
             }
         }
     }
-    
-    public void renderSlots(){
-        mc.renderEngine.bindTexture(gui.guiTexture);
+
+    public void renderSlots() {
+        mc.renderEngine.bindTexture(GuiSpellBook.guiTexture);
         GL11.glColor3f(1f, 1f, 1f);
-        this.gui.drawTexturedModalRect(itemX - 1, drawY + 14, 62, 196, 18, 18);
-        this.gui.drawTexturedModalRect(itemX + 19, drawY + 14, 62, 196, 18, 18);
-        this.gui.drawTexturedModalRect(itemX + 39, drawY + 14, 62, 196, 18, 18);
-        
-        this.gui.drawTexturedModalRect(itemX - 1, drawY + 34, 62, 196, 18, 18);
-        this.gui.drawTexturedModalRect(itemX + 19, drawY + 34, 62, 196, 18, 18);
-        this.gui.drawTexturedModalRect(itemX + 39, drawY + 34, 62, 196, 18, 18);
-        
-        this.gui.drawTexturedModalRect(itemX - 1, drawY + 54, 62, 196, 18, 18);
-        this.gui.drawTexturedModalRect(itemX + 19, drawY + 54, 62, 196, 18, 18);
-        this.gui.drawTexturedModalRect(itemX + 39, drawY + 54, 62, 196, 18, 18);
+        for (int x = 0; x < 3; x++) {
+            for (int y = 0; y < 3; y++) {
+                int yOffset = drawY + 15 + (20 * y) - 1;
+                int xOffset = (drawX + 25) + (20 * x) - 1;
+                this.gui.drawTexturedModalRect(xOffset, yOffset, 62, 196, 18, 18);
+            }
+        }
     }
 
-    private void renderItem(Object obj, int x, int y) {
+    private void renderItem(Object obj, int x, int y, int index) {
         if (obj != null) {
             if (obj instanceof Item)
                 itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, new ItemStack((Item) obj), x, y);
@@ -98,6 +90,24 @@ public class PageRecipe extends Page {
                 itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, new ItemStack((Block) obj), x, y);
             else if (obj instanceof ItemStack)
                 itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, ((ItemStack) obj), x, y);
+            else if (obj instanceof ArrayList<?>) {
+                if (this.cache[index] == null)
+                    this.cache[index] = ((ArrayList<?>) obj).get(rand.nextInt(((ArrayList<?>) obj).size()));
+                
+                if (++this.tick >= 25) {
+                    arrayIndex[index]++;
+                    if (arrayIndex[index] >= ((ArrayList<?>) obj).size())
+                        arrayIndex[index] = 0;
+                    this.cache[index] = ((ArrayList<?>) obj).get(arrayIndex[index]);
+                }
+
+                if (this.cache[index] instanceof Item)
+                    itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, new ItemStack((Item) this.cache[index]), x, y);
+                else if (this.cache[index] instanceof Block)
+                    itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, new ItemStack((Block) this.cache[index]), x, y);
+                else if (this.cache[index] instanceof ItemStack)
+                    itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, ((ItemStack) this.cache[index]), x, y);
+            }
         }
     }
 
@@ -114,20 +124,32 @@ public class PageRecipe extends Page {
             }
             if (!possibleRecipe.isEmpty()) {
                 IRecipe main = possibleRecipe.get(0);
+                int width = 0, height = 0;
                 try {
                     Object[] inputs = null;
-                    if (main instanceof ShapedOreRecipe)
+                    if (main instanceof ShapedOreRecipe) {
                         inputs = ((ShapedOreRecipe) main).getInput();
-                    else if (main instanceof ShapelessOreRecipe)
-                        inputs = ((ShapelessOreRecipe) main).getInput().toArray();
 
-                    if (inputs != null) {
-                        for (int i = 0; i < inputs.length; i++) {
-                            Object obj = inputs[i];
-                            if (obj instanceof ArrayList<?>)
-                                recipe[i] = ((ArrayList<?>) obj).get(rand.nextInt(((ArrayList<?>) obj).size()));
-                            else
+                        width = getInteger(ShapedOreRecipe.class, main, 4);
+                        height = getInteger(ShapedOreRecipe.class, main, 5);
+                        if (inputs != null) {
+                            for (int x = 0; x < width; x++) {
+                                for (int y = 0; y < height; y++) {
+                                    int index = y * width + x;
+                                    Object obj = inputs[index];
+                                    if (obj == null)
+                                        continue;
+                                    recipe[index] = obj;
+                                }
+                            }
+                        }
+                    }else if (main instanceof ShapelessOreRecipe) {
+                        inputs = ((ShapelessOreRecipe) main).getInput().toArray();
+                        if (inputs != null) {
+                            for (int i = 0; i < inputs.length; i++) {
+                                Object obj = inputs[i];
                                 recipe[i] = obj;
+                            }
                         }
                     }
                 }catch (Exception e) {
@@ -136,6 +158,17 @@ public class PageRecipe extends Page {
             }
         }
         return recipe;
+    }
+
+    private static int getInteger(Class<?> clazz, Object obj, int index) throws IllegalArgumentException, IllegalAccessException {
+        if (index < clazz.getDeclaredFields().length) {
+            Field field = clazz.getDeclaredFields()[index];
+            if (field != null) {
+                field.setAccessible(true);
+                return field.getInt(obj);
+            }
+        }
+        return 0;
     }
 
 }

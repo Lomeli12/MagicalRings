@@ -1,12 +1,11 @@
 package net.lomeli.ring.network;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
-import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.MagicHandler;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
+
+import net.lomeli.ring.magic.MagicHandler;
+
+import io.netty.buffer.ByteBuf;
 
 public class PacketIncreaseMP implements IPacket {
 
@@ -21,13 +20,13 @@ public class PacketIncreaseMP implements IPacket {
     }
 
     @Override
-    public void toByte(ChannelHandlerContext ctx, ByteBuf buffer) {
+    public void toByte(ByteBuf buffer) {
         buffer.writeInt(this.entityID);
         buffer.writeInt(this.boost);
     }
 
     @Override
-    public void fromByte(ChannelHandlerContext ctx, ByteBuf buffer) {
+    public void fromByte(ByteBuf buffer) {
         this.entityID = buffer.readInt();
         this.boost = buffer.readInt();
     }
@@ -37,12 +36,11 @@ public class PacketIncreaseMP implements IPacket {
     }
 
     @Override
-    public void readServer(EntityPlayer p) {
+    public void readServer() {
         EntityPlayer player = (EntityPlayer) MinecraftServer.getServer().getEntityWorld().getEntityByID(this.entityID);
         if (player != null) {
-            if (player.getEntityData().hasKey(ModLibs.PLAYER_DATA)) {
-                NBTTagCompound tag = player.getEntityData().getCompoundTag(ModLibs.PLAYER_DATA);
-                int max = tag.getInteger(ModLibs.PLAYER_MAX);
+            if (MagicHandler.getMagicHandler().playerHasMP(player)) {
+                int max = MagicHandler.getMagicHandler().getPlayerMaxMP(player);
                 if (max < 1500)
                     MagicHandler.modifyPlayerMaxMP(player, max + this.boost);
             }

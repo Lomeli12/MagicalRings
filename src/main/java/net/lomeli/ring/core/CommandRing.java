@@ -1,13 +1,14 @@
 package net.lomeli.ring.core;
 
-import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.network.PacketAdjustClientPos;
-import net.lomeli.ring.network.PacketHandler;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatComponentText;
+
+import net.lomeli.ring.lib.ModLibs;
+import net.lomeli.ring.network.PacketAdjustClientPos;
+import net.lomeli.ring.network.PacketHandler;
 
 public class CommandRing extends CommandBase {
 
@@ -34,7 +35,7 @@ public class CommandRing extends CommandBase {
                     if (y < 0)
                         y = ModLibs.DISPLAY_Y;
                     EntityPlayer player = cSender.getEntityWorld().getPlayerEntityByName(cSender.getCommandSenderName());
-                    if (player != null) 
+                    if (player != null)
                         PacketHandler.sendTo(new PacketAdjustClientPos(x, y), player);
                 }else {
                     this.sendMessage(cSender, "\u00a7c/rings statPosition [xPosition] [yPosition]");
@@ -49,9 +50,9 @@ public class CommandRing extends CommandBase {
                 }
             }else if (command.equalsIgnoreCase("help") || command.equalsIgnoreCase("?")) {
                 this.sendMessage(cSender, "/rings statPosition [xPosition] [yPosition] - Adjusts on screen position of your MP stats.");
-            } else
+            }else
                 this.sendMessage(cSender, "\u00a7cUnknow command! Type /rings ? or /rings help for more info");
-        } else
+        }else
             this.sendMessage(cSender, "Type /rings ? or /rings help for more info");
     }
 

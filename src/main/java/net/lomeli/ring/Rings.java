@@ -1,31 +1,30 @@
 package net.lomeli.ring;
 
 import java.io.File;
+import java.util.EnumMap;
+import java.util.logging.Logger;
+
+import net.minecraft.creativetab.CreativeTabs;
+
+import net.minecraftforge.common.config.Configuration;
 
 import net.lomeli.ring.client.handler.GuiHandler;
 import net.lomeli.ring.core.CommandRing;
 import net.lomeli.ring.core.CreativeRing;
 import net.lomeli.ring.core.Proxy;
 import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.network.PacketAdjustClientPos;
-import net.lomeli.ring.network.PacketAllowFlying;
-import net.lomeli.ring.network.PacketCheckPlayerMP;
-import net.lomeli.ring.network.PacketClientJoined;
+import net.lomeli.ring.network.ChannelHandler;
 import net.lomeli.ring.network.PacketHandler;
-import net.lomeli.ring.network.PacketIncreaseMP;
-import net.lomeli.ring.network.PacketRemovePlayer;
-import net.lomeli.ring.network.PacketRingName;
-import net.lomeli.ring.network.PacketUpdateClient;
-import net.lomeli.ring.network.PacketUpdatePlayerMP;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraftforge.common.config.Configuration;
+
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.network.FMLEmbeddedChannel;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.relauncher.Side;
 
 @Mod(modid = ModLibs.MOD_ID, name = ModLibs.MOD_NAME, version = ModLibs.VERSION)
 public class Rings {
@@ -35,9 +34,11 @@ public class Rings {
     @SidedProxy(clientSide = ModLibs.PROXY_CLIENT, serverSide = ModLibs.PROXY_SERVER)
     public static Proxy proxy;
 
+    public static final Logger log = Logger.getLogger(ModLibs.MOD_ID);
+
     public static File modConfig;
 
-    public static PacketHandler packetHandler;
+    public static EnumMap<Side, FMLEmbeddedChannel> packetChannels;
 
     public static final CreativeTabs modTab = new CreativeRing(ModLibs.MOD_ID.toLowerCase() + ".tab");
 
@@ -55,14 +56,13 @@ public class Rings {
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
         NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
-        packetHandler = new PacketHandler(PacketUpdatePlayerMP.class, PacketAdjustClientPos.class, PacketRingName.class, PacketClientJoined.class, PacketUpdateClient.class, PacketAllowFlying.class,
-                PacketRemovePlayer.class, PacketCheckPlayerMP.class, PacketIncreaseMP.class);
+        packetChannels = NetworkRegistry.INSTANCE.newChannel(ModLibs.MOD_ID, new ChannelHandler(), new PacketHandler());
         proxy.init();
     }
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-        packetHandler.init();
+
         proxy.postInit();
     }
 
@@ -79,7 +79,7 @@ public class Rings {
         ModLibs.RECHARGE_WAIT_TIME = config.get(modOptions, "rechargeWaitTime", 70, "Number of ticks between a player's MP recharging. 20 ticks per second").getInt(70);
 
         String world = "WorldGen";
-        config.addCustomCategoryComment(world, "Adjust and enable/disable world gen. Rate = number of times a viens has to spawn per chunk");
+        config.addCustomCategoryComment(world, "Adjust and enable/disable world gen. Rate = number of times a veins can spawn per chunk");
 
         ModLibs.tungstenSpawn = config.get(world, "tungstenSpawn", true).getBoolean(true);
         ModLibs.platinumSpawn = config.get(world, "platinumSpawn", true).getBoolean(true);
@@ -99,14 +99,18 @@ public class Rings {
         ModLibs.sapphireRate = config.get(world, "sapphireRate", 4).getInt(4);
         ModLibs.amethystRate = config.get(world, "amethystRate", 2).getInt(2);
 
-        ModLibs.tungstenSize = config.get(world, "tungstenVienSize", 1).getInt(1);
-        ModLibs.platinumSize = config.get(world, "platinumVienSize", 2).getInt(2);
-        ModLibs.jadeSize = config.get(world, "jadeVienSize", 3).getInt(3);
-        ModLibs.amberSize = config.get(world, "amberVienSize", 4).getInt(4);
-        ModLibs.peridotSize = config.get(world, "peridotVienSize", 5).getInt(5);
-        ModLibs.rubySize = config.get(world, "rubyVienSize", 5).getInt(5);
-        ModLibs.sapphireSize = config.get(world, "sapphireVienSize", 5).getInt(5);
-        ModLibs.amethystSize = config.get(world, "amethystVienSize", 4).getInt(4);
+        ModLibs.tungstenSize = config.get(world, "tungstenVeinSize", 1).getInt(1);
+        ModLibs.platinumSize = config.get(world, "platinumVeinSize", 2).getInt(2);
+        ModLibs.jadeSize = config.get(world, "jadeVeinSize", 3).getInt(3);
+        ModLibs.amberSize = config.get(world, "amberVeinSize", 4).getInt(4);
+        ModLibs.peridotSize = config.get(world, "peridotVeinSize", 5).getInt(5);
+        ModLibs.rubySize = config.get(world, "rubyVeinSize", 5).getInt(5);
+        ModLibs.sapphireSize = config.get(world, "sapphireVeinSize", 5).getInt(5);
+        ModLibs.amethystSize = config.get(world, "amethystVeinSize", 4).getInt(4);
+
+        ModLibs.activateRetroGen = config.get(world, "activateRetroGen", false,
+                "Warning! Should only be used if there are chunks where loaded before mod was installed. Running it in a new world could cause bad things to happen! Make sure to turn off after first use!")
+                .getBoolean(false);
 
         config.save();
     }

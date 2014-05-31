@@ -1,30 +1,31 @@
 package net.lomeli.ring.network;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
-import net.lomeli.ring.lib.ModLibs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+
+import net.lomeli.ring.lib.ModLibs;
+
+import io.netty.buffer.ByteBuf;
 
 public class PacketUpdateClient implements IPacket {
     private int mp, max;
 
     public PacketUpdateClient() {
     }
-    
+
     public PacketUpdateClient(int mp, int max) {
         this.max = max;
         this.mp = mp;
     }
 
     @Override
-    public void toByte(ChannelHandlerContext ctx, ByteBuf buffer) {
+    public void toByte(ByteBuf buffer) {
         buffer.writeInt(this.max);
         buffer.writeInt(this.mp);
     }
 
     @Override
-    public void fromByte(ChannelHandlerContext ctx, ByteBuf buffer) {
+    public void fromByte(ByteBuf buffer) {
         this.max = buffer.readInt();
         this.mp = buffer.readInt();
     }
@@ -38,7 +39,7 @@ public class PacketUpdateClient implements IPacket {
     }
 
     @Override
-    public void readServer(EntityPlayer player) {
+    public void readServer() {
     }
 
 }

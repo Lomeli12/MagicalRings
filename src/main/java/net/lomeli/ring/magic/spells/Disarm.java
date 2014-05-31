@@ -1,8 +1,5 @@
 package net.lomeli.ring.magic.spells;
 
-import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.ISpell;
-import net.lomeli.ring.magic.MagicHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
@@ -10,6 +7,10 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+
+import net.lomeli.ring.api.ISpell;
+import net.lomeli.ring.lib.ModLibs;
+import net.lomeli.ring.magic.MagicHandler;
 
 public class Disarm implements ISpell {
 

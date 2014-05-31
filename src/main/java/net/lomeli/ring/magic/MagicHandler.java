@@ -4,7 +4,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+
 import net.lomeli.ring.Rings;
+import net.lomeli.ring.api.IMagicHandler;
+import net.lomeli.ring.api.ISpell;
 import net.lomeli.ring.lib.ModLibs;
 import net.lomeli.ring.magic.spells.AngelKiss;
 import net.lomeli.ring.magic.spells.Disarm;
@@ -14,31 +22,27 @@ import net.lomeli.ring.magic.spells.FriendlyFire;
 import net.lomeli.ring.magic.spells.Harvest;
 import net.lomeli.ring.magic.spells.HeavenStrike;
 import net.lomeli.ring.magic.spells.Rearm;
+import net.lomeli.ring.magic.spells.SwiftWind;
 import net.lomeli.ring.network.PacketHandler;
 import net.lomeli.ring.network.PacketUpdatePlayerMP;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 
-public class MagicHandler {
+public class MagicHandler implements IMagicHandler {
     private List<ISpell> registeredSpells = new ArrayList<ISpell>();
     private HashMap<ISpell, Object[]> spellRecipes = new HashMap<ISpell, Object[]>();
 
     public MagicHandler() {
         this.registerSpell(new EnderPort(), Items.ender_pearl, Items.ender_eye, Blocks.end_stone, Blocks.diamond_block);
-        this.registerSpell(new FriendlyFire(), Items.ender_pearl, Items.iron_sword, Items.bone, Items.spider_eye, Items.gunpowder, Items.blaze_rod, Items.ghast_tear, Items.magma_cream);
-        this.registerSpell(new FireWrath(), Items.flint_and_steel, Items.blaze_powder, Items.blaze_rod, Items.fire_charge);
+        this.registerSpell(new FriendlyFire(), Items.ender_pearl, Items.diamond_sword, Items.bone, Items.spider_eye, Items.gunpowder, Items.blaze_rod, Items.ghast_tear, Items.magma_cream);
+        this.registerSpell(new FireWrath(), Items.flint_and_steel, Items.blaze_powder, Items.blaze_rod, Items.fire_charge, Items.lava_bucket);
         this.registerSpell(new HeavenStrike(), Items.iron_ingot, "gemDiamond", Items.water_bucket, Items.redstone);
         this.registerSpell(new AngelKiss(), Items.feather, new ItemStack(Items.potionitem, 1, 8261));
-        this.registerSpell(new Harvest(), Items.bone, Items.iron_hoe, Blocks.grass, new ItemStack(Items.dye, 1, 15));
+        this.registerSpell(new Harvest(), new ItemStack(Items.potionitem, 1, 8193), Items.iron_hoe, Items.wheat_seeds, Blocks.red_flower, new ItemStack(Items.dye, 1, 15));
         this.registerSpell(new Disarm(), Blocks.chest, Items.stone_sword, Items.bow, Items.redstone);
         this.registerSpell(new Rearm(), Items.stone_sword, Items.bow, Items.arrow, Items.flint);
-        //this.registerSpell(new SwiftWind(), Items.nether_star, Blocks.diamond_block, Items.feather, Items.ender_pearl);
+        this.registerSpell(new SwiftWind(), Items.nether_star, Blocks.diamond_block, Items.feather, Items.ender_pearl, Items.fireworks);
     }
 
-    public static List<ISpell> getReisteredSpells() {
+    public static List<ISpell> getAllSpells() {
         return getMagicHandler().registeredSpells;
     }
 
@@ -82,6 +86,7 @@ public class MagicHandler {
         return false;
     }
 
+    @Override
     public void registerSpell(ISpell spell, Object... obj) {
         if (this.registeredSpells.contains(spell))
             return;
@@ -106,6 +111,67 @@ public class MagicHandler {
     public Object[] getSpellRecipe(int index) {
         ISpell spell = getSpell(index);
         return spell == null ? null : this.spellRecipes.get(spell);
+    }
+
+    @Override
+    public List<ISpell> getReisteredSpells() {
+        return getAllSpells();
+    }
+
+    @Override
+    public ISpell getSpell(ISpell spell) {
+        for (ISpell sp : getReisteredSpells()) {
+            if (sp.getUnlocalizedName().equals(spell.getUnlocalizedName()))
+                return sp;
+        }
+        return null;
+    }
+
+    @Override
+    public Object[] getSpellRecipe(ISpell spell) {
+        for (ISpell sp : getReisteredSpells()) {
+            if (sp.getUnlocalizedName().equals(spell.getUnlocalizedName()))
+                return this.spellRecipes.get(sp);
+        }
+        return null;
+    }
+
+    @Override
+    public boolean canPlayerUse(EntityPlayer player, int cost) {
+        return canUse(player, cost);
+    }
+
+    @Override
+    public void useMP(EntityPlayer player, int cost) {
+        modifyPlayerMP(player, -cost);
+    }
+
+    @Override
+    public void modifyMax(EntityPlayer player, int newMax) {
+        modifyPlayerMaxMP(player, newMax);
+    }
+
+    @Override
+    public int getPlayerMP(EntityPlayer player) {
+        if (player.getEntityData() != null && player.getEntityData().hasKey(ModLibs.PLAYER_DATA)) {
+            NBTTagCompound tag = player.getEntityData().getCompoundTag(ModLibs.PLAYER_DATA);
+            return tag.getInteger(ModLibs.PLAYER_MP);
+        }
+        return 0;
+    }
+
+    @Override
+    public int getPlayerMaxMP(EntityPlayer player) {
+        if (player.getEntityData() != null && player.getEntityData().hasKey(ModLibs.PLAYER_DATA)) {
+            NBTTagCompound tag = player.getEntityData().getCompoundTag(ModLibs.PLAYER_DATA);
+            return tag.getInteger(ModLibs.PLAYER_MAX);
+        }
+        return 0;
+    }
+
+    @Override
+    public boolean playerHasMP(EntityPlayer player) {
+        return (player.getEntityData() != null && player.getEntityData().hasKey(ModLibs.PLAYER_DATA) && player.getEntityData().hasKey(ModLibs.PLAYER_MP)) || player.capabilities.isCreativeMode;
     }
 
 }

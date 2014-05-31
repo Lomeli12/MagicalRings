@@ -1,14 +1,16 @@
 package net.lomeli.ring.network;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
-import net.lomeli.ring.Rings;
-import net.lomeli.ring.lib.ModLibs;
 import net.minecraft.entity.player.EntityPlayer;
+
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.common.config.Property.Type;
+
+import net.lomeli.ring.Rings;
+import net.lomeli.ring.lib.ModLibs;
+
+import io.netty.buffer.ByteBuf;
 
 public class PacketAdjustClientPos implements IPacket {
 
@@ -23,13 +25,13 @@ public class PacketAdjustClientPos implements IPacket {
     }
 
     @Override
-    public void toByte(ChannelHandlerContext ctx, ByteBuf buffer) {
+    public void toByte(ByteBuf buffer) {
         buffer.writeInt(this.x);
         buffer.writeInt(this.y);
     }
 
     @Override
-    public void fromByte(ChannelHandlerContext ctx, ByteBuf buffer) {
+    public void fromByte(ByteBuf buffer) {
         this.x = buffer.readInt();
         this.y = buffer.readInt();
     }
@@ -50,7 +52,7 @@ public class PacketAdjustClientPos implements IPacket {
         propY.set(this.y);
         cat.put("displayX", propX);
         cat.put("displayY", propY);
-        
+
         ModLibs.DISPLAY_X = this.x;
         ModLibs.DISPLAY_Y = this.y;
 
@@ -58,7 +60,7 @@ public class PacketAdjustClientPos implements IPacket {
     }
 
     @Override
-    public void readServer(EntityPlayer player) {
+    public void readServer() {
     }
 
 }

@@ -3,10 +3,6 @@ package net.lomeli.ring.block.tile;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.lomeli.ring.item.ItemMagicRing;
-import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.ISpell;
-import net.lomeli.ring.magic.MagicHandler;
 import net.minecraft.block.Block;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.item.EntityItem;
@@ -22,7 +18,13 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.StatCollector;
+
 import net.minecraftforge.oredict.OreDictionary;
+
+import net.lomeli.ring.api.ISpell;
+import net.lomeli.ring.item.ItemMagicRing;
+import net.lomeli.ring.lib.ModLibs;
+import net.lomeli.ring.magic.MagicHandler;
 
 public class TileAltar extends TileEntity implements IInventory {
 
@@ -36,6 +38,7 @@ public class TileAltar extends TileEntity implements IInventory {
         this.inventory = new ItemStack[1];
     }
 
+    @Override
     public void updateEntity() {
         super.updateEntity();
         if (this.startInfusion) {
@@ -111,7 +114,7 @@ public class TileAltar extends TileEntity implements IInventory {
     public void addPossibleTile(int x, int z) {
         TileEntity tile = worldObj.getTileEntity(xCoord + x, yCoord, zCoord + z);
         if (tile != null && tile instanceof TileItemAltar) {
-            if (!tiles.contains((TileItemAltar) tile))
+            if (!tiles.contains(tile))
                 tiles.add((TileItemAltar) tile);
         }
     }
@@ -158,7 +161,7 @@ public class TileAltar extends TileEntity implements IInventory {
         for (Object obj : ingredients) {
             if (obj != null) {
                 if (obj instanceof String) {
-                    itemList.add((String) obj);
+                    itemList.add(obj);
                 }else {
                     ItemStack item = null;
                     if (obj instanceof ItemStack)

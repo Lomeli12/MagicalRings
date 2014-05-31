@@ -1,11 +1,12 @@
 package net.lomeli.ring.network;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
-import net.lomeli.ring.Rings;
 import net.minecraft.entity.player.EntityPlayer;
 
-public class PacketRemovePlayer implements IPacket{
+import net.lomeli.ring.Rings;
+
+import io.netty.buffer.ByteBuf;
+
+public class PacketRemovePlayer implements IPacket {
 
     private int entityId;
 
@@ -17,12 +18,12 @@ public class PacketRemovePlayer implements IPacket{
     }
 
     @Override
-    public void toByte(ChannelHandlerContext ctx, ByteBuf buffer) {
+    public void toByte(ByteBuf buffer) {
         buffer.writeInt(this.entityId);
     }
 
     @Override
-    public void fromByte(ChannelHandlerContext ctx, ByteBuf buffer) {
+    public void fromByte(ByteBuf buffer) {
         this.entityId = buffer.readInt();
     }
 
@@ -31,7 +32,7 @@ public class PacketRemovePlayer implements IPacket{
     }
 
     @Override
-    public void readServer(EntityPlayer player) {
+    public void readServer() {
         for (int i = 0; i < Rings.proxy.tickHandler.flyingPlayerList.size(); i++) {
             int j = Rings.proxy.tickHandler.flyingPlayerList.get(i);
             if (j == this.entityId)

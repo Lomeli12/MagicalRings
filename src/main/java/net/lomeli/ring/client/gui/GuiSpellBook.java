@@ -3,15 +3,16 @@ package net.lomeli.ring.client.gui;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.lomeli.ring.lib.ModLibs;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.ResourceLocation;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
+import net.lomeli.ring.lib.ModLibs;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -30,16 +31,22 @@ public class GuiSpellBook extends GuiScreen {
     public GuiSpellBook() {
         this(0);
     }
+    
+    public GuiSpellBook setPageNumber(int i) {
+        this.pageNumber = i;
+        return this;
+    }
 
+    @Override
+    @SuppressWarnings("unchecked")
     public void initGui() {
         super.initGui();
-        Page.loadPages(this);
         this.buttonList.clear();
         int k = (this.width - this.bookImageWidth) / 2;
         int b0 = (this.height - this.bookImageHeight) / 2;
         this.currentPage = avaliablePages.size() > 0 ? (this.pageNumber < avaliablePages.size() ? avaliablePages.get(this.pageNumber) : null) : null;
-        this.buttonList.add(this.nextPage = new GuiSpellBook.NextPageButton(1, k + 120, b0 + 157, true));
-        this.buttonList.add(this.previousPage = new GuiSpellBook.NextPageButton(2, k + 38, b0 + 157, false));
+        this.buttonList.add(this.nextPage = new GuiSpellBook.NextPageButton(1, k + 144, b0 + 168, true));
+        this.buttonList.add(this.previousPage = new GuiSpellBook.NextPageButton(2, k + 17, b0 + 168, false));
     }
 
     @Override
@@ -59,6 +66,16 @@ public class GuiSpellBook extends GuiScreen {
     @Override
     public void drawScreen(int par1, int par2, float par3) {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        
+        if (this.pageNumber <= 0)
+            this.previousPage.visible = false;
+        else
+            this.previousPage.visible = true;
+        
+        if (this.pageNumber >= avaliablePages.size() - 1)
+            this.nextPage.visible = false;
+        else
+            this.nextPage.visible = true;
 
         this.mc.getTextureManager().bindTexture(guiTexture);
         int k = (this.width - this.bookImageWidth) / 2;
@@ -81,13 +98,13 @@ public class GuiSpellBook extends GuiScreen {
     @SideOnly(Side.CLIENT)
     static class NextPageButton extends GuiButton {
         private final boolean field_146151_o;
-        private static final String __OBFID = "CL_00000745";
 
         public NextPageButton(int par1, int par2, int par3, boolean par4) {
             super(par1, par2, par3, 23, 13, "");
             this.field_146151_o = par4;
         }
 
+        @Override
         public void drawButton(Minecraft p_146112_1_, int p_146112_2_, int p_146112_3_) {
             if (this.visible) {
                 boolean flag = p_146112_2_ >= this.xPosition && p_146112_3_ >= this.yPosition && p_146112_2_ < this.xPosition + this.width && p_146112_3_ < this.yPosition + this.height;

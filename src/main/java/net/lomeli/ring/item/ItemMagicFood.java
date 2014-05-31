@@ -2,11 +2,7 @@ package net.lomeli.ring.item;
 
 import java.util.List;
 
-import net.lomeli.ring.Rings;
-import net.lomeli.ring.block.ModBlocks;
-import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.network.PacketHandler;
-import net.lomeli.ring.network.PacketIncreaseMP;
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,11 +12,23 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+
+import net.minecraftforge.common.EnumPlantType;
+import net.minecraftforge.common.IPlantable;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import net.lomeli.ring.Rings;
+import net.lomeli.ring.block.ModBlocks;
+import net.lomeli.ring.lib.ModLibs;
+import net.lomeli.ring.network.PacketHandler;
+import net.lomeli.ring.network.PacketIncreaseMP;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemMagicFood extends ItemFood {
+public class ItemMagicFood extends ItemFood implements IPlantable {
     protected String itemTexture;
 
     @SideOnly(Side.CLIENT)
@@ -43,11 +51,14 @@ public class ItemMagicFood extends ItemFood {
     @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float par8, float par9, float par10) {
         if (!player.isSneaking() && stack.getItemDamage() == 0) {
-            if (world.getBlock(x, y, z) == Blocks.farmland && world.isAirBlock(x, y + 1, z)) {
-                world.setBlock(x, y + 1, z, ModBlocks.onionBlock);
-                if (!player.capabilities.isCreativeMode)
-                    stack.stackSize--;
-                return true;
+            if (player.canPlayerEdit(x, y, z, side, stack) && player.canPlayerEdit(x, y + 1, z, side, stack)) {
+                if (world.getBlock(x, y, z).canSustainPlant(world, x, y, z, ForgeDirection.UP, this) && world.isAirBlock(x, y + 1, z) && side == 1) {
+                    world.setBlock(x, y + 1, z, ModBlocks.onionBlock);
+                    if (!player.capabilities.isCreativeMode)
+                        stack.stackSize--;
+                    return true;
+                }else
+                    return false;
             }
         }
         return super.onItemUse(stack, player, world, x, y, z, side, par8, par9, par10);
@@ -56,6 +67,12 @@ public class ItemMagicFood extends ItemFood {
     @Override
     public EnumRarity getRarity(ItemStack stack) {
         return stack.getItemDamage() == 2 ? EnumRarity.epic : super.getRarity(stack);
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public boolean hasEffect(ItemStack stack) {
+        return stack.getItemDamage() == 2;
     }
 
     @Override
@@ -89,6 +106,7 @@ public class ItemMagicFood extends ItemFood {
         return par1;
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs tab, List list) {
@@ -114,6 +132,21 @@ public class ItemMagicFood extends ItemFood {
         for (int i = 0; i < iconArray.length; i++) {
             iconArray[i] = register.registerIcon(ModLibs.MOD_ID.toLowerCase() + ":food_" + i);
         }
+    }
+
+    @Override
+    public EnumPlantType getPlantType(IBlockAccess world, int x, int y, int z) {
+        return EnumPlantType.Crop;
+    }
+
+    @Override
+    public Block getPlant(IBlockAccess world, int x, int y, int z) {
+        return Blocks.farmland;
+    }
+
+    @Override
+    public int getPlantMetadata(IBlockAccess world, int x, int y, int z) {
+        return 0;
     }
 
 }

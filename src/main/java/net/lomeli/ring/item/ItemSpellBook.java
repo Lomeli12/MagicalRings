@@ -1,19 +1,25 @@
 package net.lomeli.ring.item;
 
-import net.lomeli.ring.Rings;
-import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.MagicHandler;
-import net.lomeli.ring.network.PacketCheckPlayerMP;
-import net.lomeli.ring.network.PacketHandler;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+
+import net.lomeli.ring.Rings;
+import net.lomeli.ring.lib.ModLibs;
+import net.lomeli.ring.network.PacketCheckPlayerMP;
+import net.lomeli.ring.network.PacketHandler;
 
 public class ItemSpellBook extends ItemRings {
 
     public ItemSpellBook(String texture) {
         super(texture);
         this.setMaxStackSize(1);
+    }
+    
+    @Override
+    public EnumRarity getRarity(ItemStack stack) {
+        return EnumRarity.uncommon;
     }
 
     @Override

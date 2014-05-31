@@ -4,9 +4,6 @@ import java.util.List;
 
 import org.lwjgl.input.Keyboard;
 
-import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.ISpell;
-import net.lomeli.ring.magic.MagicHandler;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
@@ -15,8 +12,11 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
-import net.minecraftforge.oredict.ShapelessOreRecipe;
-import cpw.mods.fml.common.registry.GameRegistry;
+
+import net.lomeli.ring.api.ISpell;
+import net.lomeli.ring.lib.ModLibs;
+import net.lomeli.ring.magic.MagicHandler;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -37,16 +37,18 @@ public class ItemSpellParchment extends ItemRings {
         return EnumRarity.rare;
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs tab, List list) {
-        for (int i = 0; i < MagicHandler.getReisteredSpells().size(); i++) {
+        for (int i = 0; i < MagicHandler.getAllSpells().size(); i++) {
             ISpell spell = MagicHandler.getSpellLazy(i);
             if (spell != null)
                 list.add(new ItemStack(item, 1, i));
         }
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
@@ -68,8 +70,8 @@ public class ItemSpellParchment extends ItemRings {
                                 item = new ItemStack((Item) obj);
                             if (obj instanceof Block)
                                 item = new ItemStack((Block) obj);
-                            
-                            if (item != null) 
+
+                            if (item != null)
                                 list.add(item.getDisplayName());
                         }
                     }

@@ -1,11 +1,13 @@
 package net.lomeli.ring.network;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
-import net.lomeli.ring.block.tile.TileRingForge;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
+
+import net.lomeli.ring.block.tile.TileRingForge;
+
+import io.netty.buffer.ByteBuf;
+
 import cpw.mods.fml.common.network.ByteBufUtils;
 
 public class PacketRingName implements IPacket {
@@ -23,7 +25,7 @@ public class PacketRingName implements IPacket {
     }
 
     @Override
-    public void toByte(ChannelHandlerContext ctx, ByteBuf buffer) {
+    public void toByte(ByteBuf buffer) {
         ByteBufUtils.writeUTF8String(buffer, this.name);
         buffer.writeInt(this.x);
         buffer.writeInt(this.y);
@@ -31,7 +33,7 @@ public class PacketRingName implements IPacket {
     }
 
     @Override
-    public void fromByte(ChannelHandlerContext ctx, ByteBuf buffer) {
+    public void fromByte(ByteBuf buffer) {
         this.name = ByteBufUtils.readUTF8String(buffer);
         this.x = buffer.readInt();
         this.y = buffer.readInt();
@@ -43,7 +45,7 @@ public class PacketRingName implements IPacket {
     }
 
     @Override
-    public void readServer(EntityPlayer player) {
+    public void readServer() {
         setName();
     }
 

@@ -2,22 +2,35 @@ package net.lomeli.ring.client.gui;
 
 import java.awt.Color;
 
-import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 
 public class PageText extends Page {
 
-    private String text;
-    
+    private String text, title;
+
     public PageText(GuiSpellBook screen, String text) {
+        this(screen, null, text);
+    }
+
+    public PageText(GuiSpellBook screen, String title, String text) {
         super(screen);
         this.text = text;
+        this.title = title;
+    }
+    
+    @Override
+    public PageText setID(String id) {
+        this.id = id;
+        return this;
     }
 
     @Override
     public void draw() {
         super.draw();
-        
-        mc.fontRenderer.drawSplitString(StatCollector.translateToLocal(text), this.drawX, this.drawY, this.wordWrap, 0);
+        if (title != null) {
+            mc.fontRenderer.drawStringWithShadow(StatCollector.translateToLocal(this.title), drawX, drawY, Color.CYAN.getRGB());
+            this.drawString(this.text, drawX, drawY + 5, 0);
+        }else
+            this.drawString(this.text, drawX, drawY - 10, 0);
     }
 }
