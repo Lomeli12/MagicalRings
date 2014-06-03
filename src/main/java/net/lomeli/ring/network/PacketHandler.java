@@ -35,19 +35,19 @@ public class PacketHandler extends SimpleChannelInboundHandler<IPacket> {
     }
 
     public static void sendToAll(IPacket packet) {
-        Rings.packetChannels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALL);
-        Rings.packetChannels.get(Side.SERVER).writeAndFlush(packet);
+        Rings.channel.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALL);
+        Rings.channel.get(Side.SERVER).writeAndFlush(packet);
     }
 
     public static void sendTo(IPacket packet, EntityPlayer player) {
-        Rings.packetChannels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.PLAYER);
-        Rings.packetChannels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(player);
-        Rings.packetChannels.get(Side.SERVER).writeAndFlush(packet);
+        Rings.channel.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.PLAYER);
+        Rings.channel.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(player);
+        Rings.channel.get(Side.SERVER).writeAndFlush(packet);
     }
 
     public static void sendToServer(IPacket packet) {
-        Rings.packetChannels.get(Side.CLIENT).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.TOSERVER);
-        Rings.packetChannels.get(Side.CLIENT).writeAndFlush(packet);
+        Rings.channel.get(Side.CLIENT).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.TOSERVER);
+        Rings.channel.get(Side.CLIENT).writeAndFlush(packet);
     }
 
     public static void sendEverywhere(IPacket packet) {

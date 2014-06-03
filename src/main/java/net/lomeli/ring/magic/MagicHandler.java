@@ -170,8 +170,7 @@ public class MagicHandler implements IMagicHandler {
     }
 
     @Override
-    public boolean playerHasMP(EntityPlayer player) {
-        return (player.getEntityData() != null && player.getEntityData().hasKey(ModLibs.PLAYER_DATA) && player.getEntityData().hasKey(ModLibs.PLAYER_MP)) || player.capabilities.isCreativeMode;
+    public boolean canPlayerUseMagic(EntityPlayer player) {
+        return player.getEntityData().hasKey(ModLibs.PLAYER_DATA);
     }
-
 }

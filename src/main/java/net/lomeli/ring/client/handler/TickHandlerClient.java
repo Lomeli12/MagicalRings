@@ -20,7 +20,7 @@ public class TickHandlerClient {
             Minecraft mc = Minecraft.getMinecraft();
             if (mc.inGameHasFocus) {
                 ItemStack hand = mc.thePlayer.getCurrentEquippedItem();
-                if (hand != null && MagicHandler.getMagicHandler().playerHasMP(mc.thePlayer)) {
+                if (hand != null && mc.thePlayer.getEntityData().hasKey(ModLibs.PLAYER_DATA)) {
                     if (hand.getItem() instanceof ItemMagicRing) {
                         if (hand.getTagCompound() != null) {
                             NBTTagCompound handtag = hand.getTagCompound().hasKey(ModLibs.RING_TAG) ? hand.getTagCompound().getCompoundTag(ModLibs.RING_TAG) : null;

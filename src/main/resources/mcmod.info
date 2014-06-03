@@ -3,12 +3,9 @@
     "modid" : "MagicalRings",
     "name" : "Magical Rings",
     "version" : "${version}",
+    "mcversion": "1.7.2",
     "url" : "http://www.lomeli12.net/",
-    "credits" : "",
-    "authors" : [ "Lomeli12" ],
-    "description" : "Make rings and infuse them with magic!",
-    "dependancies" : [
-       "Forge"
-    ]
+    "authorList": ["Lomeli12"],
+    "description" : "Make rings and infuse them with magic!"
 }
 ]

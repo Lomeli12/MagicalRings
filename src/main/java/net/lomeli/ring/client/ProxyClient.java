@@ -1,5 +1,7 @@
 package net.lomeli.ring.client;
 
+import java.io.File;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.INetHandler;
@@ -11,7 +13,6 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.common.config.Property.Type;
 
-import net.lomeli.ring.Rings;
 import net.lomeli.ring.api.RingAPI;
 import net.lomeli.ring.block.tile.TileAltar;
 import net.lomeli.ring.block.tile.TileItemAltar;
@@ -29,7 +30,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 public class ProxyClient extends Proxy {
     @Override
     public void preInit() {
-        clientConfig();
         super.preInit();
     }
 
@@ -52,30 +52,49 @@ public class ProxyClient extends Proxy {
         RingAPI.pageRegistry = new PageUtil();
     }
 
-    public void clientConfig() {
-        Configuration config = new Configuration(Rings.modConfig);
+    @Override
+    public void loadConfig(File file) {
+        Configuration config = new Configuration(file);
 
         config.load();
 
+        baseConfig(config);
+
+        int y = (Minecraft.getMinecraft().displayHeight / 4);
+        clientConfig(config, 2, y);
+
+        config.save();
+        
+        this.modConfig = file;
+    }
+    
+    @Override
+    public void changeClientConfig(int x, int y) {
+        Configuration config = new Configuration(this.modConfig);
+
+        config.load();
+
+        baseConfig(config);
+
+        clientConfig(config, x, y);
+
+        config.save();
+    }
+
+    private void clientConfig(Configuration config, int x, int y) {
         String clientOptions = "clientOptions";
-
-        Minecraft mc = Minecraft.getMinecraft();
-
-        int y = (mc.displayHeight / 4);
 
         ConfigCategory cat = config.getCategory(clientOptions) != null ? config.getCategory(clientOptions) : new ConfigCategory(clientOptions);
         cat.setComment("Change the x and y position where your MP is displayed.");
 
-        Property propX = cat.get("displayX") != null ? cat.get("displayX") : new Property("displayX", 2 + "", Type.INTEGER);
+        Property propX = cat.get("displayX") != null ? cat.get("displayX") : new Property("displayX", x + "", Type.INTEGER);
         Property propY = cat.get("displayY") != null ? cat.get("displayY") : new Property("displayY", y + "", Type.INTEGER);
 
-        ModLibs.DISPLAY_X = propX.getInt(2);
+        ModLibs.DISPLAY_X = propX.getInt(x);
         ModLibs.DISPLAY_Y = propY.getInt(y);
 
         cat.put("displayX", propX);
         cat.put("displayY", propY);
-
-        config.save();
     }
 
     @Override

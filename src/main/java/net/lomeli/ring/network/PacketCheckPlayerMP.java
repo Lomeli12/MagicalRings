@@ -37,7 +37,7 @@ public class PacketCheckPlayerMP implements IPacket {
         MinecraftServer ms = MinecraftServer.getServer();
         EntityPlayer pl = (EntityPlayer) ms.getEntityWorld().getEntityByID(this.entityID);
         if (pl != null) {
-            if (!MagicHandler.getMagicHandler().playerHasMP(pl) || !pl.getEntityData().getCompoundTag(ModLibs.PLAYER_DATA).hasKey(ModLibs.PLAYER_MAX))
+            if (!pl.getEntityData().hasKey(ModLibs.PLAYER_DATA) || !pl.getEntityData().getCompoundTag(ModLibs.PLAYER_DATA).hasKey(ModLibs.PLAYER_MAX))
                 MagicHandler.modifyPlayerMaxMP(pl, ModLibs.BASE_MP);
             else
                 MagicHandler.modifyPlayerMaxMP(pl, MagicHandler.getMagicHandler().getPlayerMaxMP(pl));

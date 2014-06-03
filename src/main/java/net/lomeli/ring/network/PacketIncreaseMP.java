@@ -3,6 +3,7 @@ package net.lomeli.ring.network;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 
+import net.lomeli.ring.lib.ModLibs;
 import net.lomeli.ring.magic.MagicHandler;
 
 import io.netty.buffer.ByteBuf;
@@ -39,7 +40,7 @@ public class PacketIncreaseMP implements IPacket {
     public void readServer() {
         EntityPlayer player = (EntityPlayer) MinecraftServer.getServer().getEntityWorld().getEntityByID(this.entityID);
         if (player != null) {
-            if (MagicHandler.getMagicHandler().playerHasMP(player)) {
+            if (player.getEntityData().hasKey(ModLibs.PLAYER_DATA)) {
                 int max = MagicHandler.getMagicHandler().getPlayerMaxMP(player);
                 if (max < 1500)
                     MagicHandler.modifyPlayerMaxMP(player, max + this.boost);

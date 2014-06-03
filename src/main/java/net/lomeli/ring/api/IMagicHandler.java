@@ -19,9 +19,9 @@ public interface IMagicHandler {
     
     public void modifyMax(EntityPlayer player, int newMax);
     
-    public boolean playerHasMP(EntityPlayer player);
-    
     public int getPlayerMP(EntityPlayer player);
     
     public int getPlayerMaxMP(EntityPlayer player);
+    
+    public boolean canPlayerUseMagic(EntityPlayer player);
 }

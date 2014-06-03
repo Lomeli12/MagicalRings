@@ -19,7 +19,7 @@ public class HeavenStrike implements ISpell {
     @Override
     public boolean activateSpell(World world, EntityPlayer player, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost, int cost) {
         if (MagicHandler.canUse(player, cost())) {
-            MovingObjectPosition mop = RayTraceHelper.getRayTrace(player, world);
+            MovingObjectPosition mop = RayTraceHelper.rayTrace(player, world);
             if (mop != null) {
                 if (mop.typeOfHit == MovingObjectType.BLOCK) {
                     int blockX = mop.blockX;
