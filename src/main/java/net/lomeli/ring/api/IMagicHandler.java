@@ -3,6 +3,7 @@ package net.lomeli.ring.api;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 
 public interface IMagicHandler {
     public void registerSpell(ISpell spell, Object... obj);
@@ -24,4 +25,6 @@ public interface IMagicHandler {
     public int getPlayerMaxMP(EntityPlayer player);
     
     public boolean canPlayerUseMagic(EntityPlayer player);
+
+    public NBTTagCompound getPlayerTag(EntityPlayer player);
 }

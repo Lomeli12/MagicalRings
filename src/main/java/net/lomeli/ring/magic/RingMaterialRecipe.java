@@ -8,6 +8,7 @@ import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -56,6 +57,10 @@ public class RingMaterialRecipe implements IMaterialRegistry {
                 ring.stackTagCompound = new NBTTagCompound();
                 NBTTagCompound ringData = new NBTTagCompound();
 
+                boolean edible = false;
+                if (material1.getItem() instanceof ItemFood || material2.getItem() instanceof ItemFood)
+                    edible = true;
+
                 int color1 = getMaterialList().getMaterialColor(material1);
                 int color2 = getMaterialList().getMaterialColor(material2);
 
@@ -72,9 +77,14 @@ public class RingMaterialRecipe implements IMaterialRegistry {
                         int gemColor = getMaterialList().getGemColor(gem);
                         ringData.setBoolean(ModLibs.HAS_GEM, true);
                         ringData.setInteger(ModLibs.GEM_RGB, gemColor);
+                        if (gem.getItem() instanceof ItemFood)
+                            edible = true;
                     }else
                         return null;
                 }
+                if (edible)
+                    ringData.setBoolean(ModLibs.EDIBLE, true);
+
                 int boostTotal = getAverageBoost(boost1, boost2, gemBoost);
                 ringData.setInteger(ModLibs.MATERIAL_BOOST, boostTotal);
 

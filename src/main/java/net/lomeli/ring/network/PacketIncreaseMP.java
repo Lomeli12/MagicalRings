@@ -40,7 +40,7 @@ public class PacketIncreaseMP implements IPacket {
     public void readServer() {
         EntityPlayer player = (EntityPlayer) MinecraftServer.getServer().getEntityWorld().getEntityByID(this.entityID);
         if (player != null) {
-            if (player.getEntityData().hasKey(ModLibs.PLAYER_DATA)) {
+            if (MagicHandler.getMagicHandler().getPlayerTag(player) != null) {
                 int max = MagicHandler.getMagicHandler().getPlayerMaxMP(player);
                 if (max < 5000)
                     MagicHandler.modifyPlayerMaxMP(player, this.boost);

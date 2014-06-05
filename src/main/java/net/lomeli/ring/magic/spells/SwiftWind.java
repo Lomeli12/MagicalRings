@@ -27,7 +27,7 @@ public class SwiftWind implements ISpell {
         if (entity instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) entity;
             if (!Rings.proxy.tickHandler.flyingPlayerList.contains(entity.getEntityId()))
-                PacketHandler.sendToPlayerAndServer(new PacketAllowFlying(player), player);
+                PacketHandler.sendToServer(new PacketAllowFlying(player));
         }
     }
 

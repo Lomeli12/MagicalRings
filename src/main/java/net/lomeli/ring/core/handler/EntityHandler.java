@@ -25,7 +25,7 @@ public class EntityHandler {
     public void onEntityInteract(EntityInteractEvent event) {
         Entity target = event.target;
         EntityPlayer player = event.entityPlayer;
-        if (target != null && player != null && player.getEntityData().hasKey(ModLibs.PLAYER_DATA)) {
+        if (target != null && player != null && MagicHandler.getMagicHandler().getPlayerTag(player) != null) {
             ItemStack stack = player.getCurrentEquippedItem();
             if (stack != null && stack.getItem() instanceof ItemMagicRing) {
                 if (stack.getTagCompound() != null) {

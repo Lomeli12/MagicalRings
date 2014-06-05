@@ -24,8 +24,7 @@ public class TickHandlerClient {
                     if (hand.getItem() instanceof ItemMagicRing) {
                         if (hand.getTagCompound() != null) {
                             NBTTagCompound handtag = hand.getTagCompound().hasKey(ModLibs.RING_TAG) ? hand.getTagCompound().getCompoundTag(ModLibs.RING_TAG) : null;
-                            if (handtag != null && handtag.hasKey(ModLibs.SPELL_ID)) {
-                                System.out.println("Hi");
+                            if (handtag != null && handtag.hasKey(ModLibs.SPELL_ID) && MagicHandler.getMagicHandler().getPlayerTag(mc.thePlayer) != null) {
                                 int mp = MagicHandler.getMagicHandler().getPlayerMP(mc.thePlayer);
                                 int max = MagicHandler.getMagicHandler().getPlayerMaxMP(mc.thePlayer);
                                 String mpInfo = StatCollector.translateToLocal(ModLibs.MANA) + ": " + mp + " / " + max;

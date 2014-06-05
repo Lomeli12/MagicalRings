@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
 
 import net.lomeli.ring.lib.ModLibs;
+import net.lomeli.ring.magic.MagicHandler;
 import net.lomeli.ring.network.PacketHandler;
 import net.lomeli.ring.network.PacketModifyMp;
 
@@ -17,7 +18,7 @@ public class ItemEventHandler {
     public void finishItemUse(PlayerUseItemEvent.Finish event) {
         EntityPlayer player = event.entityPlayer;
         ItemStack stack = event.item;
-        if (player.getEntityData().hasKey(ModLibs.PLAYER_DATA) && !player.capabilities.isCreativeMode) {
+        if (MagicHandler.getMagicHandler().getPlayerTag(player) != null && !player.capabilities.isCreativeMode) {
             if (stack.getItem() instanceof ItemFood) {
                 int foodPoints = ((ItemFood) stack.getItem()).func_150905_g(stack) * 2;
                 PacketHandler.sendToServer(new PacketModifyMp(player, foodPoints, 0));

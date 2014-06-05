@@ -50,7 +50,7 @@ public class PacketHandler extends SimpleChannelInboundHandler<IPacket> {
         Rings.channel.get(Side.CLIENT).writeAndFlush(packet);
     }
 
-    public static void sendEverywhere(IPacket packet) {
+    public static void sendEverfywhere(IPacket packet) {
         sendToAll(packet);
         sendToServer(packet);
     }

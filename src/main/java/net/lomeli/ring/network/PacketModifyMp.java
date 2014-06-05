@@ -4,7 +4,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 
+import net.lomeli.ring.core.SimpleUtil;
 import net.lomeli.ring.lib.ModLibs;
+import net.lomeli.ring.magic.MagicHandler;
 
 import io.netty.buffer.ByteBuf;
 
@@ -37,30 +39,36 @@ public class PacketModifyMp implements IPacket {
 
     @Override
     public void readClient(EntityPlayer player) {
-        if (player.getEntityData().hasKey(ModLibs.PLAYER_DATA)) {
-            NBTTagCompound tag = player.getEntityData().getCompoundTag(ModLibs.PLAYER_DATA);
-            tag.setInteger(ModLibs.PLAYER_MP, tag.getInteger(ModLibs.PLAYER_MP) + this.mp);
-            tag.setInteger(ModLibs.PLAYER_MAX, tag.getInteger(ModLibs.PLAYER_MAX) + this.max);
-            player.getEntityData().setTag(ModLibs.PLAYER_DATA, tag);
-        }
+        NBTTagCompound tag = MagicHandler.getMagicHandler().getPlayerTag(player);
+
+        tag = updateTag(tag);
+
+        SimpleUtil.addToPersistantData(player, ModLibs.PLAYER_DATA, tag);
     }
 
     @Override
     public void readServer() {
-        update();
-    }
-
-    public void update() {
         MinecraftServer ms = MinecraftServer.getServer();
         EntityPlayer player = (EntityPlayer) ms.getEntityWorld().getEntityByID(this.id);
         if (player != null) {
-            if (player.getEntityData().hasKey(ModLibs.PLAYER_DATA)) {
-                NBTTagCompound tag = player.getEntityData().getCompoundTag(ModLibs.PLAYER_DATA);
-                tag.setInteger(ModLibs.PLAYER_MP, tag.getInteger(ModLibs.PLAYER_MP) + this.mp);
-                tag.setInteger(ModLibs.PLAYER_MAX, tag.getInteger(ModLibs.PLAYER_MAX) + this.max);
-                player.getEntityData().setTag(ModLibs.PLAYER_DATA, tag);
-            }
+            NBTTagCompound tag = MagicHandler.getMagicHandler().getPlayerTag(player);
+
+            tag = updateTag(tag);
+
+            SimpleUtil.addToPersistantData(player, ModLibs.PLAYER_DATA, tag);
         }
         PacketHandler.sendTo(new PacketModifyMp(player, this.mp, this.max), player);
+    }
+
+    public NBTTagCompound updateTag(NBTTagCompound tag) {
+        if (tag != null) {
+            tag.setInteger(ModLibs.PLAYER_MP, tag.getInteger(ModLibs.PLAYER_MP) + this.mp);
+            tag.setInteger(ModLibs.PLAYER_MAX, tag.getInteger(ModLibs.PLAYER_MAX) + this.max);
+        } else {
+            tag = new NBTTagCompound();
+            tag.setInteger(ModLibs.PLAYER_MP, this.mp);
+            tag.setInteger(ModLibs.PLAYER_MAX, this.max);
+        }
+        return tag;
     }
 }

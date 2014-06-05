@@ -13,7 +13,7 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 
 import net.lomeli.ring.api.ISpell;
-import net.lomeli.ring.core.RayTraceHelper;
+import net.lomeli.ring.core.SimpleUtil;
 import net.lomeli.ring.lib.ModLibs;
 import net.lomeli.ring.magic.MagicHandler;
 
@@ -23,7 +23,7 @@ public class EnderPort implements ISpell {
     @Override
     public boolean activateSpell(World world, EntityPlayer player, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost, int cost) {
         if (MagicHandler.canUse(player, cost())) {
-            MovingObjectPosition mop = RayTraceHelper.rayTrace(player, world);
+            MovingObjectPosition mop = SimpleUtil.rayTrace(player, world);
             if (mop != null) {
                 if (mop.typeOfHit == MovingObjectType.BLOCK) {
                     int newX = mop.blockX;

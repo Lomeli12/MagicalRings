@@ -1,6 +1,7 @@
 package net.lomeli.ring.network;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 
 import net.lomeli.ring.lib.ModLibs;
@@ -37,10 +38,12 @@ public class PacketCheckPlayerMP implements IPacket {
         MinecraftServer ms = MinecraftServer.getServer();
         EntityPlayer pl = (EntityPlayer) ms.getEntityWorld().getEntityByID(this.entityID);
         if (pl != null) {
-            if (!pl.getEntityData().hasKey(ModLibs.PLAYER_DATA) || !pl.getEntityData().getCompoundTag(ModLibs.PLAYER_DATA).hasKey(ModLibs.PLAYER_MAX))
+            NBTTagCompound tag = MagicHandler.getMagicHandler().getPlayerTag(pl);
+            if (tag != null) {
                 MagicHandler.modifyPlayerMaxMP(pl, ModLibs.BASE_MP);
-            else
+            } else {
                 MagicHandler.modifyPlayerMaxMP(pl, MagicHandler.getMagicHandler().getPlayerMaxMP(pl));
+            }
         }
     }
 }

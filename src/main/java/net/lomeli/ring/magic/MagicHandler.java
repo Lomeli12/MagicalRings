@@ -55,20 +55,17 @@ public class MagicHandler implements IMagicHandler {
     }
 
     public static void modifyPlayerMP(EntityPlayer player, int cost) {
-        if (!player.capabilities.isCreativeMode && player.getEntityData().hasKey(ModLibs.PLAYER_DATA))
-            PacketHandler.sendEverywhere(new PacketModifyMp(player, cost, 0));
+        if (!player.capabilities.isCreativeMode && getMagicHandler().getPlayerTag(player) != null)
+            PacketHandler.sendToServer(new PacketModifyMp(player, cost, 0));
     }
 
     public static void modifyPlayerMaxMP(EntityPlayer player, int newMax) {
-        if (player.getEntityData().hasKey(ModLibs.PLAYER_DATA))
-            PacketHandler.sendEverywhere(new PacketModifyMp(player, 0, newMax));
-        else
-            PacketHandler.sendEverywhere(new PacketModifyMp(player, 0, newMax));
+        PacketHandler.sendToServer(new PacketModifyMp(player, 0, newMax));
     }
 
     public static boolean canUse(EntityPlayer player, int cost) {
-        if (player.getEntityData().hasKey(ModLibs.PLAYER_DATA)) {
-            NBTTagCompound tag = player.getEntityData().getCompoundTag(ModLibs.PLAYER_DATA);
+        if (getMagicHandler().getPlayerTag(player) != null) {
+            NBTTagCompound tag = getMagicHandler().getPlayerTag(player);
             return tag.getInteger(ModLibs.PLAYER_MP) >= cost;
         }
         return false;
@@ -141,8 +138,8 @@ public class MagicHandler implements IMagicHandler {
 
     @Override
     public int getPlayerMP(EntityPlayer player) {
-        if (player.getEntityData() != null && player.getEntityData().hasKey(ModLibs.PLAYER_DATA)) {
-            NBTTagCompound tag = player.getEntityData().getCompoundTag(ModLibs.PLAYER_DATA);
+        if (player.getEntityData() != null && getPlayerTag(player) != null) {
+            NBTTagCompound tag = getPlayerTag(player);
             return tag.getInteger(ModLibs.PLAYER_MP);
         }
         return 0;
@@ -150,8 +147,8 @@ public class MagicHandler implements IMagicHandler {
 
     @Override
     public int getPlayerMaxMP(EntityPlayer player) {
-        if (player.getEntityData() != null && player.getEntityData().hasKey(ModLibs.PLAYER_DATA)) {
-            NBTTagCompound tag = player.getEntityData().getCompoundTag(ModLibs.PLAYER_DATA);
+        if (player.getEntityData() != null && getPlayerTag(player) != null) {
+            NBTTagCompound tag = getPlayerTag(player);
             return tag.getInteger(ModLibs.PLAYER_MAX);
         }
         return 0;
@@ -159,6 +156,21 @@ public class MagicHandler implements IMagicHandler {
 
     @Override
     public boolean canPlayerUseMagic(EntityPlayer player) {
-        return player.getEntityData().hasKey(ModLibs.PLAYER_DATA);
+        return getPlayerTag(player) != null;
+    }
+
+    @Override
+    public NBTTagCompound getPlayerTag(EntityPlayer player) {
+        NBTTagCompound tag = null;
+
+        if (player != null) {
+            NBTTagCompound persisted = player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
+            if (persisted == null)
+                return tag;
+            if (persisted.hasKey(ModLibs.PLAYER_DATA))
+                tag = persisted.getCompoundTag(ModLibs.PLAYER_DATA);
+        }
+
+        return tag;
     }
 }

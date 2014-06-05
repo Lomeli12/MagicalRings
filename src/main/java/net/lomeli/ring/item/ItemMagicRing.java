@@ -111,29 +111,24 @@ public class ItemMagicRing extends ItemRings implements IBauble {
 
     public boolean useRing(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
         if (stack.getTagCompound() != null) {
-            if (!MagicHandler.getMagicHandler().canPlayerUseMagic(player)) {
-                player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal(ModLibs.NO_MANA)));
-                return false;
-            }
-
             NBTTagCompound tag = stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG);
             if (tag != null) {
                 if (tag.hasKey(ModLibs.SPELL_ID)) {
+                    if (!MagicHandler.getMagicHandler().canPlayerUseMagic(player)) {
+                        if (!world.isRemote)
+                            player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal(ModLibs.NO_MANA)));
+                        return false;
+                    }
                     int spellID = tag.getInteger(ModLibs.SPELL_ID);
                     ISpell spell = MagicHandler.getSpellLazy(spellID);
                     if (spell != null) {
                         int trueCost = -spell.cost() + (tag.getInteger(ModLibs.MATERIAL_BOOST) * 5);
-                        if (spell.activateSpell(world, player, x, y, z, side, hitX, hitY, hitZ, tag.getInteger(ModLibs.MATERIAL_BOOST), trueCost))
-                            return true;
-                        else {
-                            if (this.isEdible(tag)) {
+                        if (spell.activateSpell(world, player, x, y, z, side, hitX, hitY, hitZ, tag.getInteger(ModLibs.MATERIAL_BOOST), trueCost)) {
+                            if (this.isEdible(tag))
                                 world.playSoundAtEntity(player, "random.burp", 0.5F, world.rand.nextFloat() * 0.1F + 0.9F);
-                                stack.stackSize--;
-                                return true;
-                            }
+                            return true;
                         }
                     }
-
                 }
             }
         }

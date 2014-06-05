@@ -5,6 +5,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 
 import net.lomeli.ring.lib.ModLibs;
+import net.lomeli.ring.magic.MagicHandler;
 
 import io.netty.buffer.ByteBuf;
 
@@ -36,13 +37,12 @@ public class PacketClientJoined implements IPacket {
     public void readServer() {
         MinecraftServer ms = MinecraftServer.getServer();
         EntityPlayer player = (EntityPlayer) ms.getEntityWorld().getEntityByID(this.entityID);
-        if (player.getEntityData().hasKey(ModLibs.PLAYER_DATA)) {
-            NBTTagCompound tag = player.getEntityData().getCompoundTag(ModLibs.PLAYER_DATA);
-            if (tag != null) {
-                int mp = tag.getInteger(ModLibs.PLAYER_MP);
-                int max = tag.getInteger(ModLibs.PLAYER_MAX);
-                PacketHandler.sendTo(new PacketUpdateClient(mp, max), player);
-            }
+        NBTTagCompound tag = MagicHandler.getMagicHandler().getPlayerTag(player);
+        if (tag != null) {
+            int mp = tag.getInteger(ModLibs.PLAYER_MP);
+            int max = tag.getInteger(ModLibs.PLAYER_MAX);
+            System.out.println(mp + "/" + max);
+            PacketHandler.sendTo(new PacketUpdateClient(mp, max), player);
         }
     }
 

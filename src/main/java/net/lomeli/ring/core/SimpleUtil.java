@@ -1,12 +1,14 @@
 package net.lomeli.ring.core;
 
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
-public class RayTraceHelper {
+public class SimpleUtil {
     
     public static MovingObjectPosition rayTrace(EntityLivingBase entity, World world) {
         return rayTrace(entity, world, true);
@@ -31,5 +33,17 @@ public class RayTraceHelper {
         Vec3 vec3d2 = vec3d.addVector(f7 * d3, f8 * d3, f9 * d3);
         MovingObjectPosition mop = world.rayTraceBlocks(vec3d, vec3d2, hitLiquids);
         return mop;
+    }
+
+    public static void addToPersistantData(EntityPlayer player, String tagName, NBTTagCompound tag) {
+        if(tag != null) {
+            NBTTagCompound pData = player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
+            if (pData == null)
+                pData = new NBTTagCompound();
+
+            pData.setTag(tagName, tag);
+
+            player.getEntityData().setTag(EntityPlayer.PERSISTED_NBT_TAG, pData);
+        }
     }
 }
