@@ -30,10 +30,13 @@ public class HudHandler {
             if (mc.inGameHasFocus) {
                 MovingObjectPosition pos = mc.objectMouseOver;
                 if (pos != null && mc.thePlayer.getCurrentEquippedItem() != null && mc.thePlayer.getCurrentEquippedItem().getItem() == ModItems.book) {
-                    Block block = mc.theWorld.getBlock(pos.blockX, pos.blockY, pos.blockZ);
-                    int meta = mc.theWorld.getBlockMetadata(pos.blockX, pos.blockY, pos.blockZ);
-                    if (block != null && block instanceof IBookEntry)
-                        renderInfoDisplay(new ItemStack(block, 1, meta), event.resolution);
+                    if (!mc.theWorld.isAirBlock(pos.blockX, pos.blockY, pos.blockZ)) {
+                        Block block = mc.theWorld.getBlock(pos.blockX, pos.blockY, pos.blockZ);
+                        if (block != null && block instanceof IBookEntry) {
+                            int meta = mc.theWorld.getBlockMetadata(pos.blockX, pos.blockY, pos.blockZ);
+                            renderInfoDisplay(new ItemStack(block, 1, meta), event.resolution);
+                        }
+                    }
                 }
             }
         }
@@ -47,16 +50,16 @@ public class HudHandler {
 
         Minecraft mc = Minecraft.getMinecraft();
 
-        int x = res.getScaledWidth() / 2 + 8;
-        int y = res.getScaledHeight() / 2 - 4;
+        int x = res.getScaledWidth() / 2;
+        int y = res.getScaledHeight() / 2;
 
-        mc.fontRenderer.drawStringWithShadow(stack.getDisplayName(), x + 18, y, color);
-        mc.fontRenderer.drawStringWithShadow(StatCollector.translateToLocal(BookText.INFO), x + 18, y + 11, color);
-        itemRender.renderItemIntoGUI(mc.fontRenderer, mc.renderEngine, new ItemStack(ModItems.book), x, y);
+        String info = StatCollector.translateToLocal(BookText.INFO);
+        int itemX = x - (mc.fontRenderer.getStringWidth(stack.getDisplayName()) / 2);
+        mc.fontRenderer.drawStringWithShadow(stack.getDisplayName(), itemX, y + 6, color);
+        mc.fontRenderer.drawStringWithShadow(info, x - (mc.fontRenderer.getStringWidth(info) / 2), y + 18, color);
+        itemRender.renderItemIntoGUI(mc.fontRenderer, mc.renderEngine, new ItemStack(ModItems.book), itemX - 20, y + 2);
 
         GL11.glDisable(GL11.GL_LIGHTING);
-
-        mc.fontRenderer.drawStringWithShadow("?", x + 10, y + 8, 0xFFFFFF);
 
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glColor4f(1F, 1F, 1F, 1F);

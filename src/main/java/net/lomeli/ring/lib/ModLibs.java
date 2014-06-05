@@ -46,6 +46,7 @@ public class ModLibs {
     public static final String HAMMER_INFO = MESSAGE + "hammer";
     public static final String MORE_INFO = MESSAGE + "shift";
     public static final String MANA = MESSAGE + "mana";
+    public static final String NO_MANA = MESSAGE + "nomana";
 
     public static final int RING_FORGE_GUI = 0;
     public static final int BOOK_GUI = 1;

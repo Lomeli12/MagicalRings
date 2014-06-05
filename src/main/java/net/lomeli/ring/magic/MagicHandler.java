@@ -24,7 +24,7 @@ import net.lomeli.ring.magic.spells.HeavenStrike;
 import net.lomeli.ring.magic.spells.Rearm;
 import net.lomeli.ring.magic.spells.SwiftWind;
 import net.lomeli.ring.network.PacketHandler;
-import net.lomeli.ring.network.PacketUpdatePlayerMP;
+import net.lomeli.ring.network.PacketModifyMp;
 
 public class MagicHandler implements IMagicHandler {
     private List<ISpell> registeredSpells = new ArrayList<ISpell>();
@@ -55,27 +55,15 @@ public class MagicHandler implements IMagicHandler {
     }
 
     public static void modifyPlayerMP(EntityPlayer player, int cost) {
-        if (!player.capabilities.isCreativeMode && player.getEntityData().hasKey(ModLibs.PLAYER_DATA)) {
-            NBTTagCompound tag = player.getEntityData().getCompoundTag(ModLibs.PLAYER_DATA);
-            int mp = tag.getInteger(ModLibs.PLAYER_MP), max = tag.getInteger(ModLibs.PLAYER_MAX);
-            mp += cost;
-            if (mp > max)
-                mp = max;
-            if (mp < 0)
-                mp = 0;
-            PacketHandler.sendEverywhere(new PacketUpdatePlayerMP(player, mp, max));
-        }
+        if (!player.capabilities.isCreativeMode && player.getEntityData().hasKey(ModLibs.PLAYER_DATA))
+            PacketHandler.sendEverywhere(new PacketModifyMp(player, cost, 0));
     }
 
     public static void modifyPlayerMaxMP(EntityPlayer player, int newMax) {
-        if (player.getEntityData().hasKey(ModLibs.PLAYER_DATA)) {
-            NBTTagCompound tag = player.getEntityData().getCompoundTag(ModLibs.PLAYER_DATA);
-            int mp = tag.getInteger(ModLibs.PLAYER_MP);
-            if (mp > newMax)
-                mp = newMax;
-            PacketHandler.sendEverywhere(new PacketUpdatePlayerMP(player, mp, newMax));
-        }else
-            PacketHandler.sendEverywhere(new PacketUpdatePlayerMP(player, 0, newMax));
+        if (player.getEntityData().hasKey(ModLibs.PLAYER_DATA))
+            PacketHandler.sendEverywhere(new PacketModifyMp(player, 0, newMax));
+        else
+            PacketHandler.sendEverywhere(new PacketModifyMp(player, 0, newMax));
     }
 
     public static boolean canUse(EntityPlayer player, int cost) {

@@ -34,8 +34,9 @@ public class PacketAllowFlying implements IPacket {
 
     @Override
     public void readServer() {
-        if (!Rings.proxy.tickHandler.flyingPlayerList.contains(this.entityId))
+        if (!Rings.proxy.tickHandler.flyingPlayerList.contains(this.entityId)) {
             Rings.proxy.tickHandler.flyingPlayerList.add(this.entityId);
+        }
     }
 
 }

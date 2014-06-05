@@ -30,6 +30,7 @@ public class TileItemAltar extends TileEntity implements IInventory {
         worldObj.spawnParticle("smoke", xCoord + worldObj.rand.nextFloat(), yCoord + 1.1, zCoord + worldObj.rand.nextFloat(), 0, 0, 0);
         worldObj.spawnParticle("smoke", xCoord + worldObj.rand.nextFloat(), yCoord + 1.1, zCoord + worldObj.rand.nextFloat(), 0, 0, 0);
         worldObj.spawnParticle("smoke", xCoord + 0.5, yCoord + 1.1, zCoord + 0.5, 0, 0, 0);
+        worldObj.playSound(xCoord, yCoord, zCoord, "random.pop", 0.5F, 0.4F / ((float) worldObj.rand.nextDouble() * 0.4F + 0.8F), false);
     }
 
     @Override

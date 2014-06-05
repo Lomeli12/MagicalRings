@@ -1,16 +1,21 @@
 package net.lomeli.ring.core.handler;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 
+import net.lomeli.ring.Rings;
 import net.lomeli.ring.api.ISpell;
 import net.lomeli.ring.item.ItemMagicRing;
 import net.lomeli.ring.lib.ModLibs;
 import net.lomeli.ring.magic.MagicHandler;
+import net.lomeli.ring.network.PacketHandler;
+import net.lomeli.ring.network.PacketRemovePlayer;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
@@ -34,6 +39,18 @@ public class EntityHandler {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerDeath(LivingDeathEvent event) {
+        if (!event.entityLiving.worldObj.isRemote) {
+            EntityLivingBase entity = event.entityLiving;
+            if (entity instanceof EntityPlayer) {
+                EntityPlayer player = (EntityPlayer) entity;
+                if (Rings.proxy.tickHandler.flyingPlayerList.contains(player.getEntityId()))
+                    PacketHandler.sendToServer(new PacketRemovePlayer(player));
             }
         }
     }

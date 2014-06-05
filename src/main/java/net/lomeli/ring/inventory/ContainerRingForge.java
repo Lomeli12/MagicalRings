@@ -50,7 +50,7 @@ public class ContainerRingForge extends Container {
         ItemStack itemstack = null;
         Slot slot = (Slot) this.inventorySlots.get(par2);
 
-        if (slot != null && slot.getHasStack()) {
+        if (slot != null && slot.getHasStack() && slot.slotNumber != 4) {
             ItemStack itemstack1 = slot.getStack();
             itemstack = itemstack1.copy();
 

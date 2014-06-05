@@ -20,11 +20,12 @@ public class TickHandlerClient {
             Minecraft mc = Minecraft.getMinecraft();
             if (mc.inGameHasFocus) {
                 ItemStack hand = mc.thePlayer.getCurrentEquippedItem();
-                if (hand != null && mc.thePlayer.getEntityData().hasKey(ModLibs.PLAYER_DATA)) {
+                if (hand != null) {
                     if (hand.getItem() instanceof ItemMagicRing) {
                         if (hand.getTagCompound() != null) {
                             NBTTagCompound handtag = hand.getTagCompound().hasKey(ModLibs.RING_TAG) ? hand.getTagCompound().getCompoundTag(ModLibs.RING_TAG) : null;
                             if (handtag != null && handtag.hasKey(ModLibs.SPELL_ID)) {
+                                System.out.println("Hi");
                                 int mp = MagicHandler.getMagicHandler().getPlayerMP(mc.thePlayer);
                                 int max = MagicHandler.getMagicHandler().getPlayerMaxMP(mc.thePlayer);
                                 String mpInfo = StatCollector.translateToLocal(ModLibs.MANA) + ": " + mp + " / " + max;

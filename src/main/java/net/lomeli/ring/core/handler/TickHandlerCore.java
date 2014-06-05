@@ -67,8 +67,11 @@ public class TickHandlerCore {
                 }
 
                 if (MagicHandler.canUse(player, 1)) {
-                    if (!player.capabilities.allowFlying)
+
+                    if (!player.capabilities.allowFlying) {
                         player.capabilities.allowFlying = true;
+                        System.out.println(player.getDisplayName());
+                    }
 
                     if (player.capabilities.isFlying)
                         MagicHandler.modifyPlayerMP(player, -1);

@@ -16,6 +16,7 @@ import net.lomeli.ring.block.tile.TileItemAltar;
 import net.lomeli.ring.block.tile.TileRingForge;
 import net.lomeli.ring.core.handler.EntityHandler;
 import net.lomeli.ring.core.handler.GameEventHandler;
+import net.lomeli.ring.core.handler.ItemEventHandler;
 import net.lomeli.ring.core.handler.TickHandlerCore;
 import net.lomeli.ring.item.ModItems;
 import net.lomeli.ring.lib.ModLibs;
@@ -52,6 +53,7 @@ public class Proxy {
         GameRegistry.registerTileEntity(TileRingForge.class, TileRingForge.class.getName().toLowerCase());
 
         MinecraftForge.EVENT_BUS.register(new EntityHandler());
+        MinecraftForge.EVENT_BUS.register(new ItemEventHandler());
         FMLCommonHandler.instance().bus().register(new GameEventHandler());
     }
 

@@ -32,6 +32,7 @@ item.magicalrings.ingot.8.name=Amethyst
 item.magicalrings.food.0.name=Onion
 item.magicalrings.food.1.name=Fried Onion
 item.magicalrings.food.2.name=Mysterious Potion
+item.magicalrings.food.3.name=Mana Potion
 
 magicalrings.message.enoughEXP=Not enough experience. Requires 30 levels.
 magicalrings.message.enoughEXP2=Not enough experience. Requires 35 levels.
@@ -44,6 +45,7 @@ magicalrings.message.usesLeft=Uses Left:
 magicalrings.message.hammer=Right-Click a book with this.
 magicalrings.message.shift=Hold Shift for more info.
 magicalrings.message.mana=Mana
+magicalrings.message.nomana=You shake the ring, but without Mana it's just a fancy accessory. Maybe a book can help you figure it out.
 
 magicalrings.spell.enderPort=Enderport
 magicalrings.spell.blazingWrath=Blazing Wrath

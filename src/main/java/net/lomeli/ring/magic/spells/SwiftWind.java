@@ -26,10 +26,8 @@ public class SwiftWind implements ISpell {
     public void onUpdateTick(ItemStack stack, World world, Entity entity, int par4, boolean par5, int boost, int cost, boolean enabled) {
         if (entity instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) entity;
-            if (!player.capabilities.isCreativeMode) {
-                if (!Rings.proxy.tickHandler.flyingPlayerList.contains(entity.getEntityId()))
-                    PacketHandler.sendToPlayerAndServer(new PacketAllowFlying(player), player);
-            }
+            if (!Rings.proxy.tickHandler.flyingPlayerList.contains(entity.getEntityId()))
+                PacketHandler.sendToPlayerAndServer(new PacketAllowFlying(player), player);
         }
     }
 

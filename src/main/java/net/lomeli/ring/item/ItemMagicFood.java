@@ -7,6 +7,8 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
@@ -24,6 +26,7 @@ import net.lomeli.ring.block.ModBlocks;
 import net.lomeli.ring.lib.ModLibs;
 import net.lomeli.ring.network.PacketHandler;
 import net.lomeli.ring.network.PacketIncreaseMP;
+import net.lomeli.ring.network.PacketModifyMp;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -66,13 +69,17 @@ public class ItemMagicFood extends ItemFood implements IPlantable {
 
     @Override
     public EnumRarity getRarity(ItemStack stack) {
-        return stack.getItemDamage() == 2 ? EnumRarity.epic : super.getRarity(stack);
+        return stack.getItemDamage() == 2 || stack.getItemDamage() == 3 ? EnumRarity.epic : super.getRarity(stack);
+    }
+
+    public EnumAction getItemUseAction(ItemStack stack) {
+        return stack.getItemDamage() == 2 || stack.getItemDamage() == 3 ? EnumAction.drink : EnumAction.eat;
     }
 
     @SideOnly(Side.CLIENT)
     @Override
     public boolean hasEffect(ItemStack stack) {
-        return stack.getItemDamage() == 2;
+        return stack.getItemDamage() >= 2;
     }
 
     @Override
@@ -87,10 +94,22 @@ public class ItemMagicFood extends ItemFood implements IPlantable {
 
     @Override
     public ItemStack onEaten(ItemStack stack, World world, EntityPlayer player) {
-        if (stack.getItemDamage() == 2) {
-            PacketHandler.sendToServer(new PacketIncreaseMP(player, 100));
-            stack.stackSize--;
-            return stack;
+        if (!world.isRemote) {
+            if (stack.getItemDamage() == 2) {
+                PacketHandler.sendToServer(new PacketIncreaseMP(player, 100));
+                if (!player.capabilities.isCreativeMode) {
+                    stack.stackSize--;
+                    player.inventory.addItemStackToInventory(new ItemStack(Items.glass_bottle));
+                }
+                return stack;
+            }else if (stack.getItemDamage() == 3) {
+                PacketHandler.sendToServer(new PacketModifyMp(player, 75, 0));
+                if (!player.capabilities.isCreativeMode) {
+                    stack.stackSize--;
+                    player.inventory.addItemStackToInventory(new ItemStack(Items.glass_bottle));
+                }
+                return stack;
+            }
         }
         return super.onEaten(stack, world, player);
     }
@@ -128,7 +147,7 @@ public class ItemMagicFood extends ItemFood implements IPlantable {
     @SideOnly(Side.CLIENT)
     @Override
     public void registerIcons(IIconRegister register) {
-        iconArray = new IIcon[3];
+        iconArray = new IIcon[4];
         for (int i = 0; i < iconArray.length; i++) {
             iconArray[i] = register.registerIcon(ModLibs.MOD_ID.toLowerCase() + ":food_" + i);
         }

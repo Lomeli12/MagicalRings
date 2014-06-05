@@ -3,11 +3,10 @@ package net.lomeli.ring.core.handler;
 import net.minecraft.entity.player.EntityPlayer;
 
 import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.MagicHandler;
 import net.lomeli.ring.network.PacketClientJoined;
 import net.lomeli.ring.network.PacketHandler;
+import net.lomeli.ring.network.PacketModifyMp;
 import net.lomeli.ring.network.PacketRemovePlayer;
-import net.lomeli.ring.network.PacketUpdatePlayerMP;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
@@ -23,19 +22,9 @@ public class GameEventHandler {
             EntityPlayer player = tick.player;
             if (tick.phase == TickEvent.Phase.END) {
                 if (player.getEntityData().hasKey(ModLibs.PLAYER_DATA)) {
-                    int mp = MagicHandler.getMagicHandler().getPlayerMP(player), max = MagicHandler.getMagicHandler().getPlayerMaxMP(player);
-                    if (mp < max) {
-                        if (player.capabilities.isCreativeMode) {
-                            PacketHandler.sendToPlayerAndServer(new PacketUpdatePlayerMP(player, max, max), player);
-                            return;
-                        }
-                        if (++this.tick >= ModLibs.RECHARGE_WAIT_TIME) {
-                            if (player.getFoodStats().getFoodLevel() > 6) {
-                                mp += ((player.getFoodStats().getFoodLevel() - 3) / 5);
-                                if (mp > max)
-                                    mp = max;
-                                PacketHandler.sendToPlayerAndServer(new PacketUpdatePlayerMP(player, mp, max), player);
-                            }
+                    if (++this.tick >= ModLibs.RECHARGE_WAIT_TIME) {
+                        if (player.getFoodStats().getFoodLevel() > 4) {
+                            PacketHandler.sendToServer(new PacketModifyMp(player, ((player.getFoodStats().getFoodLevel() - 3) / 5), 0));
                             this.tick = 0;
                         }
                     }

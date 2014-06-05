@@ -42,8 +42,8 @@ public class PacketIncreaseMP implements IPacket {
         if (player != null) {
             if (player.getEntityData().hasKey(ModLibs.PLAYER_DATA)) {
                 int max = MagicHandler.getMagicHandler().getPlayerMaxMP(player);
-                if (max < 1500)
-                    MagicHandler.modifyPlayerMaxMP(player, max + this.boost);
+                if (max < 5000)
+                    MagicHandler.modifyPlayerMaxMP(player, this.boost);
             }
         }
 

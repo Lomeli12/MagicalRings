@@ -38,7 +38,7 @@ public class RingMaterialRecipe implements IMaterialRegistry {
 
         this.registerGem("gemDiamond", new Color(100, 220, 255).getRGB(), 5);
         this.registerGem("gemEmerald", new Color(0, 210, 0).getRGB(), 6);
-        this.registerGem("gemJade", new Color(0, 210, 80).getRGB(), 4);
+        this.registerGem("gemJade", new Color(135, 240, 175).getRGB(), 4);
         this.registerGem("gemAmethyst", new Color(140, 0, 210).getRGB(), 3);
         this.registerGem("gemAmber", new Color(240, 170, 0).getRGB(), 2);
         this.registerGem("gemPeridot", new Color(0, 160, 0).getRGB(), 1);
@@ -131,6 +131,7 @@ public class RingMaterialRecipe implements IMaterialRegistry {
         if (!this.validMaterial.containsKey(stack)) {
             this.validMaterial.put(stack, rgb);
             this.materialBoost.put(stack, boost);
+            System.out.println("Registering " + stack.getDisplayName() + " as index " + (this.validMaterial.size() - 1));
         }
     }
 

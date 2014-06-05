@@ -111,6 +111,11 @@ public class ItemMagicRing extends ItemRings implements IBauble {
 
     public boolean useRing(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
         if (stack.getTagCompound() != null) {
+            if (!MagicHandler.getMagicHandler().canPlayerUseMagic(player)) {
+                player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal(ModLibs.NO_MANA)));
+                return false;
+            }
+
             NBTTagCompound tag = stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG);
             if (tag != null) {
                 if (tag.hasKey(ModLibs.SPELL_ID)) {
@@ -190,8 +195,11 @@ public class ItemMagicRing extends ItemRings implements IBauble {
                 if (spell != null)
                     list.add(StatCollector.translateToLocal(ModLibs.SPELL) + ": " + StatCollector.translateToLocal(spell.getUnlocalizedName()));
             }
-            if (tag.hasKey(ModLibs.MATERIAL_BOOST))
-                list.add("+" + tag.getInteger(ModLibs.MATERIAL_BOOST) + " " + StatCollector.translateToLocal(ModLibs.BOOST));
+            if (tag.hasKey(ModLibs.MATERIAL_BOOST)) {
+                int boost = tag.getInteger(ModLibs.MATERIAL_BOOST);
+                if (boost != 0)
+                    list.add((boost > 0 ? "+" + boost : boost) + " " + StatCollector.translateToLocal(ModLibs.BOOST));
+            }
         }
     }
 

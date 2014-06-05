@@ -16,7 +16,7 @@ public class ChannelHandler extends FMLIndexedMessageToMessageCodec<IPacket> {
         this.addDiscriminator(5, PacketRemovePlayer.class);
         this.addDiscriminator(6, PacketRingName.class);
         this.addDiscriminator(7, PacketUpdateClient.class);
-        this.addDiscriminator(8, PacketUpdatePlayerMP.class);
+        this.addDiscriminator(8, PacketModifyMp.class);
     }
 
     @Override
