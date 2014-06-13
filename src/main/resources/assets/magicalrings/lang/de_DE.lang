@@ -1,0 +1,64 @@
+#German Language by Cryma
+
+itemGroup.magicalrings.tab=Magical Rings
+
+magicalrings.container.ringForge=Ring Schmelze
+
+tile.magicalrings.altar.0.name=Infusion Altar
+tile.magicalrings.altar.1.name=Stone Altar
+tile.magicalrings.ringForge.name=Ring Schmelze
+tile.magicalrings.ore.0.name=Wolfram Erz
+tile.magicalrings.ore.1.name=Platin Erz
+tile.magicalrings.ore.2.name=Jade Erz
+tile.magicalrings.ore.3.name=Bernstein Erz
+tile.magicalrings.ore.4.name=Peridot Erz
+tile.magicalrings.ore.5.name=Rubin Erz
+tile.magicalrings.ore.6.name=Saphir Erz
+tile.magicalrings.ore.7.name=Amethyst Erz
+
+item.magicalrings.ironHammer.name=Eisen Hammer
+item.magicalrings.diamondHammer.name=Diamant Hammer
+item.magicalrings.magicRing.name=Ring
+item.magicalrings.spellParchment.name=Zauber Pergament
+item.magicalrings.book.name=Mystisches Zubehör - Vol.1
+item.magicalrings.ghostSword.name=Notfalls Schwert
+item.magicalrings.ingot.0.name=Worfram Barren
+item.magicalrings.ingot.1.name=Platin Barren
+item.magicalrings.ingot.2.name=Stahl Barren
+item.magicalrings.ingot.3.name=Jade
+item.magicalrings.ingot.4.name=Bernstein
+item.magicalrings.ingot.5.name=Peridot
+item.magicalrings.ingot.6.name=Rubin
+item.magicalrings.ingot.7.name=Saphir
+item.magicalrings.ingot.8.name=Amethyst
+item.magicalrings.food.0.name=Zwiebel
+item.magicalrings.food.1.name=Gebratene Zwiebeln
+item.magicalrings.food.2.name=Mysteriöser Trank
+item.magicalrings.food.3.name=Mana Trank
+
+magicalrings.message.enoughEXP=Nicht genug Erfahrung. Benötigt 30 Level.
+magicalrings.message.enoughEXP2=Nicht genug Erfahrung. Benötigt 35 Level.
+magicalrings.message.effect=Zauber weiterführen einsetzen.
+magicalrings.message.spell=Zauber
+magicalrings.message.magicBoost=Leistungs Schuhe
+magicalrings.message.requiedItems=Benötigt für Infusion:
+magicalrings.message.oreDic=OreDictionary Item: 
+magicalrings.message.usesLeft=Benutzugen übrig:
+magicalrings.message.hammer=Rechtsklicke ein Buch damit.
+magicalrings.message.shift=Halte Umschalt für mehr Informationen.
+magicalrings.message.mana=Mana
+magicalrings.message.nomana=Du schüttelst den Ring, aber ohne Mana ist es nur ein gutaussehender Gegenstand. Vielleicht hilft ein Blick ins Buch!.
+
+magicalrings.spell.enderPort=Enderport
+magicalrings.spell.blazingWrath=Lodernder Zorn
+magicalrings.spell.healTouch=Engels Kuss
+magicalrings.spell.skyAnger=Himmels schlag
+magicalrings.spell.friendly=Eigenbeschuss
+magicalrings.spell.wings=Swiftwolf's Sturm
+magicalrings.spell.harvest=Hilfsbereite Ernte
+magicalrings.spell.disarm=Entwaffnen
+magicalrings.spell.rearm=Ritual zum Kämpfen
+
+magicalrings.book.moreInfo=Umschalt + Rechtsklick für mehr Informationen!
+
+#More coming soon
