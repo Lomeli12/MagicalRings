@@ -77,7 +77,7 @@ public class ItemMagicFood extends ItemFood implements IPlantable {
 
     @SideOnly(Side.CLIENT)
     @Override
-    public boolean hasEffect(ItemStack stack) {
+    public boolean hasEffect(ItemStack stack, int pass) {
         return stack.getItemDamage() >= 2;
     }
 
