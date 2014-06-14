@@ -39,11 +39,10 @@ public class PacketCheckPlayerMP implements IPacket {
         EntityPlayer pl = (EntityPlayer) ms.getEntityWorld().getEntityByID(this.entityID);
         if (pl != null) {
             NBTTagCompound tag = MagicHandler.getMagicHandler().getPlayerTag(pl);
-            if (tag != null) {
+            if (tag != null)
                 MagicHandler.modifyPlayerMaxMP(pl, ModLibs.BASE_MP);
-            } else {
+            else
                 MagicHandler.modifyPlayerMaxMP(pl, MagicHandler.getMagicHandler().getPlayerMaxMP(pl));
-            }
         }
     }
 }

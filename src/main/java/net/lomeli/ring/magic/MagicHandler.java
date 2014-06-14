@@ -14,15 +14,7 @@ import net.lomeli.ring.Rings;
 import net.lomeli.ring.api.IMagicHandler;
 import net.lomeli.ring.api.ISpell;
 import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.spells.AngelKiss;
-import net.lomeli.ring.magic.spells.Disarm;
-import net.lomeli.ring.magic.spells.EnderPort;
-import net.lomeli.ring.magic.spells.FireWrath;
-import net.lomeli.ring.magic.spells.FriendlyFire;
-import net.lomeli.ring.magic.spells.Harvest;
-import net.lomeli.ring.magic.spells.HeavenStrike;
-import net.lomeli.ring.magic.spells.Rearm;
-import net.lomeli.ring.magic.spells.SwiftWind;
+import net.lomeli.ring.magic.spells.*;
 import net.lomeli.ring.network.PacketHandler;
 import net.lomeli.ring.network.PacketModifyMp;
 
@@ -40,6 +32,7 @@ public class MagicHandler implements IMagicHandler {
         this.registerSpell(new Disarm(), Blocks.chest, Items.stone_sword, Items.bow, Items.redstone);
         this.registerSpell(new Rearm(), Items.stone_sword, Items.bow, Items.arrow, Items.flint);
         this.registerSpell(new SwiftWind(), Items.nether_star, Blocks.diamond_block, Items.feather, Items.ender_pearl, Items.fireworks);
+        this.registerSpell(new BeingDisplacement(), Items.lead, Items.ender_pearl, Items.wheat, Items.wheat_seeds, Items.carrot_on_a_stick);
     }
 
     public static List<ISpell> getAllSpells() {

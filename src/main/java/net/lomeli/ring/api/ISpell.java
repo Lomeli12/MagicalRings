@@ -1,13 +1,14 @@
 package net.lomeli.ring.api;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public interface ISpell {
     /**
-     * Runs when the player right clicks the air or a block
+     * Runs when the player right clicks on a block
      * @param world
      * @param player
      * @param x
@@ -21,7 +22,31 @@ public interface ISpell {
      * @param cost - base cost plus extra to compensate for the boost. Use cost() if no boosts are to be applied
      * @return
      */
-    public boolean activateSpell(World world, EntityPlayer player, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost, int cost);
+    public boolean useOnBlock(World world, EntityPlayer player, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost, int cost);
+
+    /**
+     * Called when the player right clicks
+     * @param world
+     * @param player
+     * @param stack
+     * @param boost
+     * @param cost
+     */
+    public void onUse(World world, EntityPlayer player, ItemStack stack, int boost, int cost);
+
+    /**
+     * Called when the player picks up the ring (vanilla) or when first equipped (Baubles). Do NOT put actual spells here.
+     * @param stack
+     * @param entity
+     */
+    public void onEquipped(ItemStack stack, EntityLivingBase entity);
+
+    /**
+     * Called when the player drops the ring (vanilla) or when they unequip it (Baubles). Do NOT put actual spells here
+     * @param stack
+     * @param entity
+     */
+    public void onUnEquipped(ItemStack stack, EntityLivingBase entity);
 
     /**
      * When the player right-clicks a mob with the ring

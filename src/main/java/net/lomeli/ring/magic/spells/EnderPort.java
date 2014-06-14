@@ -21,7 +21,12 @@ public class EnderPort implements ISpell {
     private Random rand = new Random();
 
     @Override
-    public boolean activateSpell(World world, EntityPlayer player, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost, int cost) {
+    public boolean useOnBlock(World world, EntityPlayer player, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost, int cost) {
+        return false;
+    }
+
+    @Override
+    public void onUse(World world, EntityPlayer player, ItemStack stack, int boost, int cost) {
         if (MagicHandler.canUse(player, cost())) {
             MovingObjectPosition mop = SimpleUtil.rayTrace(player, world);
             if (mop != null) {
@@ -36,13 +41,21 @@ public class EnderPort implements ISpell {
                             MagicHandler.modifyPlayerMP(player, -cost());
 
                             teleportTo(player, newX, newY + 2, newZ);
-                            return true;
                         }
                     }
                 }
             }
         }
-        return false;
+    }
+
+    @Override
+    public void onEquipped(ItemStack stack, EntityLivingBase entity) {
+
+    }
+
+    @Override
+    public void onUnEquipped(ItemStack stack, EntityLivingBase entity) {
+
     }
 
     @Override

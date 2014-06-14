@@ -3,6 +3,7 @@ package net.lomeli.ring.magic.spells;
 import net.minecraft.block.Block;
 import net.minecraft.block.IGrowable;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -17,7 +18,7 @@ import net.lomeli.ring.magic.MagicHandler;
 public class Harvest implements ISpell {
 
     @Override
-    public boolean activateSpell(World world, EntityPlayer player, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost, int cost) {
+    public boolean useOnBlock(World world, EntityPlayer player, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost, int cost) {
         for (int j = -1; j < 2; j++)
             for (int k = -1; k < 2; k++) {
                 if (MagicHandler.canUse(player, cost())) {
@@ -42,6 +43,21 @@ public class Harvest implements ISpell {
                 }
             }
         return false;
+    }
+
+    @Override
+    public void onUse(World world, EntityPlayer player, ItemStack stack, int boost, int cost) {
+
+    }
+
+    @Override
+    public void onEquipped(ItemStack stack, EntityLivingBase entity) {
+
+    }
+
+    @Override
+    public void onUnEquipped(ItemStack stack, EntityLivingBase entity) {
+
     }
 
     @Override

@@ -41,7 +41,6 @@ public class PacketClientJoined implements IPacket {
         if (tag != null) {
             int mp = tag.getInteger(ModLibs.PLAYER_MP);
             int max = tag.getInteger(ModLibs.PLAYER_MAX);
-            System.out.println(mp + "/" + max);
             PacketHandler.sendTo(new PacketUpdateClient(mp, max), player);
         }
     }

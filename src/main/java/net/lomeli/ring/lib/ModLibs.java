@@ -8,6 +8,7 @@ public class ModLibs {
     public static final String PACKAGE = "net.lomeli.ring.";
     public static final String PROXY_SERVER = PACKAGE + "core.Proxy";
     public static final String PROXY_CLIENT = PACKAGE + "client.ProxyClient";
+    public static final String BAUBLES = "Baubles";
 
     public static int BASE_MP;
 
@@ -32,6 +33,7 @@ public class ModLibs {
     public static final String PLAYER_DATA = MOD_ID + "_PlayerMagicData";
     public static final String PLAYER_MP = "mp";
     public static final String PLAYER_MAX = "max";
+    public static final String PLAYER_FLY = "enableFlying";
 
     // Message
     public static final String MESSAGE = MOD_ID.toLowerCase() + ".message.";
@@ -62,6 +64,7 @@ public class ModLibs {
     public static final String HARVEST = SPELL_NAME + "harvest";
     public static final String DISARM = SPELL_NAME + "disarm";
     public static final String REARM = SPELL_NAME + "rearm";
+    public static final String DISPLACE = SPELL_NAME + "displace";
 
     public static int RECHARGE_WAIT_TIME;
     public static int DISPLAY_X;

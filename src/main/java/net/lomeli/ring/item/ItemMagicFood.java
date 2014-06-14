@@ -25,7 +25,6 @@ import net.lomeli.ring.Rings;
 import net.lomeli.ring.block.ModBlocks;
 import net.lomeli.ring.lib.ModLibs;
 import net.lomeli.ring.network.PacketHandler;
-import net.lomeli.ring.network.PacketIncreaseMP;
 import net.lomeli.ring.network.PacketModifyMp;
 
 import cpw.mods.fml.relauncher.Side;
@@ -96,7 +95,7 @@ public class ItemMagicFood extends ItemFood implements IPlantable {
     public ItemStack onEaten(ItemStack stack, World world, EntityPlayer player) {
         if (!world.isRemote) {
             if (stack.getItemDamage() == 2) {
-                PacketHandler.sendToServer(new PacketIncreaseMP(player, 100));
+                PacketHandler.sendToServer(new PacketModifyMp(player, 0, 100));
                 if (!player.capabilities.isCreativeMode) {
                     stack.stackSize--;
                     player.inventory.addItemStackToInventory(new ItemStack(Items.glass_bottle));

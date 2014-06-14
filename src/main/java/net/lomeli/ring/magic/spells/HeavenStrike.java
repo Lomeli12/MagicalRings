@@ -2,6 +2,7 @@ package net.lomeli.ring.magic.spells;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -17,7 +18,12 @@ import net.lomeli.ring.magic.MagicHandler;
 public class HeavenStrike implements ISpell {
 
     @Override
-    public boolean activateSpell(World world, EntityPlayer player, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost, int cost) {
+    public boolean useOnBlock(World world, EntityPlayer player, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost, int cost) {
+        return false;
+    }
+
+    @Override
+    public void onUse(World world, EntityPlayer player, ItemStack stack, int boost, int cost) {
         if (MagicHandler.canUse(player, cost())) {
             MovingObjectPosition mop = SimpleUtil.rayTrace(player, world);
             if (mop != null) {
@@ -34,7 +40,16 @@ public class HeavenStrike implements ISpell {
                 }
             }
         }
-        return false;
+    }
+
+    @Override
+    public void onEquipped(ItemStack stack, EntityLivingBase entity) {
+
+    }
+
+    @Override
+    public void onUnEquipped(ItemStack stack, EntityLivingBase entity) {
+
     }
 
     @Override

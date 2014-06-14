@@ -3,6 +3,7 @@ package net.lomeli.ring.magic.spells;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntitySmallFireball;
 import net.minecraft.item.ItemBlock;
@@ -20,37 +21,63 @@ import net.lomeli.ring.magic.MagicHandler;
 public class FireWrath implements ISpell {
 
     @Override
-    public boolean activateSpell(World world, EntityPlayer player, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost, int cost) {
+    public boolean useOnBlock(World world, EntityPlayer player, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost, int cost) {
         Block bl = world.getBlock(x, y, z);
-        if (bl != null && !world.isAirBlock(x, y, z)) {
+
+        if (bl != null && !world.isAirBlock(x, y, z) && !world.isRemote) {
+            System.out.println("Hello");
             for (int i = -(boost / 2); i < (boost / 2); i++)
                 for (int j = -(boost / 2); j < (boost / 2); j++)
                     for (int l = -(boost / 2); l < (boost / 2); l++) {
+                        System.out.println("Hello!");
                         if (MagicHandler.canUse(player, cost() + 1)) {
                             Block o = world.getBlock(x + i, y + j, z + l);
                             ItemStack output = FurnaceRecipes.smelting().getSmeltingResult(new ItemStack(o, 1, world.getBlockMetadata(x + i, y + j, z + l)));
-                            if (output != null && output.getItem() instanceof ItemBlock) {
-                                Block bk = Block.getBlockFromItem(output.getItem());
-                                MagicHandler.modifyPlayerMP(player, -(cost() + 1));
-                                world.setBlock(x + i, y + j, z + l, bk);
+                            if (output != null) {
+
+                                if (output.getItem() instanceof ItemBlock) {
+                                    Block bk = Block.getBlockFromItem(output.getItem());
+                                    MagicHandler.modifyPlayerMP(player, -(cost() + 1));
+                                    world.setBlock(x + i, y + j, z + l, bk);
+                                } else {
+                                    EntityItem entityItem = new EntityItem(world, x + i + 0.5, y + j + 0.5, +z + l + 0.5, output);
+                                    MagicHandler.modifyPlayerMP(player, -(cost() + 1));
+                                    world.spawnEntityInWorld(entityItem);
+                                    world.setBlockToAir(x + i, y + j, z + l);
+                                }
                             }
-                        }
+
+                        } else
+                            break;
                     }
-        }else {
-            if (MagicHandler.canUse(player, cost())) {
-                Vec3 look = player.getLookVec();
-                EntitySmallFireball fireBall = new EntitySmallFireball(world, player, 0, 0, 0);
-                fireBall.setSprinting(true);
-                fireBall.setPosition(player.posX + look.xCoord * 4.2, player.posY + look.yCoord + (player.getEyeHeight() / 2), player.posZ + look.zCoord * 4.2);
-                fireBall.accelerationX = look.xCoord * 0.5;
-                fireBall.accelerationY = look.yCoord * 0.5;
-                fireBall.accelerationZ = look.zCoord * 0.5;
-                if (!world.isRemote)
-                    world.spawnEntityInWorld(fireBall);
-                MagicHandler.modifyPlayerMP(player, -cost());
-            }
         }
         return false;
+    }
+
+    @Override
+    public void onUse(World world, EntityPlayer player, ItemStack stack, int boost, int cost) {
+        if (MagicHandler.canUse(player, cost())) {
+            Vec3 look = player.getLookVec();
+            EntitySmallFireball fireBall = new EntitySmallFireball(world, player, 0, 0, 0);
+            fireBall.setSprinting(true);
+            fireBall.setPosition(player.posX + look.xCoord * 4.2, player.posY + look.yCoord + (player.getEyeHeight() / 2), player.posZ + look.zCoord * 4.2);
+            fireBall.accelerationX = look.xCoord * 0.5;
+            fireBall.accelerationY = look.yCoord * 0.5;
+            fireBall.accelerationZ = look.zCoord * 0.5;
+            if (!world.isRemote)
+                world.spawnEntityInWorld(fireBall);
+            MagicHandler.modifyPlayerMP(player, -cost());
+        }
+    }
+
+    @Override
+    public void onEquipped(ItemStack stack, EntityLivingBase entity) {
+
+    }
+
+    @Override
+    public void onUnEquipped(ItemStack stack, EntityLivingBase entity) {
+
     }
 
     @Override
@@ -75,7 +102,7 @@ public class FireWrath implements ISpell {
                         MagicHandler.modifyPlayerMP(player, -cost);
                         player.addPotionEffect(new PotionEffect(Potion.fireResistance.id, 2000 + (100 * boost), 1));
                     }
-                }else
+                } else
                     living.addPotionEffect(new PotionEffect(Potion.fireResistance.id, 2000, 1));
             }
         }

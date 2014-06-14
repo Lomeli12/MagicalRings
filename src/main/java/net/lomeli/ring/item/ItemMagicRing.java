@@ -1,10 +1,10 @@
 package net.lomeli.ring.item;
 
-import java.awt.Color;
-import java.util.List;
-
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
+
+import java.awt.Color;
+import java.util.List;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -17,14 +17,17 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
-import net.lomeli.ring.api.ISpell;
-import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.MagicHandler;
+import net.minecraftforge.common.util.Constants;
 
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
+import net.lomeli.ring.api.ISpell;
+import net.lomeli.ring.core.SimpleUtil;
+import net.lomeli.ring.lib.ModLibs;
+import net.lomeli.ring.magic.MagicHandler;
 
 @Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class ItemMagicRing extends ItemRings implements IBauble {
@@ -99,40 +102,61 @@ public class ItemMagicRing extends ItemRings implements IBauble {
                         player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal(ModLibs.ACTIVE_EFFECT) + ": " + !active));
                 }
             }
-        }else
-            this.useRing(stack, player, world, (int) player.posX, (int) player.posY, (int) player.posZ, 0, 0, 0, 0);
+        } else {
+            NBTTagCompound tag = SimpleUtil.getRingTag(stack);
+            if (tag != null && canPlayerUseMagic(player)) {
+                ISpell spell = SimpleUtil.getSpell(tag);
+                if (spell != null) {
+                    int cost = getSpellCost(tag, spell);
+                    int boost = getRingBoost(tag);
+                    spell.onUse(world, player, stack, boost, cost);
+                    playBurp(tag, world, player);
+                }
+            }
+        }
         return stack;
     }
 
     @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-        return this.useRing(stack, player, world, x, y, z, side, hitX, hitY, hitZ);
-    }
-
-    public boolean useRing(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-        if (stack.getTagCompound() != null) {
-            NBTTagCompound tag = stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG);
-            if (tag != null) {
-                if (tag.hasKey(ModLibs.SPELL_ID)) {
-                    if (!MagicHandler.getMagicHandler().canPlayerUseMagic(player)) {
-                        if (!world.isRemote)
-                            player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal(ModLibs.NO_MANA)));
-                        return false;
-                    }
-                    int spellID = tag.getInteger(ModLibs.SPELL_ID);
-                    ISpell spell = MagicHandler.getSpellLazy(spellID);
-                    if (spell != null) {
-                        int trueCost = -spell.cost() + (tag.getInteger(ModLibs.MATERIAL_BOOST) * 5);
-                        if (spell.activateSpell(world, player, x, y, z, side, hitX, hitY, hitZ, tag.getInteger(ModLibs.MATERIAL_BOOST), trueCost)) {
-                            if (this.isEdible(tag))
-                                world.playSoundAtEntity(player, "random.burp", 0.5F, world.rand.nextFloat() * 0.1F + 0.9F);
-                            return true;
-                        }
-                    }
-                }
+        NBTTagCompound tag = SimpleUtil.getRingTag(stack);
+        if (tag != null && canPlayerUseMagic(player)) {
+            ISpell spell = SimpleUtil.getSpell(tag);
+            if (spell != null) {
+                int cost = getSpellCost(tag, spell);
+                int boost = getRingBoost(tag);
+                spell.useOnBlock(world, player, x, y, z, side, hitX, hitY, hitZ, boost, cost);
+                playBurp(tag, world, player);
+                return true;
             }
         }
         return false;
+    }
+
+    public int getSpellCost(NBTTagCompound tag, ISpell spell) {
+        if (tag != null && spell != null)
+            return -spell.cost() + getRingBoost(tag);
+        return 0;
+    }
+
+    public int getRingBoost(NBTTagCompound tag) {
+        if (tag != null)
+            return tag.getInteger(ModLibs.MATERIAL_BOOST) * 5;
+        return 0;
+    }
+
+    public boolean canPlayerUseMagic(EntityPlayer player) {
+        if (!MagicHandler.getMagicHandler().canPlayerUseMagic(player)) {
+            if (!player.worldObj.isRemote)
+                player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal(ModLibs.NO_MANA)));
+            return false;
+        }
+        return true;
+    }
+
+    public void playBurp(NBTTagCompound tag, World world, EntityPlayer player) {
+        if (isEdible(tag))
+            world.playSoundAtEntity(player, "random.burp", 0.5F, world.rand.nextFloat() * 0.1F + 0.9F);
     }
 
     @Override
@@ -156,7 +180,7 @@ public class ItemMagicRing extends ItemRings implements IBauble {
                 return gem;
             else
                 return this.blankIcon;
-        }else
+        } else
             return rl1;
     }
 
@@ -170,7 +194,7 @@ public class ItemMagicRing extends ItemRings implements IBauble {
                 return this.getGemRGB(stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG));
             else
                 return this.getLayer1RGB(stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG));
-        }else {
+        } else {
             if (renderPass == 1)
                 return this.getLayer2RGB(stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG));
             else
@@ -178,7 +202,7 @@ public class ItemMagicRing extends ItemRings implements IBauble {
         }
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
@@ -222,17 +246,43 @@ public class ItemMagicRing extends ItemRings implements IBauble {
 
     @Override
     public void onEquipped(ItemStack itemstack, EntityLivingBase player) {
+        NBTTagCompound tag = SimpleUtil.getRingTag(itemstack);
+        if (tag != null) {
+            if (player instanceof EntityPlayer) {
+                EntityPlayer pl = (EntityPlayer) player;
+                if (canPlayerUseMagic(pl)) {
+                    ISpell spell = SimpleUtil.getSpell(tag);
+                    if (spell != null) {
+                        int cost = getSpellCost(tag, spell);
+                        int boost = getRingBoost(tag);
+                        spell.onEquipped(itemstack, player);
+                        playBurp(tag, pl.worldObj, pl);
+                    }
+                }
+            }
+        }
     }
 
     @Override
     public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {
+        NBTTagCompound tag = SimpleUtil.getRingTag(itemstack);
+        if (tag != null) {
+            if (player instanceof EntityPlayer) {
+                EntityPlayer pl = (EntityPlayer) player;
+                if (canPlayerUseMagic(pl)) {
+                    ISpell spell = SimpleUtil.getSpell(tag);
+                    if (spell != null) {
+                        spell.onUnEquipped(itemstack, player);
+                        playBurp(tag, pl.worldObj, pl);
+                    }
+                }
+            }
+        }
     }
 
     @Override
     public boolean canEquip(ItemStack itemstack, EntityLivingBase player) {
-        if (itemstack.getTagCompound() != null)
-            return itemstack.getTagCompound().hasKey(ModLibs.RING_TAG);
-        return false;
+        return SimpleUtil.getRingTag(itemstack) != null && SimpleUtil.getRingTag(itemstack).hasKey(ModLibs.SPELL_ID);
     }
 
     @Override

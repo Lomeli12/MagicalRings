@@ -13,7 +13,22 @@ import net.lomeli.ring.api.ISpell;
 public class DebugSpell implements ISpell {
 
     @Override
-    public boolean activateSpell(World world, EntityPlayer player, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost, int cost) {
+    public void onUse(World world, EntityPlayer player, ItemStack stack, int boost, int cost) {
+
+    }
+
+    @Override
+    public void onEquipped(ItemStack stack, EntityLivingBase entity) {
+
+    }
+
+    @Override
+    public void onUnEquipped(ItemStack stack, EntityLivingBase entity) {
+
+    }
+
+    @Override
+    public boolean useOnBlock(World world, EntityPlayer player, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost, int cost) {
         player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 1000, 1000));
         return false;
     }

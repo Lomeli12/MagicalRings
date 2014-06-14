@@ -1,6 +1,7 @@
 package net.lomeli.ring.magic.spells;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -13,13 +14,28 @@ import net.lomeli.ring.magic.MagicHandler;
 public class Rearm implements ISpell {
 
     @Override
-    public boolean activateSpell(World world, EntityPlayer player, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost, int cost) {
+    public boolean useOnBlock(World world, EntityPlayer player, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost, int cost) {
+
+        return false;
+    }
+
+    @Override
+    public void onUse(World world, EntityPlayer player, ItemStack stack, int boost, int cost) {
         if (MagicHandler.canUse(player, cost())) {
-            ItemStack stack = new ItemStack(ModItems.ghostSword);
-            player.inventory.addItemStackToInventory(stack);
+            ItemStack item = new ItemStack(ModItems.ghostSword);
+            player.inventory.addItemStackToInventory(item);
             MagicHandler.modifyPlayerMP(player, -cost());
         }
-        return false;
+    }
+
+    @Override
+    public void onEquipped(ItemStack stack, EntityLivingBase entity) {
+
+    }
+
+    @Override
+    public void onUnEquipped(ItemStack stack, EntityLivingBase entity) {
+
     }
 
     @Override

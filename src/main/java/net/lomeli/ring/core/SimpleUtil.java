@@ -2,11 +2,16 @@ package net.lomeli.ring.core;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+
+import net.lomeli.ring.api.ISpell;
+import net.lomeli.ring.lib.ModLibs;
+import net.lomeli.ring.magic.MagicHandler;
 
 public class SimpleUtil {
     
@@ -15,12 +20,11 @@ public class SimpleUtil {
     }
 
     public static MovingObjectPosition rayTrace(EntityLivingBase entity, World world, boolean hitLiquids) {
-        float f = 1f;
-        float f1 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * f;
-        float f2 = entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * f;
-        double d = entity.prevPosX + (entity.posX - entity.prevPosX) * f;
-        double d1 = entity.prevPosY + entity.getEyeHeight() + (entity.posY - entity.prevPosY) * (f + 1.6200000000000001D);
-        double d2 = entity.prevPosZ + (entity.posZ - entity.prevPosZ) * f;
+        float f1 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * 1f;
+        float f2 = entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * 1f;
+        double d = entity.prevPosX + (entity.posX - entity.prevPosX) * 1f;
+        double d1 = entity.prevPosY + entity.getEyeHeight() + (entity.posY - entity.prevPosY) * (1f + 1.6200000000000001D);
+        double d2 = entity.prevPosZ + (entity.posZ - entity.prevPosZ) * 1f;
         Vec3 vec3d = Vec3.createVectorHelper(d, d1, d2);
         float f3 = MathHelper.cos(-f2 * 0.01745329f - 3.141593f);
         float f4 = MathHelper.sin(-f2 * 0.01745329f - 3.141593f);
@@ -45,5 +49,26 @@ public class SimpleUtil {
 
             player.getEntityData().setTag(EntityPlayer.PERSISTED_NBT_TAG, pData);
         }
+    }
+
+    public static NBTTagCompound getRingTag(ItemStack stack) {
+        if (stack.getTagCompound() != null) {
+            if (stack.getTagCompound().hasKey(ModLibs.RING_TAG)) {
+                NBTTagCompound tag = stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG);
+                return tag;
+            }
+        }
+        return null;
+    }
+
+    public static ISpell getSpell(NBTTagCompound tag) {
+        if (tag != null) {
+            if (tag.hasKey(ModLibs.SPELL_ID)) {
+                int spellID = tag.getInteger(ModLibs.SPELL_ID);
+                ISpell spell = MagicHandler.getSpellLazy(spellID);
+                return spell;
+            }
+        }
+        return null;
     }
 }

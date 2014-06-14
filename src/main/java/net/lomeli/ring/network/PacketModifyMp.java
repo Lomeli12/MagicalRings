@@ -62,8 +62,12 @@ public class PacketModifyMp implements IPacket {
 
     public NBTTagCompound updateTag(NBTTagCompound tag) {
         if (tag != null) {
-            tag.setInteger(ModLibs.PLAYER_MP, tag.getInteger(ModLibs.PLAYER_MP) + this.mp);
-            tag.setInteger(ModLibs.PLAYER_MAX, tag.getInteger(ModLibs.PLAYER_MAX) + this.max);
+            int newMP = tag.getInteger(ModLibs.PLAYER_MP) + this.mp;
+            int newMax = tag.getInteger(ModLibs.PLAYER_MAX) + this.max;
+            if (newMP > newMax)
+                newMP = newMax;
+            tag.setInteger(ModLibs.PLAYER_MP, newMP);
+            tag.setInteger(ModLibs.PLAYER_MAX, newMax);
         } else {
             tag = new NBTTagCompound();
             tag.setInteger(ModLibs.PLAYER_MP, this.mp);

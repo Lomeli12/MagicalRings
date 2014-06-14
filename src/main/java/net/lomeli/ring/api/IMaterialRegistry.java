@@ -4,6 +4,9 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+/**
+ * Do NOT implement! Use instance in RingAPI to use these methods.
+ */
 public interface IMaterialRegistry {
     public void registerMaterial(ItemStack stack, int rgb, int boost);
     public void registerMaterial(Item item, int rgb, int boost);

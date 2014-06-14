@@ -13,15 +13,28 @@ import net.lomeli.ring.magic.MagicHandler;
 public class AngelKiss implements ISpell {
 
     @Override
-    public boolean activateSpell(World world, EntityPlayer player, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost, int cost) {
-        System.out.println(cost);
+    public boolean useOnBlock(World world, EntityPlayer player, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost, int cost) {
+        return false;
+    }
+
+    @Override
+    public void onUse(World world, EntityPlayer player, ItemStack stack, int boost, int cost) {
         if (MagicHandler.canUse(player, cost)) {
             if (player.getHealth() < player.getMaxHealth()) {
                 MagicHandler.modifyPlayerMP(player, cost);
                 player.heal(1.5f + (boost / 2));
             }
         }
-        return false;
+    }
+
+    @Override
+    public void onEquipped(ItemStack stack, EntityLivingBase entity) {
+
+    }
+
+    @Override
+    public void onUnEquipped(ItemStack stack, EntityLivingBase entity) {
+
     }
 
     @Override
