@@ -2,18 +2,18 @@ package net.lomeli.ring.lib;
 
 public class ModLibs {
     public static final String MOD_ID = "MagicalRings";
-    public static final String MOD_NAME = "Rings";
+    // Ring NBTTags
+    public static final String RING_TAG = MOD_ID + "_ringData";
+    // Player NBTTags
+    public static final String PLAYER_DATA = MOD_ID + "_PlayerMagicData";
+    public static final String MOD_NAME = "Magical Rings";
+    public static final String SAVE_DATA = "RingSaveData";
     public static final String VERSION = "1.0";
-
     public static final String PACKAGE = "net.lomeli.ring.";
     public static final String PROXY_SERVER = PACKAGE + "core.Proxy";
     public static final String PROXY_CLIENT = PACKAGE + "client.ProxyClient";
     public static final String BAUBLES = "Baubles";
-
-    public static int BASE_MP;
-
-    // Ring NBTTags
-    public static final String RING_TAG = MOD_ID + "_ringData";
+    public static final String CONFIG_FACTORY = "net.lomeli.ring.client.gui.GuiConfigFactory";
     public static final String SPELL_ID = "Spell_ID";
     public static final String LAYER1 = "layer1_";
     public static final String L1RGB = LAYER1 + "rgb";
@@ -28,13 +28,8 @@ public class ModLibs {
     public static final String CONTAINERS = MOD_ID.toLowerCase() + ".container.";
     public static final String ALTAR = CONTAINERS + "altar";
     public static final String RING_FORGE = CONTAINERS + "ringForge";
-
-    // Player NBTTags
-    public static final String PLAYER_DATA = MOD_ID + "_PlayerMagicData";
     public static final String PLAYER_MP = "mp";
     public static final String PLAYER_MAX = "max";
-    public static final String PLAYER_FLY = "enableFlying";
-
     // Message
     public static final String MESSAGE = MOD_ID.toLowerCase() + ".message.";
     public static final String NO_EXP = MESSAGE + "enoughEXP";
@@ -49,10 +44,8 @@ public class ModLibs {
     public static final String MORE_INFO = MESSAGE + "shift";
     public static final String MANA = MESSAGE + "mana";
     public static final String NO_MANA = MESSAGE + "nomana";
-
     public static final int RING_FORGE_GUI = 0;
     public static final int BOOK_GUI = 1;
-
     // Spell names
     public static final String SPELL_NAME = MOD_ID.toLowerCase() + ".spell.";
     public static final String ENDERPORT = SPELL_NAME + "enderPort";
@@ -65,39 +58,39 @@ public class ModLibs {
     public static final String DISARM = SPELL_NAME + "disarm";
     public static final String REARM = SPELL_NAME + "rearm";
     public static final String DISPLACE = SPELL_NAME + "displace";
-
-    public static int RECHARGE_WAIT_TIME;
-    public static int DISPLAY_X;
-    public static int DISPLAY_Y;
+    public static int BASE_MP = 100;
+    public static int RECHARGE_WAIT_TIME = 70;
+    public static int DISPLAY_X = 2;
+    public static int DISPLAY_Y = 120;
 
     public static int altarRenderID;
 
-    public static boolean tungstenSpawn;
-    public static boolean platinumSpawn;
-    public static boolean jadeSpawn;
-    public static boolean amberSpawn;
-    public static boolean peridotSpawn;
-    public static boolean rubySpawn;
-    public static boolean sapphireSpawn;
-    public static boolean amethystSpawn;
+    public static boolean tungstenSpawn = true;
+    public static boolean platinumSpawn = true;
+    public static boolean jadeSpawn = true;
+    public static boolean amberSpawn = true;
+    public static boolean peridotSpawn = true;
+    public static boolean rubySpawn = true;
+    public static boolean sapphireSpawn = true;
+    public static boolean amethystSpawn = true;
 
     public static boolean activateRetroGen;
 
-    public static int tungstenSize;
-    public static int platinumSize;
-    public static int jadeSize;
-    public static int amberSize;
-    public static int peridotSize;
-    public static int rubySize;
-    public static int sapphireSize;
-    public static int amethystSize;
+    public static int tungstenSize = 1;
+    public static int platinumSize = 1;
+    public static int jadeSize = 1;
+    public static int amberSize = 2;
+    public static int peridotSize = 4;
+    public static int rubySize = 4;
+    public static int sapphireSize = 4;
+    public static int amethystSize = 2;
 
-    public static int tungstenRate;
-    public static int platinumRate;
-    public static int jadeRate;
-    public static int amberRate;
-    public static int peridotRate;
-    public static int rubyRate;
-    public static int sapphireRate;
-    public static int amethystRate;
+    public static int tungstenRate = 1;
+    public static int platinumRate = 2;
+    public static int jadeRate = 3;
+    public static int amberRate = 4;
+    public static int peridotRate = 5;
+    public static int rubyRate = 5;
+    public static int sapphireRate = 5;
+    public static int amethystRate = 4;
 }

@@ -1,8 +1,11 @@
-package net.lomeli.ring.client.gui;
+package net.lomeli.ring.client.page;
 
 import java.awt.Color;
 
 import net.minecraft.util.StatCollector;
+
+import net.lomeli.ring.api.Page;
+import net.lomeli.ring.client.gui.GuiSpellBook;
 
 public class PageText extends Page {
 
@@ -17,7 +20,7 @@ public class PageText extends Page {
         this.text = text;
         this.title = title;
     }
-    
+
     @Override
     public PageText setID(String id) {
         this.id = id;
@@ -30,7 +33,7 @@ public class PageText extends Page {
         if (title != null) {
             mc.fontRenderer.drawStringWithShadow(StatCollector.translateToLocal(this.title), drawX, drawY, Color.CYAN.getRGB());
             this.drawString(this.text, drawX, drawY + 5, 0);
-        }else
+        } else
             this.drawString(this.text, drawX, drawY - 10, 0);
     }
 }

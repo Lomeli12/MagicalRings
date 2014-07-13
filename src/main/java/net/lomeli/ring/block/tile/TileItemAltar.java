@@ -1,5 +1,6 @@
 package net.lomeli.ring.block.tile;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -10,10 +11,15 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 
+import cpw.mods.fml.common.network.NetworkRegistry;
+
+import net.lomeli.ring.Rings;
 import net.lomeli.ring.lib.ModLibs;
+import net.lomeli.ring.network.PacketUpdateAltar;
 
 public class TileItemAltar extends TileEntity implements IInventory {
-    private ItemStack[] inventory;
+    protected ItemStack[] inventory;
+    private int lightValue;
 
     public TileItemAltar() {
         this.inventory = new ItemStack[1];
@@ -33,6 +39,14 @@ public class TileItemAltar extends TileEntity implements IInventory {
         worldObj.playSound(xCoord, yCoord, zCoord, "random.pop", 0.5F, 0.4F / ((float) worldObj.rand.nextDouble() * 0.4F + 0.8F), false);
     }
 
+    public int getLightValue() {
+        return lightValue;
+    }
+
+    public void setLightValue(int i) {
+        lightValue = i;
+    }
+
     @Override
     public int getSizeInventory() {
         return inventory.length;
@@ -50,27 +64,26 @@ public class TileItemAltar extends TileEntity implements IInventory {
 
             if (this.inventory[par1].stackSize <= par2) {
                 itemstack = this.inventory[par1];
-                this.inventory[par1] = null;
+                setInventorySlotContents(par1, null);
                 this.markDirty();
                 return itemstack;
-            }else {
+            } else {
                 itemstack = this.inventory[par1].splitStack(par2);
 
-                if (this.inventory[par1].stackSize == 0) {
-                    this.inventory[par1] = null;
-                }
+                if (this.inventory[par1].stackSize == 0)
+                    setInventorySlotContents(par1, null);
 
                 this.markDirty();
                 return itemstack;
             }
-        }else
+        } else
             return null;
     }
 
     @Override
     public ItemStack getStackInSlotOnClosing(int var1) {
         ItemStack stack = this.getStackInSlot(var1);
-        inventory[var1] = null;
+        setInventorySlotContents(var1, null);
         this.markDirty();
         return stack;
     }
@@ -78,6 +91,17 @@ public class TileItemAltar extends TileEntity implements IInventory {
     @Override
     public void setInventorySlotContents(int var1, ItemStack var2) {
         inventory[var1] = var2;
+        if (var2 != null && var2.stackSize > getInventoryStackLimit())
+            var2.stackSize = getInventoryStackLimit();
+        if (!this.worldObj.isRemote) {
+            ItemStack display = inventory[0];
+            if (display != null)
+                lightValue = (byte) Block.getBlockFromItem(display.getItem()).getLightValue();
+            else
+                lightValue = 0;
+
+            Rings.pktHandler.sendAllAround(new PacketUpdateAltar(this, display), new NetworkRegistry.TargetPoint(this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 128d));
+        }
         this.markDirty();
     }
 
@@ -121,7 +145,7 @@ public class TileItemAltar extends TileEntity implements IInventory {
             int j = nbttagcompound1.getByte("Slot") & 255;
 
             if (j >= 0 && j < this.inventory.length)
-                this.inventory[j] = ItemStack.loadItemStackFromNBT(nbttagcompound1);
+                setInventorySlotContents(j, ItemStack.loadItemStackFromNBT(nbttagcompound1));
         }
     }
 

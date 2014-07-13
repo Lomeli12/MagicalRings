@@ -4,67 +4,66 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 import net.lomeli.ring.Rings;
-import net.lomeli.ring.api.ISpell;
+import net.lomeli.ring.api.interfaces.IPlayerSession;
+import net.lomeli.ring.api.interfaces.ISpell;
 import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.MagicHandler;
 import net.lomeli.ring.network.PacketAllowFlying;
-import net.lomeli.ring.network.PacketHandler;
 
 public class SwiftWind implements ISpell {
+    private int tick;
 
     @Override
-    public boolean useOnBlock(World world, EntityPlayer player, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost, int cost) {
+    public boolean useOnBlock(World world, EntityPlayer player, IPlayerSession session, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost, int cost) {
         return false;
     }
 
     @Override
-    public void onUse(World world, EntityPlayer player, ItemStack stack, int boost, int cost) {
+    public void onUse(World world, EntityPlayer player, IPlayerSession session, ItemStack stack, int boost, int cost) {
 
     }
 
     @Override
-    public void onEquipped(ItemStack stack, EntityLivingBase entity) {
+    public void onEquipped(ItemStack stack, EntityLivingBase entity, IPlayerSession session) {
 
     }
 
     @Override
-    public void onUnEquipped(ItemStack stack, EntityLivingBase entity) {
+    public void onUnEquipped(ItemStack stack, EntityLivingBase entity, IPlayerSession session) {
         if (entity instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) entity;
             if (!player.capabilities.isCreativeMode) {
-                boolean canFlyNow = player.capabilities.allowFlying;
-                if (player.capabilities.isFlying)
-                    player.capabilities.isFlying = false;
-                if (player.capabilities.allowFlying)
-                    player.capabilities.allowFlying = false;
-                if (canFlyNow != player.capabilities.allowFlying)
-                    PacketHandler.sendToServer(new PacketAllowFlying(player, player.capabilities.allowFlying));
+                player.capabilities.isFlying = false;
+                player.capabilities.allowFlying = false;
+                Rings.pktHandler.sendToPlayerAndServer(new PacketAllowFlying(player, false), player);
             }
         }
     }
 
     @Override
-    public void applyToMob(EntityPlayer player, Entity target, int boost, int cost) {
+    public void applyToMob(EntityPlayer player, IPlayerSession session, Entity target, int boost, int cost) {
     }
 
     @Override
-    public void onUpdateTick(ItemStack stack, World world, Entity entity, int par4, boolean par5, int boost, int cost, boolean enabled) {
+    public void onUpdateTick(ItemStack stack, World world, Entity entity, IPlayerSession session, int par4, boolean par5, int boost, int cost, boolean enabled) {
         if (entity instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) entity;
-            if (MagicHandler.getMagicHandler().canPlayerUseMagic(player)) {
+            if (session != null) {
                 if (!player.capabilities.isCreativeMode) {
                     boolean canFlyNow = player.capabilities.allowFlying;
-                    if (MagicHandler.canUse(player, cost())) {
+                    if (session.hasEnoughMana(cost())) {
                         if (player.capabilities.allowFlying == false)
                             player.capabilities.allowFlying = true;
 
-                        if (player.capabilities.isFlying) {
-                            MagicHandler.modifyPlayerMP(player, -cost());
-                        } else if (player.fallDistance >= 4F) {
-                            MagicHandler.modifyPlayerMP(player, -((int) (player.fallDistance / 4)));
+                        if (++tick >= 10) {
+                            if (player.capabilities.isFlying)
+                                session.adjustMana(-cost(), false);
+                            else if (player.fallDistance >= 4F)
+                                session.adjustMana(-MathHelper.floor_float(player.fallDistance / 4), false);
+                            tick = 0;
                         }
                     } else {
                         if (player.capabilities.allowFlying == true)
@@ -73,7 +72,7 @@ public class SwiftWind implements ISpell {
                             player.capabilities.isFlying = false;
                     }
                     if (canFlyNow != player.capabilities.allowFlying)
-                        PacketHandler.sendToServer(new PacketAllowFlying(player, player.capabilities.allowFlying));
+                        Rings.pktHandler.sendToServer(new PacketAllowFlying(player, player.capabilities.allowFlying));
                 }
             }
         }
@@ -89,4 +88,8 @@ public class SwiftWind implements ISpell {
         return 1;
     }
 
+    @Override
+    public String getSpellDescription() {
+        return ModLibs.WING + "Desc";
+    }
 }

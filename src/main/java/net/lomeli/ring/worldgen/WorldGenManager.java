@@ -17,12 +17,12 @@ import net.minecraft.world.gen.feature.WorldGenerator;
 
 import net.minecraftforge.event.world.ChunkDataEvent;
 
+import cpw.mods.fml.common.IWorldGenerator;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+
 import net.lomeli.ring.Rings;
 import net.lomeli.ring.block.ModBlocks;
 import net.lomeli.ring.lib.ModLibs;
-
-import cpw.mods.fml.common.IWorldGenerator;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class WorldGenManager implements IWorldGenerator {
     public HashMap<Integer, ArrayList<GeneratorInfo>> genList;
@@ -160,7 +160,6 @@ public class WorldGenManager implements IWorldGenerator {
 
     public static final class ChunkCoord implements Comparable<ChunkCoord>, Serializable {
         private static final long serialVersionUID = 1L;
-        public static final int[][] SIDE_COORD_MOD = { { 0, -1, 0 }, { 0, 1, 0 }, { 0, 0, -1 }, { 0, 0, 1 }, { -1, 0, 0 }, { 1, 0, 0 } };
         public int chunkX;
         public int chunkZ;
 
@@ -180,28 +179,6 @@ public class WorldGenManager implements IWorldGenerator {
 
         public int getCenterZ() {
             return (this.chunkZ << 4) + 8;
-        }
-
-        public void step(int dir) {
-            this.chunkX = SIDE_COORD_MOD[dir][0];
-            this.chunkZ = SIDE_COORD_MOD[dir][2];
-        }
-
-        public void step(int dir, int dist) {
-            switch(dir) {
-            case 2 :
-                this.chunkZ -= dist;
-                break;
-            case 3 :
-                this.chunkZ += dist;
-                break;
-            case 4 :
-                this.chunkX -= dist;
-                break;
-            case 5 :
-                this.chunkX += dist;
-                break;
-            }
         }
 
         public ChunkCoord copy() {

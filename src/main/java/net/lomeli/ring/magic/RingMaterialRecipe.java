@@ -1,7 +1,7 @@
 package net.lomeli.ring.magic;
 
 import java.awt.Color;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
 import net.minecraft.block.Block;
@@ -15,27 +15,30 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
 
 import net.lomeli.ring.Rings;
-import net.lomeli.ring.api.IMaterialRegistry;
+import net.lomeli.ring.api.interfaces.IMaterialRegistry;
 import net.lomeli.ring.item.ModItems;
 import net.lomeli.ring.lib.ModLibs;
 
 public class RingMaterialRecipe implements IMaterialRegistry {
-    private HashMap<Object, Integer> validMaterial = new HashMap<Object, Integer>();
-    private HashMap<Object, Integer> materialBoost = new HashMap<Object, Integer>();
-    private HashMap<Object, Integer> gemMaterial = new HashMap<Object, Integer>();
-    private HashMap<Object, Integer> gemBoost = new HashMap<Object, Integer>();
+    public LinkedHashMap<Object, Integer> validMaterial = new LinkedHashMap<Object, Integer>();
+    private LinkedHashMap<Object, Integer> materialBoost = new LinkedHashMap<Object, Integer>();
+    public LinkedHashMap<Object, Integer> gemMaterial = new LinkedHashMap<Object, Integer>();
+    private LinkedHashMap<Object, Integer> gemBoost = new LinkedHashMap<Object, Integer>();
 
     public RingMaterialRecipe() {
         this.registerMaterial(Items.iron_ingot, Color.LIGHT_GRAY.getRGB(), 0);
-        this.registerMaterial(Items.gold_ingot, new Color(237, 237, 0).getRGB(), 1);
-        this.registerMaterial(Blocks.obsidian, new Color(60, 0, 95).getRGB(), 2);
-        this.registerMaterial(new ItemStack(ModItems.food, 1, 1), new Color(120, 85, 10).getRGB(), -2);
-        this.registerMaterial("ingotCopper", new Color(190, 120, 0).getRGB(), 0);
-        this.registerMaterial("ingotTin", new Color(220, 255, 245).getRGB(), 1);
-        this.registerMaterial("ingotSteel", new Color(45, 45, 45).getRGB(), 2);
-        this.registerMaterial("ingotSilver", new Color(165, 165, 165).getRGB(), 3);
-        this.registerMaterial("ingotTungsten", new Color(59, 46, 74).getRGB(), 5);
-        this.registerMaterial("ingotPlatinum", new Color(232, 232, 232).getRGB(), 4);
+        this.registerMaterial(Items.gold_ingot, new Color(0xeded00).getRGB(), 1);
+        this.registerMaterial(Blocks.obsidian, new Color(0x3c005f).getRGB(), 2);
+        this.registerMaterial(new ItemStack(ModItems.food, 1, 1), new Color(0x78550a).getRGB(), -2);
+        this.registerMaterial("ingotCopper", new Color(0xbe7800).getRGB(), 0);
+        this.registerMaterial("ingotTin", new Color(0xdcfff5).getRGB(), 1);
+        this.registerMaterial("ingotSteel", new Color(0x2d2d2d).getRGB(), 2);
+        this.registerMaterial("ingotSilver", new Color(0xa5a5a5).getRGB(), 3);
+        this.registerMaterial("ingotTungsten", new Color(0x2d223a).getRGB(), 5);
+        this.registerMaterial("ingotPlatinum", new Color(0x64CDED).getRGB(), 4);
+        this.registerMaterial("ingotThaumium", new Color(0x51437D).getRGB(), 6);
+        this.registerMaterial("ingotRedAlloy", new Color(0xD40404).getRGB(), 2);
+        this.registerMaterial("ingotBlueAlloy", new Color(0x404d4).getRGB(), 2);
 
         this.registerGem("gemDiamond", new Color(100, 220, 255).getRGB(), 5);
         this.registerGem("gemEmerald", new Color(0, 210, 0).getRGB(), 6);
@@ -79,7 +82,7 @@ public class RingMaterialRecipe implements IMaterialRegistry {
                         ringData.setInteger(ModLibs.GEM_RGB, gemColor);
                         if (gem.getItem() instanceof ItemFood)
                             edible = true;
-                    }else
+                    } else
                         return null;
                 }
                 if (edible)
@@ -105,7 +108,7 @@ public class RingMaterialRecipe implements IMaterialRegistry {
     }
 
     public static int getAverageBoost(int par0, int par1, int par2) {
-        return (int) Math.floor(Math.round((par0 + par1 + par2) / 3d));
+        return par0 + par1 + ((int) Math.floor(par2 / 3));
     }
 
     @Override
@@ -141,7 +144,6 @@ public class RingMaterialRecipe implements IMaterialRegistry {
         if (!this.validMaterial.containsKey(stack)) {
             this.validMaterial.put(stack, rgb);
             this.materialBoost.put(stack, boost);
-            System.out.println("Registering " + stack.getDisplayName() + " as index " + (this.validMaterial.size() - 1));
         }
     }
 
@@ -237,7 +239,8 @@ public class RingMaterialRecipe implements IMaterialRegistry {
 
     public boolean doesMaterialMatch(ItemStack stack) {
         boolean match = false;
-        materialLoop: for (Entry<Object, Integer> set : this.validMaterial.entrySet()) {
+        materialLoop:
+        for (Entry<Object, Integer> set : this.validMaterial.entrySet()) {
             Object obj = set.getKey();
             if (obj != null) {
                 if (obj instanceof ItemStack) {

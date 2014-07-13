@@ -1,11 +1,14 @@
-package net.lomeli.ring.client.gui;
-
-import java.awt.Color;
+package net.lomeli.ring.client.page;
 
 import org.lwjgl.opengl.GL11;
 
+import java.awt.Color;
+
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
+
+import net.lomeli.ring.api.Page;
+import net.lomeli.ring.client.gui.GuiSpellBook;
 
 public class PageImage extends Page {
     private ResourceLocation image;
@@ -28,20 +31,20 @@ public class PageImage extends Page {
         this.id = id;
         return this;
     }
-    
+
     @Override
     public void draw() {
         super.draw();
         mc.fontRenderer.drawStringWithShadow(StatCollector.translateToLocal(text), drawX, drawY, Color.CYAN.getRGB());
-        
+
         mc.renderEngine.bindTexture(image);
-        
+
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glColor4f(1F, 1F, 1F, 1F);
 
         gui.drawTexturedModalRect(drawX, drawY + 15, v, u, w, h);
-        
+
         GL11.glDisable(GL11.GL_BLEND);
 
         this.drawString(this.unlocalizedName, drawX, drawY + h + 10, 0);

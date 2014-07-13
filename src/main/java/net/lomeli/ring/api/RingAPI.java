@@ -1,13 +1,19 @@
 package net.lomeli.ring.api;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.lomeli.ring.api.interfaces.IRingAPI;
 
 public class RingAPI {
-    @SideOnly(Side.CLIENT)
-    public static IPageRegistry pageRegistry;
-    
-    public static IMagicHandler magicHandler;
-    
-    public static IMaterialRegistry materialRegistry;
+    public static IRingAPI ringAPI;
+
+    public static IRingAPI loadInstance() {
+        if (ringAPI == null) {
+            try {
+                Class clazz = Class.forName("net.lomeli.ring.core.ApiRing");
+                ringAPI = (IRingAPI) clazz.getField("instance").get(clazz);
+            } catch (Throwable e) {
+                return null;
+            }
+        }
+        return ringAPI;
+    }
 }

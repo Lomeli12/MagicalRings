@@ -8,7 +8,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class ModItems {
-    public static Item magicRing, onion, ironHammer, diamondHammer, spellParchment, oreItems, book, food, ghostSword;
+    public static Item magicRing, onion, ironHammer, diamondHammer, spellParchment, oreItems, book, food, ghostSword, materials;
 
     public static void loadItems() {
         magicRing = new ItemMagicRing("ring").setUnlocalizedName("magicRing");
@@ -34,6 +34,9 @@ public class ModItems {
 
         ghostSword = new ItemGhostSword().setUnlocalizedName("ghostSword");
         GameRegistry.registerItem(ghostSword, ghostSword.getUnlocalizedName());
+
+        materials = new ItemMaterial().setUnlocalizedName("material");
+        GameRegistry.registerItem(materials, materials.getUnlocalizedName());
 
         OreDictionary.registerOre("ingotTungsten", new ItemStack(oreItems, 1, 0));
         OreDictionary.registerOre("ingotPlatinum", new ItemStack(oreItems, 1, 1));

@@ -2,10 +2,14 @@ package net.lomeli.ring.core.handler;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.passive.EntityBat;
+import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
@@ -15,14 +19,17 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-import net.lomeli.ring.api.ISpell;
+import net.lomeli.ring.Rings;
+import net.lomeli.ring.api.interfaces.IPlayerSession;
+import net.lomeli.ring.api.interfaces.ISpell;
+import net.lomeli.ring.api.event.SpellCastedEvent;
 import net.lomeli.ring.core.SimpleUtil;
+import net.lomeli.ring.entity.EntityFireProofItem;
+import net.lomeli.ring.entity.EntityFireStone;
 import net.lomeli.ring.item.ItemMagicRing;
+import net.lomeli.ring.item.ModItems;
 import net.lomeli.ring.lib.ModLibs;
 import net.lomeli.ring.magic.MagicHandler;
-import net.lomeli.ring.network.PacketClientJoined;
-import net.lomeli.ring.network.PacketHandler;
-import net.lomeli.ring.network.PacketUpdateClient;
 
 public class EntityHandler {
 
@@ -30,7 +37,7 @@ public class EntityHandler {
     public void onEntityInteract(EntityInteractEvent event) {
         Entity target = event.target;
         EntityPlayer player = event.entityPlayer;
-        if (target != null && player != null && MagicHandler.getMagicHandler().getPlayerTag(player) != null) {
+        if (target != null && player != null && Rings.proxy.manaHandler.playerHasSession(player)) {
             ItemStack stack = player.getCurrentEquippedItem();
             if (stack != null && stack.getItem() instanceof ItemMagicRing) {
                 if (stack.getTagCompound() != null) {
@@ -40,7 +47,13 @@ public class EntityHandler {
                         ISpell spell = MagicHandler.getSpellLazy(spellID);
                         if (spell != null) {
                             int trueCost = -spell.cost() + (tag.getInteger(ModLibs.MATERIAL_BOOST) * 5);
-                            spell.applyToMob(player, target, tag.getInteger(ModLibs.MATERIAL_BOOST), trueCost);
+                            IPlayerSession session = Rings.proxy.manaHandler.getPlayerSession(player);
+                            SpellCastedEvent spellEvent = new SpellCastedEvent(player, spell, session);
+                            if (MinecraftForge.EVENT_BUS.post(spellEvent))
+                                return;
+                            spell.applyToMob(player, session, target, tag.getInteger(ModLibs.MATERIAL_BOOST), trueCost);
+                            if (FMLCommonHandler.instance().getEffectiveSide().isServer() && !player.capabilities.isCreativeMode)
+                                Rings.proxy.manaHandler.updatePlayerSession(session, player.getEntityWorld().provider.dimensionId);
                         }
                     }
                 }
@@ -49,20 +62,32 @@ public class EntityHandler {
     }
 
     @SubscribeEvent
-    public void onPlayerDeath(LivingDeathEvent event) {
+    public void onDeath(LivingDeathEvent event) {
         if (!event.entityLiving.worldObj.isRemote) {
             EntityLivingBase entity = event.entityLiving;
+            /*
             if (entity instanceof EntityPlayer) {
                 EntityPlayer player = (EntityPlayer) entity;
                 if (FMLCommonHandler.instance().getSide().isServer())
-                    PacketHandler.sendToServer(new PacketClientJoined(player));
+                    Rings.pktHandler.sendToServer(new PacketClientJoined(player));
                 else {
                     NBTTagCompound tag = MagicHandler.getMagicHandler().getPlayerTag(player);
                     if (tag != null) {
                         int mp = tag.getInteger(ModLibs.PLAYER_MP);
                         int max = tag.getInteger(ModLibs.PLAYER_MAX);
-                        PacketHandler.sendTo(new PacketUpdateClient(mp, max), player);
+                        Rings.pktHandler.sendTo(new PacketUpdateClient(mp, max), player);
                     }
+                }
+            } else */
+            if (entity instanceof EntityBat) {
+                if (((EntityBat) entity).worldObj.rand.nextInt(100) < 80) {
+                    EntityItem batWing = new EntityItem(((EntityBat) entity).worldObj, ((EntityBat) entity).posX, ((EntityBat) entity).posY, ((EntityBat) entity).posZ, new ItemStack(ModItems.materials));
+                    ((EntityBat) entity).worldObj.spawnEntityInWorld(batWing);
+                }
+            } else if (entity instanceof EntitySquid) {
+                if (((EntitySquid) entity).worldObj.rand.nextInt(100) < 60) {
+                    EntityItem tentacle = new EntityItem(((EntitySquid) entity).worldObj, ((EntitySquid) entity).posX, ((EntitySquid) entity).posY, ((EntitySquid) entity).posZ, new ItemStack(ModItems.materials, 1, 4));
+                    ((EntitySquid) entity).worldObj.spawnEntityInWorld(tentacle);
                 }
             }
         }
@@ -70,14 +95,21 @@ public class EntityHandler {
 
     @SubscribeEvent
     public void onRingPickUp(EntityItemPickupEvent event) {
-        if (Loader.isModLoaded("Baubles")) {
+        if (!Loader.isModLoaded("Baubles")) {
             ItemStack item = event.item.getEntityItem();
             if (item != null && item.getItem() instanceof ItemMagicRing) {
                 NBTTagCompound tag = SimpleUtil.getRingTag(item);
                 if (tag != null) {
                     ISpell spell = SimpleUtil.getSpell(tag);
-                    if (spell != null)
-                        spell.onEquipped(item, event.entityPlayer);
+                    if (spell != null) {
+                        IPlayerSession session = Rings.proxy.manaHandler.getPlayerSession(event.entityPlayer);
+                        SpellCastedEvent spellEvent = new SpellCastedEvent(event.entityPlayer, spell, session);
+                        if (MinecraftForge.EVENT_BUS.post(spellEvent))
+                            return;
+                        spell.onEquipped(item, event.entityPlayer, session);
+                        if (FMLCommonHandler.instance().getEffectiveSide().isServer() && !event.entityPlayer.capabilities.isCreativeMode)
+                            Rings.proxy.manaHandler.updatePlayerSession(session, event.entityPlayer.getEntityWorld().provider.dimensionId);
+                    }
                 }
             }
         }
@@ -85,110 +117,47 @@ public class EntityHandler {
 
     @SubscribeEvent
     public void ringDropped(ItemTossEvent event) {
-        if (Loader.isModLoaded("Baubles")) {
-            ItemStack item = event.entityItem.getEntityItem();
-            if (item != null && item.getItem() instanceof ItemMagicRing) {
+        ItemStack item = event.entityItem.getEntityItem();
+        if (item != null && item.getItem() != null) {
+            if (item.getItem() == ModItems.materials) {
+                if (item.getItemDamage() == 1) {
+                    EntityFireStone fireStone = new EntityFireStone(event.entityItem.worldObj, event.entityItem.posX, event.entityItem.posY, event.entityItem.posZ, item);
+                    fireStone.motionX = event.entityItem.motionX;
+                    fireStone.motionY = event.entityItem.motionY;
+                    fireStone.motionZ = event.entityItem.motionZ;
+                    fireStone.delayBeforeCanPickup = event.entityItem.delayBeforeCanPickup;
+                    if (!event.entityItem.worldObj.isRemote) {
+                        event.entityItem.worldObj.spawnEntityInWorld(fireStone);
+                        event.entityItem.setDead();
+                    }
+                } else if (item.getItemDamage() == 2) {
+                    EntityFireProofItem fireProofItem = new EntityFireProofItem(event.entityItem.worldObj, event.entityItem.posX, event.entityItem.posY, event.entityItem.posZ, item);
+                    fireProofItem.motionX = event.entityItem.motionX;
+                    fireProofItem.motionY = event.entityItem.motionY;
+                    fireProofItem.motionZ = event.entityItem.motionZ;
+                    fireProofItem.delayBeforeCanPickup = event.entityItem.delayBeforeCanPickup;
+                    if (!event.entityItem.worldObj.isRemote) {
+                        event.entityItem.worldObj.spawnEntityInWorld(fireProofItem);
+                        event.entityItem.setDead();
+                    }
+                }
+            }
+
+            if (!Loader.isModLoaded("Baubles") && item.getItem() instanceof ItemMagicRing) {
                 NBTTagCompound tag = SimpleUtil.getRingTag(item);
                 if (tag != null) {
                     ISpell spell = SimpleUtil.getSpell(tag);
-                    if (spell != null)
-                        spell.onUnEquipped(item, event.player);
-                }
-            }
-        }
-    }
-
-    /*
-    @SubscribeEvent
-    public void entityTick(LivingEvent.LivingUpdateEvent event) {
-        if (event.entity != null && event.entity instanceof EntityPlayerMP && !event.entity.worldObj.isRemote) {
-            EntityPlayerMP player = (EntityPlayerMP) event.entity;
-            if (MagicHandler.getMagicHandler().canPlayerUseMagic(player)) {
-                if (MagicHandler.getMagicHandler().getPlayerTag(player).hasKey(ModLibs.PLAYER_FLY)) {
-                    //System.out.println(MagicHandler.getMagicHandler().getPlayerTag(player).getBoolean(ModLibs.PLAYER_FLY));
-                    if (MagicHandler.getMagicHandler().getPlayerTag(player).getBoolean(ModLibs.PLAYER_FLY)) {
-                        //System.out.println("s");
-                        boolean continueFly = false, activated  = false;
-                        if (Loader.isModLoaded(ModLibs.BAUBLES)) {
-                            IInventory baubleInv = BaublesApi.getBaubles(player);
-                            for (int i = 1; i < 3; i++) {
-                                ItemStack stack = baubleInv.getStackInSlot(i);
-                                //System.out.println("e");
-                                if (stack != null) {
-                                    if (isStackFlyRing(stack)) {
-                                        continueFly = true;
-                                        activated = isRingEnabled(stack);
-                                        //System.out.println("YEs");
-                                        break;
-                                    }
-                                }
-                            }
-                        } else {
-                            for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
-                                ItemStack stack = player.inventory.getStackInSlot(i);
-                                if (stack != null) {
-                                    if (isStackFlyRing(stack)) {
-                                        continueFly = true;
-                                        activated = isRingEnabled(stack);
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-
-                        if (continueFly) {
-                            if (MagicHandler.canUse(player, 1) && activated) {
-                                if (!player.capabilities.isCreativeMode && !player.capabilities.allowFlying )
-                                    player.capabilities.allowFlying = false;
-                                if (player.capabilities.isFlying && !player.capabilities.isCreativeMode)
-                                    MagicHandler.modifyPlayerMP(player, -1);
-                            } else {
-                                if (!player.capabilities.isCreativeMode)
-                                    player.capabilities.allowFlying = false;
-                                if (player.capabilities.isFlying)
-                                    player.capabilities.isFlying = false;
-
-                                PacketHandler.sendToPlayerAndServer(new PacketAllowFlying(player, false), player);
-                            }
-                        }
+                    if (spell != null) {
+                        IPlayerSession session = Rings.proxy.manaHandler.getPlayerSession(event.player);
+                        SpellCastedEvent spellEvent = new SpellCastedEvent(event.player, spell, session);
+                        if (MinecraftForge.EVENT_BUS.post(spellEvent))
+                            return;
+                        spell.onUnEquipped(item, event.player, Rings.proxy.manaHandler.getPlayerSession(event.player));
+                        if (FMLCommonHandler.instance().getEffectiveSide().isServer() && !event.player.capabilities.isCreativeMode)
+                            Rings.proxy.manaHandler.updatePlayerSession(session, event.player.getEntityWorld().provider.dimensionId);
                     }
                 }
             }
         }
     }
-
-    private boolean isStackFlyRing(ItemStack stack) {
-        if (stack != null && stack.getItem() instanceof ItemMagicRing) {
-            if (stack.getTagCompound() != null) {
-                NBTTagCompound tag = stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG);
-                if (tag != null) {
-                    if (tag.hasKey(ModLibs.SPELL_ID)) {
-                        int spellID = tag.getInteger(ModLibs.SPELL_ID);
-                        ISpell spell = MagicHandler.getSpellLazy(spellID);
-                        if (spell != null && spell instanceof SwiftWind)
-                            return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    private boolean isRingEnabled(ItemStack stack) {
-        if (stack != null && stack.getItem() instanceof ItemMagicRing) {
-            if (stack.getTagCompound() != null) {
-                NBTTagCompound tag = stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG);
-                if (tag != null) {
-                    if (tag.hasKey(ModLibs.SPELL_ID)) {
-                        int spellID = tag.getInteger(ModLibs.SPELL_ID);
-                        ISpell spell = MagicHandler.getSpellLazy(spellID);
-                        if (spell != null && spell instanceof SwiftWind)
-                            return tag.getBoolean(ModLibs.ACTIVE_EFFECT_ENABLED);
-                    }
-                }
-            }
-        }
-        return false;
-    }*/
-
 }

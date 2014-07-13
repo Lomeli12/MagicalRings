@@ -10,21 +10,21 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 
-import net.lomeli.ring.api.ISpell;
+import net.lomeli.ring.api.interfaces.IPlayerSession;
+import net.lomeli.ring.api.interfaces.ISpell;
 import net.lomeli.ring.core.SimpleUtil;
 import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.MagicHandler;
 
 public class HeavenStrike implements ISpell {
 
     @Override
-    public boolean useOnBlock(World world, EntityPlayer player, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost, int cost) {
+    public boolean useOnBlock(World world, EntityPlayer player, IPlayerSession session, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost, int cost) {
         return false;
     }
 
     @Override
-    public void onUse(World world, EntityPlayer player, ItemStack stack, int boost, int cost) {
-        if (MagicHandler.canUse(player, cost())) {
+    public void onUse(World world, EntityPlayer player, IPlayerSession session, ItemStack stack, int boost, int cost) {
+        if (session.hasEnoughMana(cost())) {
             MovingObjectPosition mop = SimpleUtil.rayTrace(player, world);
             if (mop != null) {
                 if (mop.typeOfHit == MovingObjectType.BLOCK) {
@@ -35,7 +35,7 @@ public class HeavenStrike implements ISpell {
                     if (block != null && !world.isAirBlock(blockX, blockY, blockZ)) {
                         EntityLightningBolt light = new EntityLightningBolt(world, blockX, blockY, blockZ);
                         world.spawnEntityInWorld(light);
-                        MagicHandler.modifyPlayerMP(player, -cost());
+                        session.adjustMana(-cost(), false);
                     }
                 }
             }
@@ -43,21 +43,21 @@ public class HeavenStrike implements ISpell {
     }
 
     @Override
-    public void onEquipped(ItemStack stack, EntityLivingBase entity) {
+    public void onEquipped(ItemStack stack, EntityLivingBase entity, IPlayerSession session) {
 
     }
 
     @Override
-    public void onUnEquipped(ItemStack stack, EntityLivingBase entity) {
+    public void onUnEquipped(ItemStack stack, EntityLivingBase entity, IPlayerSession session) {
 
     }
 
     @Override
-    public void applyToMob(EntityPlayer player, Entity target, int boost, int cost) {
+    public void applyToMob(EntityPlayer player, IPlayerSession session, Entity target, int boost, int cost) {
     }
 
     @Override
-    public void onUpdateTick(ItemStack stack, World world, Entity entity, int par4, boolean par5, int boost, int cost, boolean bool) {
+    public void onUpdateTick(ItemStack stack, World world, Entity entity, IPlayerSession session, int par4, boolean par5, int boost, int cost, boolean bool) {
     }
 
     @Override
@@ -70,4 +70,8 @@ public class HeavenStrike implements ISpell {
         return 90;
     }
 
+    @Override
+    public String getSpellDescription() {
+        return ModLibs.THUNDER_SKY + "Desc";
+    }
 }

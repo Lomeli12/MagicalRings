@@ -5,9 +5,9 @@ import net.minecraft.item.ItemStack;
 
 import net.minecraftforge.oredict.OreDictionary;
 
-import net.lomeli.ring.lib.ModLibs;
-
 import cpw.mods.fml.common.registry.GameRegistry;
+
+import net.lomeli.ring.lib.ModLibs;
 
 public class ModBlocks {
     public static Block altar, ringForge, oreBlocks, onionBlock;

@@ -1,15 +1,9 @@
 package net.lomeli.ring.network;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.MinecraftServer;
-
-import net.lomeli.ring.Rings;
-import net.lomeli.ring.core.SimpleUtil;
-import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.MagicHandler;
-
 import io.netty.buffer.ByteBuf;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
 
 public class PacketAllowFlying implements IPacket {
     private int entityId;
@@ -42,16 +36,12 @@ public class PacketAllowFlying implements IPacket {
     public void readServer() {
         MinecraftServer ms = MinecraftServer.getServer();
         EntityPlayer player = (EntityPlayer) ms.getEntityWorld().getEntityByID(this.entityId);
-        if (player != null) {
+        if (player != null)
             updateTag(player, this.allowFlying);
-        }
     }
 
     public void updateTag(EntityPlayer player, boolean val) {
-        if (player != null) {
-            NBTTagCompound tag = MagicHandler.getMagicHandler().getPlayerTag(player);
-            tag.setBoolean(ModLibs.PLAYER_FLY, val);
-            SimpleUtil.addToPersistantData(player, ModLibs.PLAYER_DATA, tag);
-        }
+        if (player != null)
+            player.capabilities.allowFlying = val;
     }
 }

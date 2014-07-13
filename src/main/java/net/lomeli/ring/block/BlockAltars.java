@@ -15,18 +15,19 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import net.lomeli.ring.Rings;
-import net.lomeli.ring.api.IBookEntry;
+import net.lomeli.ring.api.interfaces.IBookEntry;
 import net.lomeli.ring.block.tile.TileAltar;
 import net.lomeli.ring.block.tile.TileItemAltar;
 import net.lomeli.ring.item.ItemMagicRing;
 import net.lomeli.ring.item.ItemSpellParchment;
 import net.lomeli.ring.lib.ModLibs;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockAltars extends BlockRings implements ITileEntityProvider, IBookEntry {
 
@@ -91,7 +92,7 @@ public class BlockAltars extends BlockRings implements ITileEntityProvider, IBoo
                             player.getCurrentEquippedItem().stackSize--;
                         world.func_147479_m(x, y, z);
                         return true;
-                    }else {
+                    } else {
                         if (stack.getItem() != tileStack.getItem() && stack.getItemDamage() != tileStack.getItemDamage()) {
                             ItemStack item = tileStack;
                             EntityItem entity = new EntityItem(world, x, y, z, item);
@@ -103,7 +104,7 @@ public class BlockAltars extends BlockRings implements ITileEntityProvider, IBoo
                         }
                     }
                 }
-            }else {
+            } else {
                 if (tileStack != null) {
                     ItemStack item = tileStack;
                     EntityItem entity = new EntityItem(world, x, y, z, item);
@@ -128,7 +129,7 @@ public class BlockAltars extends BlockRings implements ITileEntityProvider, IBoo
         return metadata < 2 ? true : false;
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     public void getSubBlocks(Item item, CreativeTabs tab, List list) {
         list.add(new ItemStack(item, 1, 0));
@@ -137,13 +138,13 @@ public class BlockAltars extends BlockRings implements ITileEntityProvider, IBoo
 
     @Override
     public TileEntity createNewTileEntity(World world, int meta) {
-        switch(meta) {
-        case 0 :
-            return new TileAltar();
-        case 1 :
-            return new TileItemAltar();
-        default:
-            return null;
+        switch (meta) {
+            case 0:
+                return new TileAltar();
+            case 1:
+                return new TileItemAltar();
+            default:
+                return null;
         }
     }
 
@@ -195,6 +196,18 @@ public class BlockAltars extends BlockRings implements ITileEntityProvider, IBoo
         super.breakBlock(world, x, y, z, block, meta);
     }
 
+    @Override
+    public int getLightValue(IBlockAccess world, int x, int y, int z) {
+        if (world.getTileEntity(x, y, z) instanceof TileItemAltar)
+            return ((TileItemAltar) world.getTileEntity(x, y, z)).getLightValue();
+        return 0;
+    }
+
+    @Override
+    public int getData() {
+        return 0;
+    }
+
     public static class ItemAltar extends ItemBlock {
 
         public ItemAltar(Block block) {
@@ -213,7 +226,7 @@ public class BlockAltars extends BlockRings implements ITileEntityProvider, IBoo
             return par1ItemStack.getItemDamage() == 1 ? Color.WHITE.getRGB() : Color.BLUE.getRGB();
         }
 
-        @SuppressWarnings({ "unchecked", "rawtypes" })
+        @SuppressWarnings({"unchecked", "rawtypes"})
         @Override
         @SideOnly(Side.CLIENT)
         public void getSubItems(Item item, CreativeTabs tab, List list) {

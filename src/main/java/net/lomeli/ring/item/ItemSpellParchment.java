@@ -1,8 +1,8 @@
 package net.lomeli.ring.item;
 
-import java.util.List;
-
 import org.lwjgl.input.Keyboard;
+
+import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -13,14 +13,15 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 
-import net.lomeli.ring.api.ISpell;
-import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.MagicHandler;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemSpellParchment extends ItemRings {
+import net.lomeli.ring.api.interfaces.IBookEntry;
+import net.lomeli.ring.api.interfaces.ISpell;
+import net.lomeli.ring.lib.ModLibs;
+import net.lomeli.ring.magic.MagicHandler;
+
+public class ItemSpellParchment extends ItemRings implements IBookEntry{
 
     public ItemSpellParchment(String texture) {
         super(texture);
@@ -37,7 +38,7 @@ public class ItemSpellParchment extends ItemRings {
         return EnumRarity.rare;
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs tab, List list) {
@@ -48,7 +49,7 @@ public class ItemSpellParchment extends ItemRings {
         }
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
@@ -78,5 +79,15 @@ public class ItemSpellParchment extends ItemRings {
                 }
             }
         }
+    }
+
+    @Override
+    public String getBookPage(int metadata) {
+        return ModLibs.MOD_ID.toLowerCase() + ".spellParchment";
+    }
+
+    @Override
+    public int getData() {
+        return 0;
     }
 }

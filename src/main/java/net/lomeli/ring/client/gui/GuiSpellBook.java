@@ -1,28 +1,31 @@
 package net.lomeli.ring.client.gui;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.ResourceLocation;
 
-import net.lomeli.ring.lib.ModLibs;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.lomeli.ring.Rings;
+import net.lomeli.ring.api.Page;
+import net.lomeli.ring.network.PacketSavePage;
 
 public class GuiSpellBook extends GuiScreen {
-    public static List<Page> avaliablePages = new ArrayList<Page>();
-    public static final ResourceLocation guiTexture = new ResourceLocation(ModLibs.MOD_ID.toLowerCase() + ":gui/book.png");
+    public ResourceLocation guiTexture;// = new ResourceLocation(ModLibs.MOD_ID.toLowerCase() + ":gui/book.png");
+    public List<Page> avaliablePages = new ArrayList<Page>();
     public int bookImageWidth = 192, bookImageHeight = 192, pageNumber;
-    private GuiSpellBook.NextPageButton nextPage, previousPage;
+    private NextPageButton nextPage, previousPage;
     private Page currentPage;
+
+    private int mouseX, mouseY;
 
     public GuiSpellBook(int i) {
         this.pageNumber = i;
@@ -31,7 +34,12 @@ public class GuiSpellBook extends GuiScreen {
     public GuiSpellBook() {
         this(0);
     }
-    
+
+    public GuiSpellBook setGuiTexture(ResourceLocation rs) {
+        this.guiTexture = rs;
+        return this;
+    }
+
     public GuiSpellBook setPageNumber(int i) {
         this.pageNumber = i;
         return this;
@@ -45,8 +53,8 @@ public class GuiSpellBook extends GuiScreen {
         int k = (this.width - this.bookImageWidth) / 2;
         int b0 = (this.height - this.bookImageHeight) / 2;
         this.currentPage = avaliablePages.size() > 0 ? (this.pageNumber < avaliablePages.size() ? avaliablePages.get(this.pageNumber) : null) : null;
-        this.buttonList.add(this.nextPage = new GuiSpellBook.NextPageButton(1, k + 144, b0 + 168, true));
-        this.buttonList.add(this.previousPage = new GuiSpellBook.NextPageButton(2, k + 17, b0 + 168, false));
+        this.buttonList.add(this.nextPage = new NextPageButton(1, k + 144, b0 + 168, true, guiTexture));
+        this.buttonList.add(this.previousPage = new NextPageButton(2, k + 17, b0 + 168, false, guiTexture));
     }
 
     @Override
@@ -56,28 +64,34 @@ public class GuiSpellBook extends GuiScreen {
             if (button.id == this.nextPage.id) {
                 if (this.pageNumber < avaliablePages.size() - 1)
                     this.pageNumber++;
-            }else if (button.id == this.previousPage.id) {
+            } else if (button.id == this.previousPage.id) {
                 if (this.pageNumber > 0)
                     this.pageNumber--;
             }
+            Rings.pktHandler.sendToServer(new PacketSavePage(Minecraft.getMinecraft().thePlayer, this.pageNumber));
         }
+    }
+
+    private void bindTexture(ResourceLocation loc) {
+        mc.getTextureManager().bindTexture(loc);
     }
 
     @Override
     public void drawScreen(int par1, int par2, float par3) {
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        
         if (this.pageNumber <= 0)
             this.previousPage.visible = false;
         else
             this.previousPage.visible = true;
-        
+
         if (this.pageNumber >= avaliablePages.size() - 1)
             this.nextPage.visible = false;
         else
             this.nextPage.visible = true;
 
-        this.mc.getTextureManager().bindTexture(guiTexture);
+
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        bindTexture(guiTexture);
+
         int k = (this.width - this.bookImageWidth) / 2;
         int b0 = (this.height - this.bookImageHeight) / 2;
         this.drawTexturedModalRect(k, b0, 0, 0, this.bookImageWidth, this.bookImageHeight);
@@ -95,35 +109,27 @@ public class GuiSpellBook extends GuiScreen {
         super.drawScreen(par1, par2, par3);
     }
 
-    @SideOnly(Side.CLIENT)
-    static class NextPageButton extends GuiButton {
-        private final boolean field_146151_o;
+    @Override
+    public void handleMouseInput() {
+        int x = Mouse.getEventX() * this.width / this.mc.displayWidth;
+        int y = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
 
-        public NextPageButton(int par1, int par2, int par3, boolean par4) {
-            super(par1, par2, par3, 23, 13, "");
-            this.field_146151_o = par4;
-        }
+        mouseX = x;
+        mouseY = y;
 
-        @Override
-        public void drawButton(Minecraft p_146112_1_, int p_146112_2_, int p_146112_3_) {
-            if (this.visible) {
-                boolean flag = p_146112_2_ >= this.xPosition && p_146112_3_ >= this.yPosition && p_146112_2_ < this.xPosition + this.width && p_146112_3_ < this.yPosition + this.height;
-                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-                p_146112_1_.getTextureManager().bindTexture(GuiSpellBook.guiTexture);
-                int k = 0;
-                int l = 192;
+        super.handleMouseInput();
+    }
 
-                if (flag) {
-                    k += 23;
-                }
-
-                if (!this.field_146151_o) {
-                    l += 13;
-                }
-
-                this.drawTexturedModalRect(this.xPosition, this.yPosition, k, l, 23, 13);
-            }
+    public void drawToolTipOverArea(int minX, int minY, int maxX, int maxY, String msg) {
+        if ((mouseX >= minX && mouseX <= maxX) && (mouseY >= minY && mouseY <= maxY)) {
+            List<String> list = new ArrayList<String>();
+            list.add(msg);
+            this.drawHoveringText(list, mouseX, mouseY, mc.fontRenderer);
         }
     }
 
+    @Override
+    public void drawHoveringText(List p_146283_1_, int p_146283_2_, int p_146283_3_, FontRenderer font) {
+        super.drawHoveringText(p_146283_1_, p_146283_2_, p_146283_3_, font);
+    }
 }

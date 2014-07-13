@@ -13,13 +13,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
-import net.lomeli.ring.Rings;
-import net.lomeli.ring.api.IBookEntry;
-import net.lomeli.ring.block.tile.TileRingForge;
-import net.lomeli.ring.lib.ModLibs;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
+import net.lomeli.ring.Rings;
+import net.lomeli.ring.api.interfaces.IBookEntry;
+import net.lomeli.ring.block.tile.TileRingForge;
+import net.lomeli.ring.lib.ModLibs;
 
 public class BlockRingForge extends BlockRings implements ITileEntityProvider, IBookEntry {
 
@@ -49,9 +49,9 @@ public class BlockRingForge extends BlockRings implements ITileEntityProvider, I
 
     @Override
     public void registerBlockIcons(IIconRegister register) {
-        top = register.registerIcon(ModLibs.MOD_ID.toLowerCase() + ":" + this.blockTexture + "_top");
-        sides = register.registerIcon(ModLibs.MOD_ID.toLowerCase() + ":" + this.blockTexture + "_sides");
-        bottom = register.registerIcon(ModLibs.MOD_ID.toLowerCase() + ":" + this.blockTexture + "_bottom");
+        top = register.registerIcon(this.getTextureName() + "_top");
+        sides = register.registerIcon(this.getTextureName() + "_sides");
+        bottom = register.registerIcon(this.getTextureName() + "_bottom");
     }
 
     @Override
@@ -98,5 +98,10 @@ public class BlockRingForge extends BlockRings implements ITileEntityProvider, I
             world.func_147453_f(x, y, z, block);
         }
         super.breakBlock(world, x, y, z, block, meta);
+    }
+
+    @Override
+    public int getData() {
+        return 0;
     }
 }

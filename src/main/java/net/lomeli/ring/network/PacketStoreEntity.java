@@ -27,7 +27,8 @@ public class PacketStoreEntity implements IPacket {
         }
     }
 
-    public PacketStoreEntity(){}
+    public PacketStoreEntity() {
+    }
 
     @Override
     public void toByte(ByteBuf buffer) {

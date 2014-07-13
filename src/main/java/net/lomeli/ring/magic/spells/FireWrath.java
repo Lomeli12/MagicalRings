@@ -14,34 +14,31 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
-import net.lomeli.ring.api.ISpell;
+import net.lomeli.ring.api.interfaces.IPlayerSession;
+import net.lomeli.ring.api.interfaces.ISpell;
 import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.MagicHandler;
 
 public class FireWrath implements ISpell {
 
     @Override
-    public boolean useOnBlock(World world, EntityPlayer player, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost, int cost) {
+    public boolean useOnBlock(World world, EntityPlayer player, IPlayerSession session, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost, int cost) {
         Block bl = world.getBlock(x, y, z);
-
         if (bl != null && !world.isAirBlock(x, y, z) && !world.isRemote) {
-            System.out.println("Hello");
             for (int i = -(boost / 2); i < (boost / 2); i++)
                 for (int j = -(boost / 2); j < (boost / 2); j++)
                     for (int l = -(boost / 2); l < (boost / 2); l++) {
-                        System.out.println("Hello!");
-                        if (MagicHandler.canUse(player, cost() + 1)) {
+                        if (session.hasEnoughMana(cost() + 1)) {
                             Block o = world.getBlock(x + i, y + j, z + l);
                             ItemStack output = FurnaceRecipes.smelting().getSmeltingResult(new ItemStack(o, 1, world.getBlockMetadata(x + i, y + j, z + l)));
                             if (output != null) {
-
                                 if (output.getItem() instanceof ItemBlock) {
                                     Block bk = Block.getBlockFromItem(output.getItem());
-                                    MagicHandler.modifyPlayerMP(player, -(cost() + 1));
+                                    session.adjustMana(-(cost() + 1), false);
                                     world.setBlock(x + i, y + j, z + l, bk);
                                 } else {
+                                    output.stackSize = 1;
                                     EntityItem entityItem = new EntityItem(world, x + i + 0.5, y + j + 0.5, +z + l + 0.5, output);
-                                    MagicHandler.modifyPlayerMP(player, -(cost() + 1));
+                                    session.adjustMana(-(cost() + 1), false);
                                     world.spawnEntityInWorld(entityItem);
                                     world.setBlockToAir(x + i, y + j, z + l);
                                 }
@@ -55,8 +52,8 @@ public class FireWrath implements ISpell {
     }
 
     @Override
-    public void onUse(World world, EntityPlayer player, ItemStack stack, int boost, int cost) {
-        if (MagicHandler.canUse(player, cost())) {
+    public void onUse(World world, EntityPlayer player, IPlayerSession session, ItemStack stack, int boost, int cost) {
+        if (session.hasEnoughMana(cost())) {
             Vec3 look = player.getLookVec();
             EntitySmallFireball fireBall = new EntitySmallFireball(world, player, 0, 0, 0);
             fireBall.setSprinting(true);
@@ -66,44 +63,44 @@ public class FireWrath implements ISpell {
             fireBall.accelerationZ = look.zCoord * 0.5;
             if (!world.isRemote)
                 world.spawnEntityInWorld(fireBall);
-            MagicHandler.modifyPlayerMP(player, -cost());
+            session.adjustMana(-cost(), false);
         }
     }
 
     @Override
-    public void onEquipped(ItemStack stack, EntityLivingBase entity) {
+    public void onEquipped(ItemStack stack, EntityLivingBase entity, IPlayerSession session) {
 
     }
 
     @Override
-    public void onUnEquipped(ItemStack stack, EntityLivingBase entity) {
+    public void onUnEquipped(ItemStack stack, EntityLivingBase entity, IPlayerSession session) {
 
     }
 
     @Override
-    public void applyToMob(EntityPlayer player, Entity target, int boost, int cost) {
+    public void applyToMob(EntityPlayer player, IPlayerSession session, Entity target, int boost, int cost) {
         if (target instanceof EntityLivingBase) {
             EntityLivingBase living = (EntityLivingBase) target;
-            if (MagicHandler.canUse(player, cost)) {
-                MagicHandler.modifyPlayerMP(player, -cost);
+            if (session.hasEnoughMana(cost)) {
+                session.adjustMana(-cost, false);
                 living.setFire(cost);
             }
         }
     }
 
     @Override
-    public void onUpdateTick(ItemStack stack, World world, Entity entity, int par4, boolean par5, int boost, int cost, boolean bool) {
+    public void onUpdateTick(ItemStack stack, World world, Entity entity, IPlayerSession session, int par4, boolean par5, int boost, int cost, boolean bool) {
         if (bool && entity instanceof EntityLivingBase) {
             EntityLivingBase living = (EntityLivingBase) entity;
             if (!living.isPotionActive(Potion.fireResistance.id)) {
                 if (entity instanceof EntityPlayer) {
                     EntityPlayer player = (EntityPlayer) entity;
-                    if (MagicHandler.canUse(player, cost)) {
-                        MagicHandler.modifyPlayerMP(player, -cost);
-                        player.addPotionEffect(new PotionEffect(Potion.fireResistance.id, 2000 + (100 * boost), 1));
+                    if (session.hasEnoughMana(cost)) {
+                        session.adjustMana(-cost, false);
+                        player.addPotionEffect(new PotionEffect(Potion.fireResistance.id, 2000 + (100 * boost), 1, true));
                     }
                 } else
-                    living.addPotionEffect(new PotionEffect(Potion.fireResistance.id, 2000, 1));
+                    living.addPotionEffect(new PotionEffect(Potion.fireResistance.id, 2000, 1, true));
             }
         }
     }
@@ -118,4 +115,8 @@ public class FireWrath implements ISpell {
         return 35;
     }
 
+    @Override
+    public String getSpellDescription() {
+        return ModLibs.FIRE_WRATH + "Desc";
+    }
 }

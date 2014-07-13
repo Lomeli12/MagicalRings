@@ -11,22 +11,22 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+import net.lomeli.ring.Rings;
 import net.lomeli.ring.block.tile.TileRingForge;
 import net.lomeli.ring.inventory.ContainerRingForge;
 import net.lomeli.ring.item.ItemHammer;
 import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.network.PacketHandler;
 import net.lomeli.ring.network.PacketRingName;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiRingForge extends GuiContainer {
 
+    private final ResourceLocation guiTexture = new ResourceLocation(ModLibs.MOD_ID.toLowerCase() + ":gui/ringForge.png");
     private TileRingForge tile;
     private GuiTextField textField;
-    private final ResourceLocation guiTexture = new ResourceLocation(ModLibs.MOD_ID.toLowerCase() + ":gui/ringForge.png");
 
     public GuiRingForge(TileRingForge tile, InventoryPlayer inventory, World world, int x, int y, int z) {
         super(new ContainerRingForge(tile, inventory, world, z, y, z));
@@ -62,7 +62,7 @@ public class GuiRingForge extends GuiContainer {
     }
 
     private void sendNamePacket() {
-        PacketHandler.sendToServer(new PacketRingName(this.textField.getText(), this.tile.xCoord, this.tile.yCoord, this.tile.zCoord));
+        Rings.pktHandler.sendToServer(new PacketRingName(this.textField.getText(), this.tile.xCoord, this.tile.yCoord, this.tile.zCoord));
     }
 
     @Override

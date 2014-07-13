@@ -6,13 +6,8 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.EnumAction;
-import net.minecraft.item.EnumRarity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemFood;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -21,17 +16,15 @@ import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import net.lomeli.ring.Rings;
-import net.lomeli.ring.block.ModBlocks;
-import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.network.PacketHandler;
-import net.lomeli.ring.network.PacketModifyMp;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+import net.lomeli.ring.Rings;
+import net.lomeli.ring.api.interfaces.IPlayerSession;
+import net.lomeli.ring.block.ModBlocks;
+import net.lomeli.ring.lib.ModLibs;
+
 public class ItemMagicFood extends ItemFood implements IPlantable {
-    protected String itemTexture;
 
     @SideOnly(Side.CLIENT)
     private IIcon[] iconArray;
@@ -59,7 +52,7 @@ public class ItemMagicFood extends ItemFood implements IPlantable {
                     if (!player.capabilities.isCreativeMode)
                         stack.stackSize--;
                     return true;
-                }else
+                } else
                     return false;
             }
         }
@@ -95,14 +88,24 @@ public class ItemMagicFood extends ItemFood implements IPlantable {
     public ItemStack onEaten(ItemStack stack, World world, EntityPlayer player) {
         if (!world.isRemote) {
             if (stack.getItemDamage() == 2) {
-                PacketHandler.sendToServer(new PacketModifyMp(player, 0, 100));
+                if (Rings.proxy.manaHandler.playerHasSession(player)) {
+                    IPlayerSession session = Rings.proxy.manaHandler.getPlayerSession(player);
+                    session.setMaxMana(session.getMaxMana() + 100);
+                    Rings.proxy.manaHandler.updatePlayerSession(session, world.provider.dimensionId);
+                }
+                //Rings.pktHandler.sendToServer(new PacketModifyMp(player, 0, 100));
                 if (!player.capabilities.isCreativeMode) {
                     stack.stackSize--;
                     player.inventory.addItemStackToInventory(new ItemStack(Items.glass_bottle));
                 }
                 return stack;
-            }else if (stack.getItemDamage() == 3) {
-                PacketHandler.sendToServer(new PacketModifyMp(player, 75, 0));
+            } else if (stack.getItemDamage() == 3) {
+                if (Rings.proxy.manaHandler.playerHasSession(player)) {
+                    IPlayerSession session = Rings.proxy.manaHandler.getPlayerSession(player);
+                    session.adjustMana(75, false);
+                    Rings.proxy.manaHandler.updatePlayerSession(session, world.provider.dimensionId);
+                }
+                //Rings.pktHandler.sendToServer(new PacketModifyMp(player, 75, 0));
                 if (!player.capabilities.isCreativeMode) {
                     stack.stackSize--;
                     player.inventory.addItemStackToInventory(new ItemStack(Items.glass_bottle));
@@ -124,7 +127,7 @@ public class ItemMagicFood extends ItemFood implements IPlantable {
         return par1;
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs tab, List list) {
@@ -159,7 +162,7 @@ public class ItemMagicFood extends ItemFood implements IPlantable {
 
     @Override
     public Block getPlant(IBlockAccess world, int x, int y, int z) {
-        return Blocks.farmland;
+        return ModBlocks.onionBlock;
     }
 
     @Override

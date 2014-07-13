@@ -35,7 +35,7 @@ public class TileRingForge extends TileEntity implements IInventory {
                     this.setInventorySlotContents(4, RingMaterialRecipe.getNewRing(getStackInSlot(0), getStackInSlot(1), getStackInSlot(2), name));
                 else
                     this.setInventorySlotContents(4, null);
-            }else {
+            } else {
                 this.setInventorySlotContents(4, null);
                 this.name = "";
             }
@@ -69,7 +69,7 @@ public class TileRingForge extends TileEntity implements IInventory {
                 this.inventory[par1] = null;
                 this.markDirty();
                 return itemstack;
-            }else {
+            } else {
                 itemstack = this.inventory[par1].splitStack(par2);
 
                 if (this.inventory[par1].stackSize == 0) {
@@ -79,7 +79,7 @@ public class TileRingForge extends TileEntity implements IInventory {
                 this.markDirty();
                 return itemstack;
             }
-        }else
+        } else
             return null;
     }
 

@@ -11,17 +11,18 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.BonemealEvent;
 
-import net.lomeli.ring.api.ISpell;
+import net.lomeli.ring.api.interfaces.IPlayerSession;
+import net.lomeli.ring.api.interfaces.ISpell;
 import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.MagicHandler;
 
 public class Harvest implements ISpell {
+    private int tick;
 
     @Override
-    public boolean useOnBlock(World world, EntityPlayer player, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost, int cost) {
-        for (int j = -1; j < 2; j++)
-            for (int k = -1; k < 2; k++) {
-                if (MagicHandler.canUse(player, cost())) {
+    public boolean useOnBlock(World world, EntityPlayer player, IPlayerSession session, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost, int cost) {
+        for (int j = -(1 + boost); j < (2 + boost); j++)
+            for (int k = -(1 + boost); k < (2 + boost); k++) {
+                if (session.hasEnoughMana(cost())) {
                     Block blk = world.getBlock(x + j, y, z + k);
                     if (blk != null && !world.isAirBlock(x + j, y, z + k)) {
                         BonemealEvent event = new BonemealEvent(player, world, blk, x + j, y, z + k);
@@ -33,55 +34,59 @@ public class Harvest implements ISpell {
                                 world.spawnParticle("happyVillager", x + j + 0.5, y + 0.5, z + k + 0.5, world.rand.nextDouble() + 2, world.rand.nextDouble() + 2, world.rand.nextDouble() + 2);
                                 if (!world.isRemote) {
                                     if (grow.func_149852_a(world, world.rand, x + j, y, z + k)) {
-                                        MagicHandler.modifyPlayerMP(player, -cost());
+                                        session.adjustMana(-cost(), false);
                                         grow.func_149853_b(world, world.rand, x + j, y, z + k);
                                     }
                                 }
                             }
                         }
                     }
-                }
+                } else
+                    break;
             }
         return false;
     }
 
     @Override
-    public void onUse(World world, EntityPlayer player, ItemStack stack, int boost, int cost) {
+    public void onUse(World world, EntityPlayer player, IPlayerSession session, ItemStack stack, int boost, int cost) {
 
     }
 
     @Override
-    public void onEquipped(ItemStack stack, EntityLivingBase entity) {
+    public void onEquipped(ItemStack stack, EntityLivingBase entity, IPlayerSession session) {
 
     }
 
     @Override
-    public void onUnEquipped(ItemStack stack, EntityLivingBase entity) {
+    public void onUnEquipped(ItemStack stack, EntityLivingBase entity, IPlayerSession session) {
 
     }
 
     @Override
-    public void applyToMob(EntityPlayer player, Entity target, int boost, int cost) {
+    public void applyToMob(EntityPlayer player, IPlayerSession session, Entity target, int boost, int cost) {
     }
 
     @Override
-    public void onUpdateTick(ItemStack stack, World world, Entity entity, int par4, boolean par5, int boost, int cost, boolean bool) {
+    public void onUpdateTick(ItemStack stack, World world, Entity entity, IPlayerSession session, int par4, boolean par5, int boost, int cost, boolean bool) {
         if (entity != null && entity instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) entity;
-            for (int x = -1 - boost; x < 2 + boost; x++)
-                for (int z = -1 - boost; z < 2 + boost; z++) {
-                    if (MagicHandler.canUse(player, cost)) {
-                        int blkX = (int) player.posX + x, blkY = (int) player.posY, blkZ = (int) player.posZ + z;
-                        Block blk = world.getBlock(blkX, blkY, blkZ);
-                        if (blk != null && !world.isAirBlock(blkX, blkY, blkZ)) {
-                            if (blk instanceof IGrowable) {
-                                blk.updateTick(world, blkX, blkY, blkZ, world.rand);
-                                MagicHandler.modifyPlayerMP(player, -cost);
+            if (++tick >= 10) {
+                tick = 0;
+                for (int x = -(1 + boost); x < (2 + boost); x++)
+                    for (int z = -(1 + boost); z < (2 + boost); z++) {
+                        if (session.hasEnoughMana(cost)) {
+                            int blkX = (int) player.posX + x, blkY = (int) player.posY, blkZ = (int) player.posZ + z;
+                            Block blk = world.getBlock(blkX, blkY, blkZ);
+                            if (blk != null && !world.isAirBlock(blkX, blkY, blkZ)) {
+                                if (blk instanceof IGrowable) {
+                                    blk.updateTick(world, blkX, blkY, blkZ, world.rand);
+                                    session.adjustMana(-cost, false);
+                                }
                             }
-                        }
-                    }else
-                        break;
-                }
+                        } else
+                            break;
+                    }
+            }
         }
     }
 
@@ -95,4 +100,8 @@ public class Harvest implements ISpell {
         return 30;
     }
 
+    @Override
+    public String getSpellDescription() {
+        return ModLibs.HARVEST + "Desc";
+    }
 }

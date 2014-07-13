@@ -18,10 +18,10 @@ import net.lomeli.ring.lib.ModLibs;
 
 public class RenderAltar extends TileEntitySpecialRenderer {
 
+    private final float size = 0.0625f;
     private ModelAltar model = new ModelAltar();
     private Render3DItem render3D = new Render3DItem();
     private Minecraft mc = Minecraft.getMinecraft();
-    private final float size = 0.0625f;
 
     public RenderAltar() {
         render3D.setRenderManager(RenderManager.instance);

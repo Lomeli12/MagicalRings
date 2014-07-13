@@ -1,5 +1,6 @@
 package net.lomeli.ring.block;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -12,12 +13,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
-import net.lomeli.ring.lib.ModLibs;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+import net.lomeli.ring.item.ModItems;
+import net.lomeli.ring.lib.ModLibs;
+
 public class BlockOre extends BlockRings {
+    private String blockTexture;
 
     @SideOnly(Side.CLIENT)
     private IIcon[] iconArray;
@@ -26,6 +29,7 @@ public class BlockOre extends BlockRings {
         super(Material.rock, texture);
         this.setHardness(4f);
         this.setResistance(20);
+        this.blockTexture = texture;
     }
 
     @Override
@@ -37,7 +41,7 @@ public class BlockOre extends BlockRings {
         }
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     public void getSubBlocks(Item item, CreativeTabs tab, List list) {
         for (int i = 0; i < 8; i++) {
@@ -61,6 +65,16 @@ public class BlockOre extends BlockRings {
         return this.damageDropped(world.getBlockMetadata(x, y, z));
     }
 
+    @Override
+    public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune) {
+        ArrayList<ItemStack> items = new ArrayList<ItemStack>();
+        if (metadata > 1)
+            items.add(new ItemStack(ModItems.oreItems, 1 + (fortune > 0 ? fortune - 1 : 0), metadata + 1));
+        else
+            items.add(new ItemStack(this, 1, metadata));
+        return items;
+    }
+
     public static class ItemBlockOre extends ItemBlock {
 
         public ItemBlockOre(Block p_i45328_1_) {
@@ -80,7 +94,7 @@ public class BlockOre extends BlockRings {
             return this.field_150939_a.getIcon(0, par1);
         }
 
-        @SuppressWarnings({ "unchecked", "rawtypes" })
+        @SuppressWarnings({"unchecked", "rawtypes"})
         @Override
         @SideOnly(Side.CLIENT)
         public void getSubItems(Item item, CreativeTabs tab, List list) {

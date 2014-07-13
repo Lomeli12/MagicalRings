@@ -1,48 +1,48 @@
 package net.lomeli.ring.network;
 
+import io.netty.buffer.ByteBuf;
+
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 
-import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.MagicHandler;
+public class PacketSavePage implements IPacket {
+    private int entityID, pageNum;
 
-import io.netty.buffer.ByteBuf;
-
-public class PacketClientJoined implements IPacket {
-    private int entityID;
-
-    public PacketClientJoined() {
+    public PacketSavePage() {
     }
 
-    public PacketClientJoined(EntityPlayer player) {
+    public PacketSavePage(EntityPlayer player, int page) {
         this.entityID = player.getEntityId();
+        this.pageNum = page;
     }
 
     @Override
     public void toByte(ByteBuf buffer) {
         buffer.writeInt(this.entityID);
+        buffer.writeInt(this.pageNum);
     }
 
     @Override
     public void fromByte(ByteBuf buffer) {
         this.entityID = buffer.readInt();
+        this.pageNum = buffer.readInt();
     }
 
     @Override
     public void readClient(EntityPlayer player) {
+
     }
 
     @Override
     public void readServer() {
         MinecraftServer ms = MinecraftServer.getServer();
         EntityPlayer player = (EntityPlayer) ms.getEntityWorld().getEntityByID(this.entityID);
-        NBTTagCompound tag = MagicHandler.getMagicHandler().getPlayerTag(player);
-        if (tag != null) {
-            int mp = tag.getInteger(ModLibs.PLAYER_MP);
-            int max = tag.getInteger(ModLibs.PLAYER_MAX);
-            PacketHandler.sendTo(new PacketUpdateClient(mp, max), player);
+        if (player != null) {
+            ItemStack itemStack = player.getCurrentEquippedItem();
+            if (!itemStack.hasTagCompound()) itemStack.stackTagCompound = new NBTTagCompound();
+            itemStack.getTagCompound().setInteger("LastSavedPage", this.pageNum);
         }
     }
-
 }

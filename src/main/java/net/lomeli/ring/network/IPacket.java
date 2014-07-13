@@ -1,11 +1,11 @@
 package net.lomeli.ring.network;
 
-import net.minecraft.entity.player.EntityPlayer;
-
 import io.netty.buffer.ByteBuf;
 
+import net.minecraft.entity.player.EntityPlayer;
+
 public interface IPacket {
-    
+
     public void toByte(ByteBuf buffer);
 
     public void fromByte(ByteBuf buffer);

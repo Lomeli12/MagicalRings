@@ -1,6 +1,5 @@
 package net.lomeli.ring.item;
 
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
@@ -15,20 +14,20 @@ public class ItemGhostSword extends ItemSword {
     public ItemGhostSword() {
         super(ToolMaterial.IRON);
         this.setMaxDamage(100);
-    }
-
-    @Override
-    public void registerIcons(IIconRegister register) {
-        this.itemIcon = register.registerIcon(ModLibs.MOD_ID.toLowerCase() + ":ghostSword");
+        this.setTextureName(ModLibs.MOD_ID.toLowerCase() + ":ghostSword");
     }
 
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) {
         if (world.rand.nextBoolean()) {
             if (entity instanceof EntityLivingBase && !world.isRemote) {
-                if (stack.getItemDamage() != stack.getMaxDamage())
+                if (stack.getItemDamage() < stack.getMaxDamage())
                     stack.damageItem(1, (EntityLivingBase) entity);
+                if (stack.getItemDamage() >= stack.getMaxDamage())
+                    stack.stackSize--;
             }
+            if (stack.getItemDamage() >= stack.getMaxDamage())
+                stack.stackSize--;
         }
     }
 

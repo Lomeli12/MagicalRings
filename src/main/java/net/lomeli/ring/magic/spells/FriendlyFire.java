@@ -9,34 +9,34 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-import net.lomeli.ring.api.ISpell;
+import net.lomeli.ring.api.interfaces.IPlayerSession;
+import net.lomeli.ring.api.interfaces.ISpell;
 import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.MagicHandler;
 
 public class FriendlyFire implements ISpell {
 
     @Override
-    public boolean useOnBlock(World world, EntityPlayer player, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost, int cost) {
+    public boolean useOnBlock(World world, EntityPlayer player, IPlayerSession session, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost, int cost) {
         return false;
     }
 
     @Override
-    public void onUse(World world, EntityPlayer player, ItemStack stack, int boost, int cost) {
+    public void onUse(World world, EntityPlayer player, IPlayerSession session, ItemStack stack, int boost, int cost) {
 
     }
 
     @Override
-    public void onEquipped(ItemStack stack, EntityLivingBase entity) {
+    public void onEquipped(ItemStack stack, EntityLivingBase entity, IPlayerSession session) {
 
     }
 
     @Override
-    public void onUnEquipped(ItemStack stack, EntityLivingBase entity) {
+    public void onUnEquipped(ItemStack stack, EntityLivingBase entity, IPlayerSession session) {
 
     }
 
     @Override
-    public void applyToMob(EntityPlayer player, Entity target, int boost, int cost) {
+    public void applyToMob(EntityPlayer player, IPlayerSession session, Entity target, int boost, int cost) {
         if (!player.worldObj.isRemote) {
             if (target instanceof EntityLivingBase) {
                 EntityLivingBase living = (EntityLivingBase) target;
@@ -46,8 +46,8 @@ public class FriendlyFire implements ISpell {
                         Object obj = entityList.get(player.worldObj.rand.nextInt(entityList.size()));
                         if (obj instanceof EntityLivingBase) {
                             EntityLivingBase newTarget = (EntityLivingBase) obj;
-                            if (MagicHandler.canUse(player, cost)) {
-                                MagicHandler.modifyPlayerMP(player, -cost);
+                            if (session.hasEnoughMana(cost)) {
+                                session.adjustMana(-cost, false);
                                 if (living instanceof EntityCreature)
                                     ((EntityCreature) living).setAttackTarget(newTarget.equals(living) ? null : newTarget);
                                 else
@@ -61,7 +61,7 @@ public class FriendlyFire implements ISpell {
     }
 
     @Override
-    public void onUpdateTick(ItemStack stack, World world, Entity entity, int par4, boolean par5, int boost, int cost, boolean bool) {
+    public void onUpdateTick(ItemStack stack, World world, Entity entity, IPlayerSession session, int par4, boolean par5, int boost, int cost, boolean bool) {
     }
 
     @Override
@@ -74,4 +74,8 @@ public class FriendlyFire implements ISpell {
         return 150;
     }
 
+    @Override
+    public String getSpellDescription() {
+        return ModLibs.FRIENDLY_FIRE + "Desc";
+    }
 }

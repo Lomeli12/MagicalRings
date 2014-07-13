@@ -6,6 +6,8 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
@@ -13,12 +15,16 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 
-import net.lomeli.ring.api.IBookEntry;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+
+import net.lomeli.ring.api.interfaces.IBookEntry;
+import net.lomeli.ring.core.SimpleUtil;
 import net.lomeli.ring.item.ModItems;
 import net.lomeli.ring.lib.BookText;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-
+/**
+ * Most of this is based off of Botania, with some modification to meet my needs. Thanks Vazkii!
+ */
 public class HudHandler {
 
     private static final RenderItem itemRender = new RenderItem();
@@ -28,13 +34,34 @@ public class HudHandler {
         if (event.type == ElementType.ALL) {
             Minecraft mc = Minecraft.getMinecraft();
             if (mc.inGameHasFocus) {
-                MovingObjectPosition pos = mc.objectMouseOver;
-                if (pos != null && mc.thePlayer.getCurrentEquippedItem() != null && mc.thePlayer.getCurrentEquippedItem().getItem() == ModItems.book) {
-                    if (!mc.theWorld.isAirBlock(pos.blockX, pos.blockY, pos.blockZ)) {
-                        Block block = mc.theWorld.getBlock(pos.blockX, pos.blockY, pos.blockZ);
-                        if (block != null && block instanceof IBookEntry) {
-                            int meta = mc.theWorld.getBlockMetadata(pos.blockX, pos.blockY, pos.blockZ);
-                            renderInfoDisplay(new ItemStack(block, 1, meta), event.resolution);
+                MovingObjectPosition pos = mc.thePlayer.rayTrace(5, event.partialTicks);
+                ItemStack stack = mc.thePlayer.getCurrentEquippedItem();
+                if (pos != null && stack != null) {
+                    if (stack.getItem() == ModItems.book && stack.getItemDamage() == 0) {
+                        if (pos.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
+                            if (!mc.theWorld.isAirBlock(pos.blockX, pos.blockY, pos.blockZ)) {
+                                Block block = mc.theWorld.getBlock(pos.blockX, pos.blockY, pos.blockZ);
+                                if (block != null && block instanceof IBookEntry) {
+                                    int meta = mc.theWorld.getBlockMetadata(pos.blockX, pos.blockY, pos.blockZ);
+                                    renderInfoDisplay(new ItemStack(block, 1, meta), event.resolution);
+                                    return;
+                                }
+                            }
+                        }
+                        Entity entity = SimpleUtil.getEntityPointedAt(mc.thePlayer.getEntityWorld(), mc.thePlayer, 0.5d, 10d, true);
+                        if (entity != null) {
+                            if (entity instanceof EntityItem) {
+                                ItemStack item = ((EntityItem) entity).getEntityItem();
+                                if (item != null && item.getItem() != null && item.getItem() instanceof IBookEntry) {
+                                    renderInfoDisplay(item, event.resolution);
+                                    return;
+                                }
+                            } else {
+                                if (entity instanceof IBookEntry) {
+                                    renderInto(entity.getCommandSenderName(), event.resolution);
+                                    return;
+                                }
+                            }
                         }
                     }
                 }
@@ -43,6 +70,10 @@ public class HudHandler {
     }
 
     private void renderInfoDisplay(ItemStack stack, ScaledResolution res) {
+        renderInto(stack.getDisplayName(), res);
+    }
+
+    private void renderInto(String info, ScaledResolution res) {
         int color = 0x8000C4C4;
 
         GL11.glEnable(GL11.GL_BLEND);
@@ -53,11 +84,10 @@ public class HudHandler {
         int x = res.getScaledWidth() / 2;
         int y = res.getScaledHeight() / 2;
 
-        String info = StatCollector.translateToLocal(BookText.INFO);
-        int itemX = x - (mc.fontRenderer.getStringWidth(stack.getDisplayName()) / 2);
-        mc.fontRenderer.drawStringWithShadow(stack.getDisplayName(), itemX, y + 6, color);
-        mc.fontRenderer.drawStringWithShadow(info, x - (mc.fontRenderer.getStringWidth(info) / 2), y + 18, color);
-        itemRender.renderItemIntoGUI(mc.fontRenderer, mc.renderEngine, new ItemStack(ModItems.book), itemX - 20, y + 2);
+        mc.fontRenderer.drawStringWithShadow(info, x + 20, y + 6, color);
+        mc.fontRenderer.drawStringWithShadow(StatCollector.translateToLocal(BookText.INFO), x + 20, y + 18, color);
+
+        itemRender.renderItemIntoGUI(mc.fontRenderer, mc.renderEngine, new ItemStack(ModItems.book, 1, 0), x + 4, y + 2);
 
         GL11.glDisable(GL11.GL_LIGHTING);
 

@@ -5,10 +5,10 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.Item;
 import net.minecraft.util.IIcon;
 
-import net.lomeli.ring.item.ModItems;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
+import net.lomeli.ring.item.ModItems;
 
 public class BlockOnion extends BlockCrops {
     @SideOnly(Side.CLIENT)
@@ -28,7 +28,7 @@ public class BlockOnion extends BlockCrops {
                 p_149691_2_ = 5;
 
             return this.field_149869_a[p_149691_2_ >> 1];
-        }else
+        } else
             return this.field_149869_a[3];
     }
 

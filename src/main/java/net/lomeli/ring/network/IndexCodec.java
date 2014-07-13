@@ -5,17 +5,15 @@ import io.netty.channel.ChannelHandlerContext;
 
 import cpw.mods.fml.common.network.FMLIndexedMessageToMessageCodec;
 
-public class ChannelHandler extends FMLIndexedMessageToMessageCodec<IPacket> {
+public class IndexCodec extends FMLIndexedMessageToMessageCodec<IPacket> {
 
-    public ChannelHandler() {
+    public IndexCodec() {
         this.addDiscriminator(0, PacketAdjustClientPos.class);
         this.addDiscriminator(1, PacketAllowFlying.class);
-        this.addDiscriminator(2, PacketCheckPlayerMP.class);
-        this.addDiscriminator(3, PacketClientJoined.class);
-        this.addDiscriminator(4, PacketStoreEntity.class);
-        this.addDiscriminator(5, PacketRingName.class);
-        this.addDiscriminator(6, PacketUpdateClient.class);
-        this.addDiscriminator(7, PacketModifyMp.class);
+        this.addDiscriminator(2, PacketStoreEntity.class);
+        this.addDiscriminator(3, PacketRingName.class);
+        this.addDiscriminator(4, PacketSavePage.class);
+        this.addDiscriminator(5, PacketUpdateAltar.class);
     }
 
     @Override

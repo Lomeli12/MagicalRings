@@ -12,67 +12,81 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 
-import net.lomeli.ring.api.ISpell;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.living.EnderTeleportEvent;
+
+import net.lomeli.ring.api.interfaces.IPlayerSession;
+import net.lomeli.ring.api.interfaces.ISpell;
 import net.lomeli.ring.core.SimpleUtil;
 import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.MagicHandler;
 
 public class EnderPort implements ISpell {
     private Random rand = new Random();
 
     @Override
-    public boolean useOnBlock(World world, EntityPlayer player, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost, int cost) {
+    public boolean useOnBlock(World world, EntityPlayer player, IPlayerSession session, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int boost, int cost) {
+        onUse(world, player, session, player.getCurrentEquippedItem(), boost, cost);
         return false;
     }
 
     @Override
-    public void onUse(World world, EntityPlayer player, ItemStack stack, int boost, int cost) {
-        if (MagicHandler.canUse(player, cost())) {
+    public void onUse(World world, EntityPlayer player, IPlayerSession session, ItemStack stack, int boost, int cost) {
+        if (session.hasEnoughMana(cost())) {
             MovingObjectPosition mop = SimpleUtil.rayTrace(player, world);
             if (mop != null) {
+                int oldX = MathHelper.floor_double(player.posX), oldY = MathHelper.floor_double(player.posY), oldZ = MathHelper.floor_double(player.posZ);
+                int newX = MathHelper.floor_double(player.posX), newY = MathHelper.floor_double(player.posY), newZ = MathHelper.floor_double(player.posZ);
+                double distance = 43;
+                boolean teleport = false;
                 if (mop.typeOfHit == MovingObjectType.BLOCK) {
-                    int newX = mop.blockX;
-                    int newY = mop.blockY;
-                    int newZ = mop.blockZ;
-                    double distance = player.getDistance(newX, newY, newZ);
-                    if (distance <= 42) {
-                        Block blk = world.getBlock(newX, newY, newZ);
-                        if (blk != null && !world.isAirBlock(newX, newY, newZ)) {
-                            MagicHandler.modifyPlayerMP(player, -cost());
-
-                            teleportTo(player, newX, newY + 2, newZ);
-                        }
-                    }
+                    newX = mop.blockX;
+                    newY = mop.blockY;
+                    newZ = mop.blockZ;
+                    distance = player.getDistance(newX, newY, newZ);
+                    Block blk = world.getBlock(newX, newY, newZ);
+                    if (blk != null && !world.isAirBlock(newX, newY, newZ))
+                        teleport = true;
+                } else if (mop.typeOfHit == MovingObjectType.ENTITY) {
+                    newX = MathHelper.floor_double(mop.entityHit.posX);
+                    newY = MathHelper.floor_double(mop.entityHit.posY);
+                    newZ = MathHelper.floor_double(mop.entityHit.posZ);
+                    distance = player.getDistance(newX, newY, newZ);
+                    teleport = true;
+                }
+                if (teleport && distance <= 42) {
+                    teleportTo(player, newX, newY, newZ);
+                    if (MathHelper.floor_double(player.posX) != oldX || MathHelper.floor_double(player.posY) != oldY || MathHelper.floor_double(player.posZ) != oldZ)
+                        session.adjustMana(-cost(), false);
                 }
             }
         }
     }
 
     @Override
-    public void onEquipped(ItemStack stack, EntityLivingBase entity) {
+    public void onEquipped(ItemStack stack, EntityLivingBase entity, IPlayerSession session) {
 
     }
 
     @Override
-    public void onUnEquipped(ItemStack stack, EntityLivingBase entity) {
+    public void onUnEquipped(ItemStack stack, EntityLivingBase entity, IPlayerSession session) {
 
     }
 
     @Override
-    public void applyToMob(EntityPlayer player, Entity target, int boost, int cost) {
-        if (MagicHandler.canUse(player, cost)) {
+    public void applyToMob(EntityPlayer player, IPlayerSession session, Entity target, int boost, int cost) {
+        if (session.hasEnoughMana(cost)) {
             if (target instanceof EntityLivingBase) {
                 teleportRandomly((EntityLivingBase) target);
-                MagicHandler.modifyPlayerMP(player, -cost);
+                session.adjustMana(-cost(), false);
             }
         }
     }
 
     @Override
-    public void onUpdateTick(ItemStack stack, World world, Entity entity, int par4, boolean par5, int boost, int cost, boolean bool) {
+    public void onUpdateTick(ItemStack stack, World world, Entity entity, IPlayerSession session, int par4, boolean par5, int boost, int cost, boolean bool) {
         if (entity instanceof EntityLivingBase) {
             if (!(entity instanceof EntityPlayer))
-                this.teleportRandomly((EntityLivingBase) entity);
+                teleportRandomly((EntityLivingBase) entity);
         }
     }
 
@@ -94,6 +108,9 @@ public class EnderPort implements ISpell {
     }
 
     protected boolean teleportTo(EntityLivingBase entity, double d0, double d1, double d2) {
+        EnderTeleportEvent event = new EnderTeleportEvent(entity, d0, d1, d2, 0);
+        if (MinecraftForge.EVENT_BUS.post(event))
+            return false;
         double var7 = entity.posX;
         double var9 = entity.posY;
         double var11 = entity.posZ;
@@ -133,7 +150,7 @@ public class EnderPort implements ISpell {
             if (!entity.worldObj.isRemote)
                 entity.setPositionAndUpdate(var7, var9, var11);
             return false;
-        }else {
+        } else {
             short var30 = 128;
 
             for (int j = 0; j < var30; ++j) {
@@ -167,5 +184,10 @@ public class EnderPort implements ISpell {
          * "mob.endermen.portal", 1.0F, 1.0F);
          * entity.playSound("mob.endermen.portal", 1.0F, 1.0F); return true;
          */
+    }
+
+    @Override
+    public String getSpellDescription() {
+        return ModLibs.ENDERPORT + "Desc";
     }
 }

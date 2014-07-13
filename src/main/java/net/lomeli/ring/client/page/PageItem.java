@@ -1,9 +1,12 @@
-package net.lomeli.ring.client.gui;
+package net.lomeli.ring.client.page;
 
 import java.awt.Color;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
+
+import net.lomeli.ring.api.Page;
+import net.lomeli.ring.client.gui.GuiSpellBook;
 
 public class PageItem extends Page {
 
@@ -15,7 +18,7 @@ public class PageItem extends Page {
         this.stack = item;
         this.text = text;
     }
-    
+
     @Override
     public PageItem setID(String id) {
         this.id = id;

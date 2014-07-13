@@ -12,9 +12,10 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
+import net.lomeli.ring.api.interfaces.IBookEntry;
 import net.lomeli.ring.lib.ModLibs;
 
-public class ItemHammer extends ItemRings {
+public class ItemHammer extends ItemRings implements IBookEntry{
 
     public ItemHammer(String texture, int damage) {
         super(texture);
@@ -23,12 +24,12 @@ public class ItemHammer extends ItemRings {
     }
 
     @Override
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public void addInformation(ItemStack itemStack, EntityPlayer player, List info, boolean par) {
         if (GuiScreen.isShiftKeyDown()) {
             info.add(StatCollector.translateToLocal(ModLibs.USES_LEFT) + " " + (itemStack.getMaxDamage() - itemStack.getItemDamage()));
             info.add(StatCollector.translateToLocal(ModLibs.HAMMER_INFO));
-        }else
+        } else
             info.add(StatCollector.translateToLocal(ModLibs.MORE_INFO));
     }
 
@@ -63,6 +64,16 @@ public class ItemHammer extends ItemRings {
             }
         }
         return super.onItemUse(stack, player, world, x, y, z, side, f, f1, f2);
+    }
+
+    @Override
+    public String getBookPage(int metadata) {
+        return ModLibs.MOD_ID.toLowerCase() + ".hammer";
+    }
+
+    @Override
+    public int getData() {
+        return 0;
     }
 
     public void spawnEffects(World worldObj, double xCoord, double yCoord, double zCoord) {

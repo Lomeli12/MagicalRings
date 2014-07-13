@@ -1,19 +1,28 @@
 package net.lomeli.ring.client.handler;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-import net.lomeli.ring.api.IBookEntry;
+import cpw.mods.fml.common.network.IGuiHandler;
+
+import net.lomeli.ring.Rings;
+import net.lomeli.ring.api.interfaces.IBookEntry;
+import net.lomeli.ring.api.Page;
 import net.lomeli.ring.block.tile.TileRingForge;
 import net.lomeli.ring.client.gui.GuiRingForge;
 import net.lomeli.ring.client.gui.GuiSpellBook;
-import net.lomeli.ring.client.gui.Page;
+import net.lomeli.ring.client.page.PageUtil;
+import net.lomeli.ring.core.SimpleUtil;
 import net.lomeli.ring.inventory.ContainerRingForge;
 import net.lomeli.ring.lib.ModLibs;
-
-import cpw.mods.fml.common.network.IGuiHandler;
+import net.lomeli.ring.network.PacketSavePage;
 
 public class GuiHandler implements IGuiHandler {
 
@@ -29,36 +38,60 @@ public class GuiHandler implements IGuiHandler {
 
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+        Minecraft mc = Minecraft.getMinecraft();
         TileEntity tile = world.getTileEntity(x, y, z);
         if (ID == ModLibs.RING_FORGE_GUI) {
             if (tile instanceof TileRingForge)
                 return new GuiRingForge((TileRingForge) tile, player.inventory, world, x, y, z);
-        }else if (ID == ModLibs.BOOK_GUI) {
-            GuiSpellBook bookGui = new GuiSpellBook();
-            Page.loadPages(bookGui);
-            Block bl = world.getBlock(x, y, z);
-            if (bl != null && bl instanceof IBookEntry) {
+        } else if (ID == ModLibs.BOOK_GUI) {
+            ItemStack stack = player.getCurrentEquippedItem();
+            if (stack != null) {
+                GuiSpellBook bookGui = new GuiSpellBook();
                 int pageNum = 0;
-                String id = ((IBookEntry) bl).getBookPage(world.getBlockMetadata(x, y, z));
-                for (int i = 0; i < GuiSpellBook.avaliablePages.size(); i++) {
-                    Page page = GuiSpellBook.avaliablePages.get(i);
-                    if (page != null && page.pageID() != null) {
-                        System.out.println(page.pageID());
-                        if (page.pageID().equals(id)) {
-                            pageNum = i;
-                            break;
+                Block bl = world.getBlock(x, y, z);
+                Entity entity = SimpleUtil.getEntityPointedAt(world, player, 0.5d, 10d, true);
+                if (stack.hasTagCompound())
+                    pageNum = stack.getTagCompound().getInteger("LastSavedPage");
+                if (stack.getItemDamage() == 0) {
+                    PageUtil.loadBaseBook(bookGui);
+                    bookGui.setGuiTexture(new ResourceLocation(ModLibs.MOD_ID.toLowerCase() + ":gui/book.png"));
+                    if (bl != null && bl instanceof IBookEntry && player.isSneaking())
+                        pageNum = getPageByID(((IBookEntry) bl).getBookPage(world.getBlockMetadata(x, y, z)), bookGui);
+                    else if (entity != null) {
+                        if (entity instanceof EntityItem) {
+                            ItemStack item = ((EntityItem) entity).getEntityItem();
+                            if (item != null && item.getItem() instanceof IBookEntry && player.isSneaking())
+                                pageNum = getPageByID(((IBookEntry) item.getItem()).getBookPage(item.getItemDamage()), bookGui);
                         }
                     }
-                }
-
-                if (pageNum > 0 && pageNum < GuiSpellBook.avaliablePages.size()) {
-                    bookGui.setPageNumber(pageNum);
+                    if (pageNum > 0 && pageNum < bookGui.avaliablePages.size()) {
+                        Rings.pktHandler.sendToServer(new PacketSavePage(player, pageNum));
+                        bookGui.setPageNumber(pageNum);
+                    }
+                    return bookGui;
+                } else if (stack.getItemDamage() == 1) {
+                    PageUtil.loadMaterialBook(bookGui);
+                    bookGui.setGuiTexture(new ResourceLocation(ModLibs.MOD_ID.toLowerCase() + ":gui/material.png"));
+                    if (pageNum > 0 && pageNum < bookGui.avaliablePages.size()) {
+                        Rings.pktHandler.sendToServer(new PacketSavePage(player, pageNum));
+                        bookGui.setPageNumber(pageNum);
+                    }
                     return bookGui;
                 }
             }
-            return bookGui;
         }
         return null;
+    }
+
+    private int getPageByID(String id, GuiSpellBook gui) {
+        for (int i = 0; i < gui.avaliablePages.size(); i++) {
+            Page page = gui.avaliablePages.get(i);
+            if (page != null && page.pageID() != null) {
+                if (page.pageID().equals(id))
+                    return i;
+            }
+        }
+        return 0;
     }
 
 }

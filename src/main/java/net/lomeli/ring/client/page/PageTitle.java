@@ -1,8 +1,11 @@
-package net.lomeli.ring.client.gui;
+package net.lomeli.ring.client.page;
 
 import java.awt.Color;
 
 import net.minecraft.util.StatCollector;
+
+import net.lomeli.ring.api.Page;
+import net.lomeli.ring.client.gui.GuiSpellBook;
 
 public class PageTitle extends Page {
 
@@ -12,7 +15,7 @@ public class PageTitle extends Page {
         super(screen);
         this.title = title;
     }
-    
+
     @Override
     public PageTitle setID(String id) {
         this.id = id;
@@ -22,7 +25,7 @@ public class PageTitle extends Page {
     @Override
     public void draw() {
         super.draw();
-        if (this.title != null){
+        if (this.title != null) {
             mc.fontRenderer.drawSplitString(StatCollector.translateToLocal(this.title), drawX + 1, drawY + 26, this.wordWrap, 0);
             mc.fontRenderer.drawSplitString(StatCollector.translateToLocal(this.title), drawX, drawY + 25, this.wordWrap, Color.CYAN.getRGB());
         }

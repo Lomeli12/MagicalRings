@@ -6,9 +6,9 @@ import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatComponentText;
 
+import net.lomeli.ring.Rings;
 import net.lomeli.ring.lib.ModLibs;
 import net.lomeli.ring.network.PacketAdjustClientPos;
-import net.lomeli.ring.network.PacketHandler;
 
 public class CommandRing extends CommandBase {
 
@@ -36,11 +36,11 @@ public class CommandRing extends CommandBase {
                         y = ModLibs.DISPLAY_Y;
                     EntityPlayer player = cSender.getEntityWorld().getPlayerEntityByName(cSender.getCommandSenderName());
                     if (player != null)
-                        PacketHandler.sendTo(new PacketAdjustClientPos(x, y), player);
-                }else {
+                        Rings.pktHandler.sendTo(new PacketAdjustClientPos(x, y), player);
+                } else {
                     this.sendMessage(cSender, "\u00a7c/rings statPosition [xPosition] [yPosition]");
                 }
-            }else if (command.equalsIgnoreCase("pig")) {
+            } else if (command.equalsIgnoreCase("pig")) {
                 if (cSender.getEntityWorld().isRemote) {
                     EntityPig pig = new EntityPig(cSender.getEntityWorld());
                     pig.posX = cSender.getPlayerCoordinates().posX;
@@ -48,11 +48,11 @@ public class CommandRing extends CommandBase {
                     pig.posZ = cSender.getPlayerCoordinates().posZ;
                     cSender.getEntityWorld().spawnEntityInWorld(pig);
                 }
-            }else if (command.equalsIgnoreCase("help") || command.equalsIgnoreCase("?")) {
+            } else if (command.equalsIgnoreCase("help") || command.equalsIgnoreCase("?")) {
                 this.sendMessage(cSender, "/rings statPosition [xPosition] [yPosition] - Adjusts on screen position of your MP stats.");
-            }else
+            } else
                 this.sendMessage(cSender, "\u00a7cUnknow command! Type /rings ? or /rings help for more info");
-        }else
+        } else
             this.sendMessage(cSender, "Type /rings ? or /rings help for more info");
     }
 
@@ -64,7 +64,7 @@ public class CommandRing extends CommandBase {
     private int parseString(String msg) {
         try {
             return Integer.parseInt(msg);
-        }catch (Exception e) {
+        } catch (Exception e) {
         }
         return -1;
     }

@@ -1,14 +1,14 @@
 package net.lomeli.ring.network;
 
+import io.netty.buffer.ByteBuf;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 
-import net.lomeli.ring.block.tile.TileRingForge;
-
-import io.netty.buffer.ByteBuf;
-
 import cpw.mods.fml.common.network.ByteBufUtils;
+
+import net.lomeli.ring.block.tile.TileRingForge;
 
 public class PacketRingName implements IPacket {
     private String name;

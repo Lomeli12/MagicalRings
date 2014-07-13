@@ -9,18 +9,17 @@ import net.lomeli.ring.Rings;
 import net.lomeli.ring.lib.ModLibs;
 
 public class BlockRings extends Block {
-    protected String blockTexture;
     protected IIcon blankIcon;
 
     public BlockRings(Material material, String texture) {
         super(material);
         this.setCreativeTab(Rings.modTab);
-        this.blockTexture = texture;
+        this.setBlockTextureName(ModLibs.MOD_ID.toLowerCase() + ":" + texture);
     }
 
     @Override
     public void registerBlockIcons(IIconRegister register) {
-        this.blockIcon = register.registerIcon(ModLibs.MOD_ID.toLowerCase() + ":" + this.blockTexture);
+        super.registerBlockIcons(register);
         this.blankIcon = register.registerIcon(ModLibs.MOD_ID.toLowerCase() + ":blank");
     }
 
