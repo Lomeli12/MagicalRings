@@ -19,7 +19,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import net.lomeli.ring.api.interfaces.ISpell;
 import net.lomeli.ring.item.ItemMagicRing;
 import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.MagicHandler;
+import net.lomeli.ring.magic.SpellRegistry;
 
 public class TileAltar extends TileItemAltar {
     private int timer, spellID;
@@ -48,7 +48,7 @@ public class TileAltar extends TileItemAltar {
                 reset();
                 return;
             }
-            ISpell spell = MagicHandler.getSpellLazy(spellID);
+            ISpell spell = SpellRegistry.getSpellLazy(spellID);
             if (spell != null) {
 
                 if (!this.infoCollected)
@@ -134,7 +134,7 @@ public class TileAltar extends TileItemAltar {
     }
 
     public void matchRecipe() {
-        Object[] ingredients = MagicHandler.getMagicHandler().getSpellRecipe(spellID);
+        Object[] ingredients = SpellRegistry.getMagicHandler().getSpellRecipe(spellID);
         if (ingredients == null) {
             reset();
             return;

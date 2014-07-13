@@ -32,7 +32,7 @@ import net.lomeli.ring.api.interfaces.ISpell;
 import net.lomeli.ring.api.event.SpellCastedEvent;
 import net.lomeli.ring.core.SimpleUtil;
 import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.MagicHandler;
+import net.lomeli.ring.magic.SpellRegistry;
 
 @Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class ItemMagicRing extends ItemRings implements IBauble, IBookEntry {
@@ -75,7 +75,7 @@ public class ItemMagicRing extends ItemRings implements IBauble, IBookEntry {
                 if (tag != null) {
                     if (tag.hasKey(ModLibs.SPELL_ID)) {
                         int spellID = tag.getInteger(ModLibs.SPELL_ID);
-                        ISpell spell = MagicHandler.getSpellLazy(spellID);
+                        ISpell spell = SpellRegistry.getSpellLazy(spellID);
                         if (spell != null) {
                             int trueCost = spell.cost() + (tag.getInteger(ModLibs.MATERIAL_BOOST) * 5);
                             if (entity instanceof EntityPlayer && Rings.proxy.manaHandler.playerHasSession((EntityPlayer) entity)) {
@@ -246,7 +246,7 @@ public class ItemMagicRing extends ItemRings implements IBauble, IBookEntry {
             NBTTagCompound tag = stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG);
             if (tag.hasKey(ModLibs.SPELL_ID)) {
                 int id = tag.getInteger(ModLibs.SPELL_ID);
-                ISpell spell = MagicHandler.getSpellLazy(id);
+                ISpell spell = SpellRegistry.getSpellLazy(id);
                 if (spell != null)
                     list.add(StatCollector.translateToLocal(ModLibs.SPELL) + ": " + StatCollector.translateToLocal(spell.getUnlocalizedName()));
             }
@@ -270,7 +270,7 @@ public class ItemMagicRing extends ItemRings implements IBauble, IBookEntry {
             if (tag != null && Rings.proxy.manaHandler.playerHasSession((EntityPlayer) player)) {
                 if (tag.hasKey(ModLibs.SPELL_ID)) {
                     int spellID = tag.getInteger(ModLibs.SPELL_ID);
-                    ISpell spell = MagicHandler.getSpellLazy(spellID);
+                    ISpell spell = SpellRegistry.getSpellLazy(spellID);
                     if (spell != null) {
                         int trueCost = spell.cost() + (tag.getInteger(ModLibs.MATERIAL_BOOST) * 5);
                         IPlayerSession session = Rings.proxy.manaHandler.getPlayerSession((EntityPlayer) player);

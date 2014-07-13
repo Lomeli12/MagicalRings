@@ -19,7 +19,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 import net.lomeli.ring.block.ModBlocks;
 import net.lomeli.ring.item.ModItems;
-import net.lomeli.ring.magic.MagicHandler;
+import net.lomeli.ring.magic.SpellRegistry;
 
 public class ModRecipe {
     public static void load() {
@@ -29,8 +29,8 @@ public class ModRecipe {
     }
 
     public static void addChestLoot() {
-        for (int i = 0; i < MagicHandler.getAllSpells().size(); i++) {
-            if (MagicHandler.getSpellLazy(i) != null) {
+        for (int i = 0; i < SpellRegistry.getAllSpells().size(); i++) {
+            if (SpellRegistry.getSpellLazy(i) != null) {
                 ChestGenHooks.getInfo(ChestGenHooks.DUNGEON_CHEST).addItem(new WeightedRandomChestContent(new ItemStack(ModItems.spellParchment, 1, i), 0, 1, 2));
                 ChestGenHooks.getInfo(ChestGenHooks.MINESHAFT_CORRIDOR).addItem(new WeightedRandomChestContent(new ItemStack(ModItems.spellParchment, 1, i), 0, 1, 2));
                 ChestGenHooks.getInfo(ChestGenHooks.PYRAMID_DESERT_CHEST).addItem(new WeightedRandomChestContent(new ItemStack(ModItems.spellParchment, 1, i), 0, 1, 2));
@@ -52,8 +52,8 @@ public class ModRecipe {
     }
 
     private static void shapelessRecipes() {
-        for (int i = 0; i < MagicHandler.getAllSpells().size(); i++) {
-            if (MagicHandler.getSpellLazy(i) != null)
+        for (int i = 0; i < SpellRegistry.getAllSpells().size(); i++) {
+            if (SpellRegistry.getSpellLazy(i) != null)
                 addShapeless(new ItemStack(ModItems.spellParchment, 2, i), new ItemStack(ModItems.spellParchment, 1, i), Items.paper, Items.ender_pearl);
         }
         addShapeless(new ItemStack(ModItems.book, 1, 0), Items.book, "ingotIron");

@@ -14,15 +14,15 @@ import net.lomeli.ring.api.interfaces.ISpellRegistry;
 import net.lomeli.ring.item.ModItems;
 import net.lomeli.ring.magic.spells.*;
 
-public class MagicHandler implements ISpellRegistry {
+public class SpellRegistry implements ISpellRegistry {
     private List<ISpell> registeredSpells = new ArrayList<ISpell>();
     private HashMap<ISpell, Object[]> spellRecipes = new HashMap<ISpell, Object[]>();
 
-    public MagicHandler() {
+    public SpellRegistry() {
         this.registerSpell(new EnderPort(), Items.ender_pearl, Items.ender_eye, Blocks.end_stone, Blocks.diamond_block);
         this.registerSpell(new FriendlyFire(), Items.ender_pearl, Items.diamond_sword, Items.bone, Items.spider_eye, Items.gunpowder, Items.blaze_rod, Items.ghast_tear, Items.magma_cream);
         this.registerSpell(new FireWrath(), Items.flint_and_steel, Items.blaze_powder, Items.blaze_rod, Items.fire_charge, Items.lava_bucket, new ItemStack(ModItems.materials, 1, 2));
-        this.registerSpell(new HeavenStrike(), Items.iron_ingot, "gemDiamond", Items.water_bucket, Items.redstone, new ItemStack(ModItems.materials, 1, 3));
+        this.registerSpell(new HeavenStrike(), "ingotIron", "gemDiamond", Items.water_bucket, Items.redstone, new ItemStack(ModItems.materials, 1, 3));
         this.registerSpell(new AngelKiss(), Items.feather, new ItemStack(Items.potionitem, 1, 8261));
         this.registerSpell(new Harvest(), new ItemStack(Items.potionitem, 1, 8193), Items.iron_hoe, Items.wheat_seeds, Blocks.red_flower, new ItemStack(Items.dye, 1, 15));
         this.registerSpell(new Disarm(), Blocks.chest, Items.stone_sword, Items.bow, Items.redstone, new ItemStack(ModItems.materials, 1, 4));
@@ -35,8 +35,8 @@ public class MagicHandler implements ISpellRegistry {
         return getMagicHandler().registeredSpells;
     }
 
-    public static MagicHandler getMagicHandler() {
-        return Rings.proxy.magicHandler;
+    public static SpellRegistry getMagicHandler() {
+        return Rings.proxy.spellRegistry;
     }
 
     public static ISpell getSpellLazy(int index) {

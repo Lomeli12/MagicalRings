@@ -29,7 +29,7 @@ import net.lomeli.ring.entity.EntityFireStone;
 import net.lomeli.ring.item.ItemMagicRing;
 import net.lomeli.ring.item.ModItems;
 import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.MagicHandler;
+import net.lomeli.ring.magic.SpellRegistry;
 
 public class EntityHandler {
 
@@ -44,7 +44,7 @@ public class EntityHandler {
                     NBTTagCompound tag = stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG);
                     if (tag != null) {
                         int spellID = tag.getInteger(ModLibs.SPELL_ID);
-                        ISpell spell = MagicHandler.getSpellLazy(spellID);
+                        ISpell spell = SpellRegistry.getSpellLazy(spellID);
                         if (spell != null) {
                             int trueCost = -spell.cost() + (tag.getInteger(ModLibs.MATERIAL_BOOST) * 5);
                             IPlayerSession session = Rings.proxy.manaHandler.getPlayerSession(player);

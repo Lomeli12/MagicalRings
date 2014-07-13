@@ -12,7 +12,7 @@ import net.minecraft.tileentity.TileEntity;
 
 import net.lomeli.ring.item.ItemHammer;
 import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.RingMaterialRecipe;
+import net.lomeli.ring.magic.RingMaterialRegistry;
 
 public class TileRingForge extends TileEntity implements IInventory {
     private ItemStack[] inventory;
@@ -32,7 +32,7 @@ public class TileRingForge extends TileEntity implements IInventory {
                 ItemStack stack1 = inventory[0];
                 ItemStack stack2 = inventory[1];
                 if ((stack1 != null && stack1.stackSize >= 10) && (stack2 != null && stack2.stackSize >= 10))
-                    this.setInventorySlotContents(4, RingMaterialRecipe.getNewRing(getStackInSlot(0), getStackInSlot(1), getStackInSlot(2), name));
+                    this.setInventorySlotContents(4, RingMaterialRegistry.getNewRing(getStackInSlot(0), getStackInSlot(1), getStackInSlot(2), name));
                 else
                     this.setInventorySlotContents(4, null);
             } else {

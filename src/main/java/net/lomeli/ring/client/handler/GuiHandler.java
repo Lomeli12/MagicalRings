@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -60,8 +61,14 @@ public class GuiHandler implements IGuiHandler {
                     else if (entity != null) {
                         if (entity instanceof EntityItem) {
                             ItemStack item = ((EntityItem) entity).getEntityItem();
-                            if (item != null && item.getItem() instanceof IBookEntry && player.isSneaking())
-                                pageNum = getPageByID(((IBookEntry) item.getItem()).getBookPage(item.getItemDamage()), bookGui);
+                            if (item != null && item.getItem() != null && player.isSneaking()) {
+                                if (item.getItem() instanceof ItemBlock) {
+                                    bl = Block.getBlockFromItem(item.getItem());
+                                    if (bl != null && bl instanceof IBookEntry)
+                                        pageNum = getPageByID(((IBookEntry) bl).getBookPage(item.getItemDamage()), bookGui);
+                                } else if (item.getItem() instanceof IBookEntry)
+                                    pageNum = getPageByID(((IBookEntry) item.getItem()).getBookPage(item.getItemDamage()), bookGui);
+                            }
                         }
                     }
                     if (pageNum > 0 && pageNum < bookGui.avaliablePages.size()) {

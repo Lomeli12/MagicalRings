@@ -17,13 +17,13 @@ import net.lomeli.ring.core.handler.*;
 import net.lomeli.ring.entity.ModEntities;
 import net.lomeli.ring.item.ModItems;
 import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.MagicHandler;
-import net.lomeli.ring.magic.RingMaterialRecipe;
+import net.lomeli.ring.magic.RingMaterialRegistry;
+import net.lomeli.ring.magic.SpellRegistry;
 import net.lomeli.ring.worldgen.WorldGenManager;
 
 public class Proxy {
-    public MagicHandler magicHandler;
-    public RingMaterialRecipe ringMaterials;
+    public SpellRegistry spellRegistry;
+    public RingMaterialRegistry ringMaterials;
     public TickHandlerCore tickHandler;
     public WorldGenManager genManager;
     public Configuration config;
@@ -33,8 +33,8 @@ public class Proxy {
     public void preInit() {
         ModItems.loadItems();
         ModBlocks.loadBlocks();
-        magicHandler = new MagicHandler();
-        ringMaterials = new RingMaterialRecipe();
+        spellRegistry = new SpellRegistry();
+        ringMaterials = new RingMaterialRegistry();
         genManager = new WorldGenManager();
         tickHandler = new TickHandlerCore();
         manaHandler = new ManaHandler();

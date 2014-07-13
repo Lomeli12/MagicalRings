@@ -1,12 +1,13 @@
 package net.lomeli.ring.client.page;
 
+import java.awt.Color;
 import java.util.*;
 
 import net.minecraft.item.ItemStack;
 
 import net.lomeli.ring.Rings;
-import net.lomeli.ring.api.interfaces.IPageRegistry;
 import net.lomeli.ring.api.Page;
+import net.lomeli.ring.api.interfaces.IPageRegistry;
 import net.lomeli.ring.block.ModBlocks;
 import net.lomeli.ring.client.gui.GuiSpellBook;
 import net.lomeli.ring.item.ModItems;
@@ -68,36 +69,35 @@ public class PageUtil implements IPageRegistry {
 
     public static void loadMaterialBook(GuiSpellBook gui) {
         gui.avaliablePages.clear();
-        gui.avaliablePages.add(new PageTitle(gui, new ItemStack(ModItems.book, 1, 1).getDisplayName()));
-        gui.avaliablePages.add(new PageText(gui, BookText.BASIC_MATERIAL, BookText.MATERIAL_INTRO));
-        gui.avaliablePages.add(new PageItem(gui, new ItemStack(ModItems.materials, 1, 0), BookText.BAT_WING));
-        gui.avaliablePages.add(new PageRecipe(gui, new ItemStack(ModItems.materials, 1, 1), BookText.FIRE_STONE));
-        gui.avaliablePages.add(new PageItem(gui, new ItemStack(ModItems.materials, 1, 2), BookText.ERUPTING_STONE));
-        gui.avaliablePages.add(new PageRecipe(gui, new ItemStack(ModItems.materials, 1, 3), BookText.CHARGE_STONE));
-        gui.avaliablePages.add(new PageItem(gui, new ItemStack(ModItems.materials, 1, 4), BookText.TENTACLE));
-        gui.avaliablePages.add(new PageTitle(gui, BookText.RING_MATERIAL));
+        int goldColor = new Color(255, 175, 0).getRGB();
+        gui.avaliablePages.add(new PageTitle(gui, new ItemStack(ModItems.book, 1, 1).getDisplayName(), goldColor));
+        gui.avaliablePages.add(new PageText(gui, BookText.BASIC_MATERIAL, BookText.MATERIAL_INTRO, goldColor));
+        gui.avaliablePages.add(new PageItem(gui, new ItemStack(ModItems.materials, 1, 0), BookText.BAT_WING, goldColor));
+        gui.avaliablePages.add(new PageRecipe(gui, new ItemStack(ModItems.materials, 1, 1), BookText.FIRE_STONE, goldColor));
+        gui.avaliablePages.add(new PageItem(gui, new ItemStack(ModItems.materials, 1, 2), BookText.ERUPTING_STONE, goldColor));
+        gui.avaliablePages.add(new PageRecipe(gui, new ItemStack(ModItems.materials, 1, 3), BookText.CHARGE_STONE, goldColor));
+        gui.avaliablePages.add(new PageItem(gui, new ItemStack(ModItems.materials, 1, 4), BookText.TENTACLE, goldColor));
+        gui.avaliablePages.add(new PageTitle(gui, BookText.RING_MATERIAL, goldColor));
         for (int i = 0; i < Rings.proxy.ringMaterials.validMaterial.size(); i++) {
-            Object obj1 = null, obj2 = null;
-            if (i < Rings.proxy.ringMaterials.validMaterial.size())
-                obj1 = getObjectByIndex(i, Rings.proxy.ringMaterials.validMaterial);
-            i++;
-            if (i < Rings.proxy.ringMaterials.validMaterial.size())
-                obj2 = getObjectByIndex(i, Rings.proxy.ringMaterials.validMaterial);
-            PageMaterial.MaterialType type1 = obj1 != null ? PageMaterial.MaterialType.BASIC : PageMaterial.MaterialType.NULL;
-            PageMaterial.MaterialType type2 = obj2 != null ? PageMaterial.MaterialType.BASIC : PageMaterial.MaterialType.NULL;
-            gui.avaliablePages.add(new PageMaterial(gui, obj1, type1, obj2, type2));
+            Object[] objects = new Object[5];
+            for (int j = 0; j < 5; j++) {
+                if (i < Rings.proxy.ringMaterials.validMaterial.size())
+                    objects[j] = getObjectByIndex(i, Rings.proxy.ringMaterials.validMaterial);
+                i++;
+            }
+            gui.avaliablePages.add(new PageMaterial(gui, goldColor, objects));
+            i--;
         }
-        gui.avaliablePages.add(new PageTitle(gui, BookText.RING_GEM));
+        gui.avaliablePages.add(new PageTitle(gui, BookText.RING_GEM, goldColor));
         for (int i = 0; i < Rings.proxy.ringMaterials.gemMaterial.size(); i++) {
-            Object obj1 = null, obj2 = null;
-            if (i < Rings.proxy.ringMaterials.gemMaterial.size())
-                obj1 = getObjectByIndex(i, Rings.proxy.ringMaterials.gemMaterial);
-            i++;
-            if (i < Rings.proxy.ringMaterials.gemMaterial.size())
-                obj2 = getObjectByIndex(i, Rings.proxy.ringMaterials.gemMaterial);
-            PageMaterial.MaterialType type1 = obj1 != null ? PageMaterial.MaterialType.GEM : PageMaterial.MaterialType.NULL;
-            PageMaterial.MaterialType type2 = obj2 != null ? PageMaterial.MaterialType.GEM : PageMaterial.MaterialType.NULL;
-            gui.avaliablePages.add(new PageMaterial(gui, obj1, type1, obj2, type2));
+            Object[] objects = new Object[5];
+            for (int j = 0; j < 5; j++) {
+                if (i < Rings.proxy.ringMaterials.gemMaterial.size())
+                    objects[j] = getObjectByIndex(i, Rings.proxy.ringMaterials.gemMaterial);
+                i++;
+            }
+            gui.avaliablePages.add(new PageMaterial(gui, goldColor, objects));
+            i--;
         }
     }
 

@@ -6,11 +6,11 @@ import java.util.Map.Entry;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.MathHelper;
 
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -19,15 +19,15 @@ import net.lomeli.ring.api.interfaces.IMaterialRegistry;
 import net.lomeli.ring.item.ModItems;
 import net.lomeli.ring.lib.ModLibs;
 
-public class RingMaterialRecipe implements IMaterialRegistry {
+public class RingMaterialRegistry implements IMaterialRegistry {
     public LinkedHashMap<Object, Integer> validMaterial = new LinkedHashMap<Object, Integer>();
     private LinkedHashMap<Object, Integer> materialBoost = new LinkedHashMap<Object, Integer>();
     public LinkedHashMap<Object, Integer> gemMaterial = new LinkedHashMap<Object, Integer>();
     private LinkedHashMap<Object, Integer> gemBoost = new LinkedHashMap<Object, Integer>();
 
-    public RingMaterialRecipe() {
-        this.registerMaterial(Items.iron_ingot, Color.LIGHT_GRAY.getRGB(), 0);
-        this.registerMaterial(Items.gold_ingot, new Color(0xeded00).getRGB(), 1);
+    public RingMaterialRegistry() {
+        this.registerMaterial("ingotIron", Color.LIGHT_GRAY.getRGB(), 0);
+        this.registerMaterial("ingotGold", new Color(0xeded00).getRGB(), 1);
         this.registerMaterial(Blocks.obsidian, new Color(0x3c005f).getRGB(), 2);
         this.registerMaterial(new ItemStack(ModItems.food, 1, 1), new Color(0x78550a).getRGB(), -2);
         this.registerMaterial("ingotCopper", new Color(0xbe7800).getRGB(), 0);
@@ -39,16 +39,21 @@ public class RingMaterialRecipe implements IMaterialRegistry {
         this.registerMaterial("ingotThaumium", new Color(0x51437D).getRGB(), 6);
         this.registerMaterial("ingotRedAlloy", new Color(0xD40404).getRGB(), 2);
         this.registerMaterial("ingotBlueAlloy", new Color(0x404d4).getRGB(), 2);
+        this.registerMaterial("ingotManasteel", new Color(0x47E2D8).getRGB(), 2);
+        this.registerMaterial("ingotElvenElementium", new Color(0xfb67ff).getRGB(), 4);
+        this.registerMaterial("ingotTerrasteel", new Color(0x2fac2d).getRGB(), 10);
 
-        this.registerGem("gemDiamond", new Color(100, 220, 255).getRGB(), 5);
-        this.registerGem("gemEmerald", new Color(0, 210, 0).getRGB(), 6);
-        this.registerGem("gemJade", new Color(135, 240, 175).getRGB(), 4);
-        this.registerGem("gemAmethyst", new Color(140, 0, 210).getRGB(), 3);
-        this.registerGem("gemAmber", new Color(240, 170, 0).getRGB(), 2);
-        this.registerGem("gemPeridot", new Color(0, 160, 0).getRGB(), 1);
-        this.registerGem("gemRuby", new Color(215, 0, 0).getRGB(), 1);
-        this.registerGem("gemSapphire", new Color(0, 0, 130).getRGB(), 1);
-        this.registerGem("ingotQuartz", new Color(230, 230, 230).getRGB(), 3);
+        this.registerGem("gemDiamond", new Color(0x64dcff).getRGB(), 5);
+        this.registerGem("gemEmerald", new Color(0xd200).getRGB(), 6);
+        this.registerGem("gemJade", new Color(0x87f0af).getRGB(), 4);
+        this.registerGem("gemAmethyst", new Color(0x8c00d2).getRGB(), 3);
+        this.registerGem("gemAmber", new Color(0xf0aa00).getRGB(), 2);
+        this.registerGem("gemPeridot", new Color(0xa000).getRGB(), 1);
+        this.registerGem("gemRuby", new Color(0xd70000).getRGB(), 1);
+        this.registerGem("gemSapphire", new Color(0x82).getRGB(), 1);
+        this.registerGem("ingotQuartz", new Color(0xe6e6e6).getRGB(), 3);
+        this.registerGem("manaDiamond", new Color(0xa0f5ef).getRGB(), 6);
+        this.registerGem("manaPearl", new Color(0x398e8).getRGB(), 4);
     }
 
     public static ItemStack getNewRing(ItemStack material1, ItemStack material2, ItemStack gem, String customName) {
@@ -103,12 +108,15 @@ public class RingMaterialRecipe implements IMaterialRegistry {
         return ring;
     }
 
-    public static RingMaterialRecipe getMaterialList() {
+    public static RingMaterialRegistry getMaterialList() {
         return Rings.proxy.ringMaterials;
     }
 
     public static int getAverageBoost(int par0, int par1, int par2) {
-        return par0 + par1 + ((int) Math.floor(par2 / 3));
+        int j = par0 + par1;
+        if (j > 10)
+            j = j / 2;
+        return j + MathHelper.floor_float(par2 / 3);
     }
 
     @Override

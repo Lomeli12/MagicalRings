@@ -31,12 +31,16 @@ public class PageRecipe extends Page {
     private Object[] cache;
     private ItemStack output;
     private String itemDescription;
-    private int tick;
+    private int tick, color;
     private int[] arrayIndex;
     private List<PageUtil.ToolTipInfo> toolTips = new ArrayList<PageUtil.ToolTipInfo>();
     private boolean shapeless;
 
     public PageRecipe(GuiSpellBook screen, ItemStack item, String itemDescription) {
+        this(screen, item, itemDescription, Color.CYAN.getRGB());
+    }
+
+    public PageRecipe(GuiSpellBook screen, ItemStack item, String itemDescription, int color) {
         super(screen);
         this.cache = new Object[9];
         this.arrayIndex = new int[9];
@@ -45,6 +49,7 @@ public class PageRecipe extends Page {
             this.recipe = getItemRecipe(item);
         }
         this.itemDescription = itemDescription;
+        this.color = color;
     }
 
     public PageRecipe(GuiSpellBook screen, ItemStack item) {
@@ -133,7 +138,7 @@ public class PageRecipe extends Page {
         super.draw();
         if (this.output != null && (this.recipe != null && this.recipe.length > 0)) {
             this.renderItem(output, drawX, drawY - 5, 0);
-            mc.fontRenderer.drawStringWithShadow(output.getDisplayName(), drawX + 20, drawY, Color.CYAN.getRGB());
+            mc.fontRenderer.drawStringWithShadow(output.getDisplayName(), drawX + 20, drawY, this.color);
 
             renderSlots();
 

@@ -19,7 +19,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.lomeli.ring.api.interfaces.IBookEntry;
 import net.lomeli.ring.api.interfaces.ISpell;
 import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.MagicHandler;
+import net.lomeli.ring.magic.SpellRegistry;
 
 public class ItemSpellParchment extends ItemRings implements IBookEntry{
 
@@ -42,8 +42,8 @@ public class ItemSpellParchment extends ItemRings implements IBookEntry{
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs tab, List list) {
-        for (int i = 0; i < MagicHandler.getAllSpells().size(); i++) {
-            ISpell spell = MagicHandler.getSpellLazy(i);
+        for (int i = 0; i < SpellRegistry.getAllSpells().size(); i++) {
+            ISpell spell = SpellRegistry.getSpellLazy(i);
             if (spell != null)
                 list.add(new ItemStack(item, 1, i));
         }
@@ -53,11 +53,11 @@ public class ItemSpellParchment extends ItemRings implements IBookEntry{
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
-        ISpell spell = MagicHandler.getSpellLazy(stack.getItemDamage());
+        ISpell spell = SpellRegistry.getSpellLazy(stack.getItemDamage());
         if (spell != null) {
             list.add(StatCollector.translateToLocal(ModLibs.SPELL) + ": " + StatCollector.translateToLocal(spell.getUnlocalizedName()));
             if (Keyboard.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode())) {
-                Object[] required = MagicHandler.getMagicHandler().getSpellRecipe(stack.getItemDamage());
+                Object[] required = SpellRegistry.getMagicHandler().getSpellRecipe(stack.getItemDamage());
                 if (required != null && required.length > 0) {
                     list.add(StatCollector.translateToLocal(ModLibs.REQUIRED_ITEMS));
                     for (Object obj : required) {

@@ -20,7 +20,7 @@ public class ApiRing implements IRingAPI {
 
     @Override
     public ISpellRegistry spellRegistry() {
-        return Rings.proxy.magicHandler;
+        return Rings.proxy.spellRegistry;
     }
 
     @Override

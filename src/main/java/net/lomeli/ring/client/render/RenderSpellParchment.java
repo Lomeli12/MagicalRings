@@ -29,7 +29,7 @@ import net.lomeli.ring.api.interfaces.ISpell;
 import net.lomeli.ring.api.Page;
 import net.lomeli.ring.core.SimpleUtil;
 import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.MagicHandler;
+import net.lomeli.ring.magic.SpellRegistry;
 
 public class RenderSpellParchment implements IItemRenderer {
     protected static RenderItem itemRenderer = new RenderItem();
@@ -209,7 +209,7 @@ public class RenderSpellParchment implements IItemRenderer {
             if (text != null)
                 drawString(text, 2, 8, 0, 130);
 
-            Object[] required = MagicHandler.getMagicHandler().getSpellRecipe(item.getItemDamage());
+            Object[] required = SpellRegistry.getMagicHandler().getSpellRecipe(item.getItemDamage());
             if (required != null && required.length > 0) {
                 for (int i = 0; i < required.length; i++) {
                     Object obj = required[i];
@@ -253,7 +253,7 @@ public class RenderSpellParchment implements IItemRenderer {
     }
 
     public ISpell getSpell(ItemStack stack) {
-        return MagicHandler.getSpellLazy(stack.getItemDamage());
+        return SpellRegistry.getSpellLazy(stack.getItemDamage());
     }
 
     public void drawString(String text, int xOffset, int yOffset, int color, int wordWrap) {

@@ -19,7 +19,7 @@ import cpw.mods.fml.relauncher.ReflectionHelper;
 
 import net.lomeli.ring.api.interfaces.ISpell;
 import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.MagicHandler;
+import net.lomeli.ring.magic.SpellRegistry;
 
 public class SimpleUtil {
     private static Random rand = new Random();
@@ -95,7 +95,7 @@ public class SimpleUtil {
         if (tag != null) {
             if (tag.hasKey(ModLibs.SPELL_ID)) {
                 int spellID = tag.getInteger(ModLibs.SPELL_ID);
-                ISpell spell = MagicHandler.getSpellLazy(spellID);
+                ISpell spell = SpellRegistry.getSpellLazy(spellID);
                 return spell;
             }
         }

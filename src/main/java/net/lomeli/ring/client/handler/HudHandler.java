@@ -8,6 +8,7 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
@@ -52,9 +53,17 @@ public class HudHandler {
                         if (entity != null) {
                             if (entity instanceof EntityItem) {
                                 ItemStack item = ((EntityItem) entity).getEntityItem();
-                                if (item != null && item.getItem() != null && item.getItem() instanceof IBookEntry) {
-                                    renderInfoDisplay(item, event.resolution);
-                                    return;
+                                if (item != null && item.getItem() != null) {
+                                    if (item.getItem() instanceof ItemBlock) {
+                                        Block bl = Block.getBlockFromItem(item.getItem());
+                                        if (bl != null && bl instanceof IBookEntry) {
+                                            renderInfoDisplay(item, event.resolution);
+                                            return;
+                                        }
+                                    } else if (item.getItem() instanceof IBookEntry) {
+                                        renderInfoDisplay(item, event.resolution);
+                                        return;
+                                    }
                                 }
                             } else {
                                 if (entity instanceof IBookEntry) {

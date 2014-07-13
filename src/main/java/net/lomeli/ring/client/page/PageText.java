@@ -10,15 +10,21 @@ import net.lomeli.ring.client.gui.GuiSpellBook;
 public class PageText extends Page {
 
     private String text, title;
+    private int color;
 
     public PageText(GuiSpellBook screen, String text) {
         this(screen, null, text);
     }
 
     public PageText(GuiSpellBook screen, String title, String text) {
+        this(screen, title, text, Color.CYAN.getRGB());
+    }
+
+    public PageText(GuiSpellBook screen, String title, String text, int color) {
         super(screen);
         this.text = text;
         this.title = title;
+        this.color = color;
     }
 
     @Override
@@ -31,7 +37,7 @@ public class PageText extends Page {
     public void draw() {
         super.draw();
         if (title != null) {
-            mc.fontRenderer.drawStringWithShadow(StatCollector.translateToLocal(this.title), drawX, drawY, Color.CYAN.getRGB());
+            mc.fontRenderer.drawStringWithShadow(StatCollector.translateToLocal(this.title), drawX, drawY, this.color);
             this.drawString(this.text, drawX, drawY + 5, 0);
         } else
             this.drawString(this.text, drawX, drawY - 10, 0);
