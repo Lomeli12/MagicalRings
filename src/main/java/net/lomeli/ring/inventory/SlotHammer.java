@@ -16,5 +16,4 @@ public class SlotHammer extends Slot {
     public boolean isItemValid(ItemStack stack) {
         return (stack.getItem() instanceof ItemHammer);
     }
-
 }

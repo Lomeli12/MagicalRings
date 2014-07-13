@@ -7,8 +7,10 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import net.lomeli.ring.Rings;
 import net.lomeli.ring.block.ModBlocks;
 import net.lomeli.ring.block.tile.TileRingForge;
+import net.lomeli.ring.item.ItemHammer;
 
 public class ContainerRingForge extends Container {
 
@@ -47,34 +49,40 @@ public class ContainerRingForge extends Container {
 
     @Override
     public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2) {
-        ItemStack itemstack = null;
+        ItemStack itemstack;
         Slot slot = (Slot) this.inventorySlots.get(par2);
 
-        if (slot != null && slot.getHasStack() && slot.slotNumber != 4) {
+        if (slot != null && slot.getHasStack()) {
             ItemStack itemstack1 = slot.getStack();
             itemstack = itemstack1.copy();
-
-            if (par2 == 0) {
-                if (!this.mergeItemStack(itemstack1, 5, 41, true))
+            if (par2 < 5) {
+                if (!this.mergeItemStack(itemstack1, 5, this.inventorySlots.size(), false))
                     return null;
-
-                slot.onSlotChange(itemstack1, itemstack);
-            } else if (par2 >= 5 && par2 < 32) {
-                if (!this.mergeItemStack(itemstack1, 32, 41, false))
-                    return null;
-            } else if (par2 >= 32 && par2 < 41) {
-                if (!this.mergeItemStack(itemstack1, 5, 32, false))
-                    return null;
-            } else if (!this.mergeItemStack(itemstack1, 5, 41, false))
-                return null;
+            } else {
+                if (Rings.proxy.ringMaterials.doesGemMatch(itemstack1)) {
+                    if (!this.mergeItemStack(itemstack1, 3, 4, false))
+                        return null;
+                } else if (Rings.proxy.ringMaterials.doesMaterialMatch(itemstack1)) {
+                    if (!this.mergeItemStack(itemstack1, 1, 3, false))
+                        return null;
+                } else if (itemstack1.getItem() instanceof ItemHammer) {
+                    if (!this.mergeItemStack(itemstack1, 4, 5, false))
+                        return null;
+                } else {
+                    if (!this.mergeItemStack(itemstack1, 5, this.inventorySlots.size(), false))
+                        return null;
+                }
+            }
 
             if (itemstack1.stackSize == 0)
-                slot.putStack((ItemStack) null);
+                slot.putStack(null);
             else
                 slot.onSlotChanged();
 
             if (itemstack1.stackSize == itemstack.stackSize)
                 return null;
+
+            slot.onPickupFromSlot(par1EntityPlayer, itemstack1);
         }
         return null;
     }

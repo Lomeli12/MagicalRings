@@ -17,6 +17,7 @@ import net.lomeli.ring.client.handler.HudHandler;
 import net.lomeli.ring.client.handler.TickHandlerClient;
 import net.lomeli.ring.client.render.RenderAltar;
 import net.lomeli.ring.client.render.RenderGhostSword;
+import net.lomeli.ring.client.render.RenderRing;
 import net.lomeli.ring.client.render.RenderSpellParchment;
 import net.lomeli.ring.core.Proxy;
 import net.lomeli.ring.item.ModItems;
@@ -37,6 +38,7 @@ public class ProxyClient extends Proxy {
         ClientRegistry.bindTileEntitySpecialRenderer(TileItemAltar.class, altarRenderer);
         MinecraftForgeClient.registerItemRenderer(ModItems.spellParchment, new RenderSpellParchment());
         MinecraftForgeClient.registerItemRenderer(ModItems.ghostSword, new RenderGhostSword());
+        MinecraftForgeClient.registerItemRenderer(ModItems.magicRing, new RenderRing());
 
         FMLCommonHandler.instance().bus().register(new TickHandlerClient());
         MinecraftForge.EVENT_BUS.register(new HudHandler());
