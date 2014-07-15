@@ -1,12 +1,14 @@
 package net.lomeli.ring.core;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.WeightedRandomChestContent;
 
 import net.minecraftforge.common.ChestGenHooks;
@@ -17,8 +19,11 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
 
+import net.lomeli.ring.Rings;
+import net.lomeli.ring.api.interfaces.ISpell;
 import net.lomeli.ring.block.ModBlocks;
 import net.lomeli.ring.item.ModItems;
+import net.lomeli.ring.lib.ModLibs;
 import net.lomeli.ring.magic.SpellRegistry;
 
 public class ModRecipe {
@@ -29,13 +34,17 @@ public class ModRecipe {
     }
 
     public static void addChestLoot() {
-        for (int i = 0; i < SpellRegistry.getAllSpells().size(); i++) {
-            if (SpellRegistry.getSpellLazy(i) != null) {
-                ChestGenHooks.getInfo(ChestGenHooks.DUNGEON_CHEST).addItem(new WeightedRandomChestContent(new ItemStack(ModItems.spellParchment, 1, i), 0, 1, 2));
-                ChestGenHooks.getInfo(ChestGenHooks.MINESHAFT_CORRIDOR).addItem(new WeightedRandomChestContent(new ItemStack(ModItems.spellParchment, 1, i), 0, 1, 2));
-                ChestGenHooks.getInfo(ChestGenHooks.PYRAMID_DESERT_CHEST).addItem(new WeightedRandomChestContent(new ItemStack(ModItems.spellParchment, 1, i), 0, 1, 2));
-                ChestGenHooks.getInfo(ChestGenHooks.PYRAMID_JUNGLE_CHEST).addItem(new WeightedRandomChestContent(new ItemStack(ModItems.spellParchment, 1, i), 0, 1, 2));
-                ChestGenHooks.getInfo(ChestGenHooks.STRONGHOLD_LIBRARY).addItem(new WeightedRandomChestContent(new ItemStack(ModItems.spellParchment, 1, i), 0, 1, 2));
+        for (Map.Entry<String, ISpell> entry : Rings.proxy.spellRegistry.getReisteredSpells().entrySet()) {
+            if (entry.getValue() != null) {
+                ItemStack stack = new ItemStack(ModItems.spellParchment);
+                if (!stack.hasTagCompound())
+                    stack.stackTagCompound = new NBTTagCompound();
+                stack.getTagCompound().setString(ModLibs.SPELL_ID, entry.getKey());
+                ChestGenHooks.getInfo(ChestGenHooks.DUNGEON_CHEST).addItem(new WeightedRandomChestContent(stack, 0, 1, 2));
+                ChestGenHooks.getInfo(ChestGenHooks.MINESHAFT_CORRIDOR).addItem(new WeightedRandomChestContent(stack, 0, 1, 2));
+                ChestGenHooks.getInfo(ChestGenHooks.PYRAMID_DESERT_CHEST).addItem(new WeightedRandomChestContent(stack, 0, 1, 2));
+                ChestGenHooks.getInfo(ChestGenHooks.PYRAMID_JUNGLE_CHEST).addItem(new WeightedRandomChestContent(stack, 0, 1, 2));
+                ChestGenHooks.getInfo(ChestGenHooks.STRONGHOLD_LIBRARY).addItem(new WeightedRandomChestContent(stack, 0, 1, 2));
             }
         }
         ChestGenHooks.getInfo(ChestGenHooks.VILLAGE_BLACKSMITH).addItem(new WeightedRandomChestContent(new ItemStack(ModItems.food), 1, 5, 100));
@@ -49,17 +58,24 @@ public class ModRecipe {
         addShaped(ModBlocks.ringForge, "OOO", "ICI", "IAI", 'O', Blocks.obsidian, 'I', "ingotIron", 'C', Blocks.crafting_table, 'A', Blocks.anvil);
         addShaped(new ItemStack(ModItems.materials, 1, 1), "CNC", "NDN", "CNC", 'C', "cobblestone", 'N', Blocks.netherrack, 'D', Blocks.dirt);
         addShaped(new ItemStack(ModItems.materials, 1, 3), "RIR", "IDI", "RIR", 'R', Blocks.redstone_block, 'I', "ingotIron", 'D', "gemDiamond");
+        addShaped(new ItemStack(ModItems.food, 1, 3), "RMR", "MPM", "RMR", 'R', Items.redstone, 'M', new ItemStack(ModItems.materials, 1, 5), 'P', new ItemStack(Items.potionitem, 1, 16));
     }
 
     private static void shapelessRecipes() {
-        for (int i = 0; i < SpellRegistry.getAllSpells().size(); i++) {
-            if (SpellRegistry.getSpellLazy(i) != null)
-                addShapeless(new ItemStack(ModItems.spellParchment, 2, i), new ItemStack(ModItems.spellParchment, 1, i), Items.paper, Items.ender_pearl);
+        for (Map.Entry<String, ISpell> entry : Rings.proxy.spellRegistry.getReisteredSpells().entrySet()) {
+            if (entry.getValue() != null) {
+                ItemStack stack = new ItemStack(ModItems.spellParchment);
+                if (!stack.hasTagCompound())
+                    stack.stackTagCompound = new NBTTagCompound();
+                stack.getTagCompound().setString(ModLibs.SPELL_ID, entry.getKey());
+                ItemStack out = stack.copy();
+                out.stackSize = 2;
+                addShapeless(out, stack, Items.paper, Items.ender_pearl);
+            }
         }
         addShapeless(new ItemStack(ModItems.book, 1, 0), Items.book, "ingotIron");
         addShapeless(new ItemStack(ModItems.book, 1, 1), new ItemStack(ModItems.book, 1, 0), ModItems.ironHammer);
         addShapeless(new ItemStack(ModItems.book, 1, 1), new ItemStack(ModItems.book, 1, 0), ModItems.diamondHammer);
-        //addShapeless(ModItems.book, "dyeRed", "dyeBlue", Items.book);
         addShapeless(new ItemStack(ModItems.food, 1, 2), new ItemStack(Items.potionitem, 1, 8261), Items.nether_star, Blocks.gold_block, Blocks.diamond_block);
     }
 

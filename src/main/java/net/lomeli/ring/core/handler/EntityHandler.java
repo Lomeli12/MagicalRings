@@ -23,13 +23,12 @@ import net.lomeli.ring.Rings;
 import net.lomeli.ring.api.interfaces.IPlayerSession;
 import net.lomeli.ring.api.interfaces.ISpell;
 import net.lomeli.ring.api.event.SpellCastedEvent;
-import net.lomeli.ring.core.SimpleUtil;
+import net.lomeli.ring.core.helper.SimpleUtil;
 import net.lomeli.ring.entity.EntityFireProofItem;
 import net.lomeli.ring.entity.EntityFireStone;
 import net.lomeli.ring.item.ItemMagicRing;
 import net.lomeli.ring.item.ModItems;
 import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.SpellRegistry;
 
 public class EntityHandler {
 
@@ -40,18 +39,18 @@ public class EntityHandler {
         if (target != null && player != null && Rings.proxy.manaHandler.playerHasSession(player)) {
             ItemStack stack = player.getCurrentEquippedItem();
             if (stack != null && stack.getItem() instanceof ItemMagicRing) {
-                if (stack.getTagCompound() != null) {
-                    NBTTagCompound tag = stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG);
-                    if (tag != null) {
-                        int spellID = tag.getInteger(ModLibs.SPELL_ID);
-                        ISpell spell = SpellRegistry.getSpellLazy(spellID);
+                if (stack.hasTagCompound()) {
+                    NBTTagCompound ringTag = SimpleUtil.getRingTag(stack);
+                    String spellID = SimpleUtil.getSpellIdFromTag(ringTag);
+                    if (spellID != null && ringTag != null) {
+                        ISpell spell = Rings.proxy.spellRegistry.getSpell(spellID);
                         if (spell != null) {
-                            int trueCost = -spell.cost() + (tag.getInteger(ModLibs.MATERIAL_BOOST) * 5);
+                            int trueCost = -spell.cost() + (ringTag.getInteger(ModLibs.MATERIAL_BOOST) * 5);
                             IPlayerSession session = Rings.proxy.manaHandler.getPlayerSession(player);
                             SpellCastedEvent spellEvent = new SpellCastedEvent(player, spell, session);
                             if (MinecraftForge.EVENT_BUS.post(spellEvent))
                                 return;
-                            spell.applyToMob(player, session, target, tag.getInteger(ModLibs.MATERIAL_BOOST), trueCost);
+                            spell.applyToMob(player, session, target, ringTag.getInteger(ModLibs.MATERIAL_BOOST), trueCost);
                             if (FMLCommonHandler.instance().getEffectiveSide().isServer() && !player.capabilities.isCreativeMode)
                                 Rings.proxy.manaHandler.updatePlayerSession(session, player.getEntityWorld().provider.dimensionId);
                         }
@@ -65,20 +64,6 @@ public class EntityHandler {
     public void onDeath(LivingDeathEvent event) {
         if (!event.entityLiving.worldObj.isRemote) {
             EntityLivingBase entity = event.entityLiving;
-            /*
-            if (entity instanceof EntityPlayer) {
-                EntityPlayer player = (EntityPlayer) entity;
-                if (FMLCommonHandler.instance().getSide().isServer())
-                    Rings.pktHandler.sendToServer(new PacketClientJoined(player));
-                else {
-                    NBTTagCompound tag = MagicHandler.getMagicHandler().getPlayerTag(player);
-                    if (tag != null) {
-                        int mp = tag.getInteger(ModLibs.PLAYER_MP);
-                        int max = tag.getInteger(ModLibs.PLAYER_MAX);
-                        Rings.pktHandler.sendTo(new PacketUpdateClient(mp, max), player);
-                    }
-                }
-            } else */
             if (entity instanceof EntityBat) {
                 if (((EntityBat) entity).worldObj.rand.nextInt(100) < 80) {
                     EntityItem batWing = new EntityItem(((EntityBat) entity).worldObj, ((EntityBat) entity).posX, ((EntityBat) entity).posY, ((EntityBat) entity).posZ, new ItemStack(ModItems.materials));

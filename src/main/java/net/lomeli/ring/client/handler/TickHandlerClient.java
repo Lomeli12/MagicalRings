@@ -31,14 +31,6 @@ public class TickHandlerClient {
                                 mc.fontRenderer.drawString(mpInfo, ModLibs.DISPLAY_X + 1, ModLibs.DISPLAY_Y + 1, 0x000000);
                                 mc.fontRenderer.drawString(mpInfo, ModLibs.DISPLAY_X, ModLibs.DISPLAY_Y, 0x00C4C4);
                             }
-                            /*
-                            if (handtag != null && handtag.hasKey(ModLibs.SPELL_ID) && MagicHandler.getMagicHandler().getPlayerTag(mc.thePlayer) != null) {
-                                int mp = MagicHandler.getMagicHandler().getPlayerMP(mc.thePlayer);
-                                int max = MagicHandler.getMagicHandler().getPlayerMaxMP(mc.thePlayer);
-                                String mpInfo = StatCollector.translateToLocal(ModLibs.MANA) + ": " + mp + " / " + max;
-                                mc.fontRenderer.drawString(mpInfo, ModLibs.DISPLAY_X + 1, ModLibs.DISPLAY_Y + 1, 0x000000);
-                                mc.fontRenderer.drawString(mpInfo, ModLibs.DISPLAY_X, ModLibs.DISPLAY_Y, 0x00C4C4);
-                            }*/
                         }
                     }
                 }

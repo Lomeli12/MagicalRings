@@ -15,13 +15,6 @@ buildscript {
     }
 }
 
-repositories {
-    ivy {
-        name 'Baubles'
-        artifactPattern "https://dl.dropboxusercontent.com/u/17430088/Minecraft%20Mods/[module]-deobf-[revision].[ext]"
-    }
-}
-
 apply plugin: "forge"
 
 def loadProperties(String sourceFileName) {
@@ -36,10 +29,6 @@ def loadProperties(String sourceFileName) {
 }
 
 loadProperties 'build.properties'
-
-dependencies {
-    compile name: 'Baubles', version: '1.7.2-1.0.0.14', ext: 'jar'
-}
 
 group = 'net.lomeli.ring'
 archivesBaseName = 'Magical Rings'
@@ -66,4 +55,5 @@ processResources {
 
 jar {
 	appendix = "build"
+    exclude(['baubles'])
 }

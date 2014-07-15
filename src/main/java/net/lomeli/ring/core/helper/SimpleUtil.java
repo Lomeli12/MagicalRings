@@ -1,4 +1,4 @@
-package net.lomeli.ring.core;
+package net.lomeli.ring.core.helper;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -17,6 +17,7 @@ import net.minecraft.world.World;
 
 import cpw.mods.fml.relauncher.ReflectionHelper;
 
+import net.lomeli.ring.Rings;
 import net.lomeli.ring.api.interfaces.ISpell;
 import net.lomeli.ring.lib.ModLibs;
 import net.lomeli.ring.magic.SpellRegistry;
@@ -24,27 +25,15 @@ import net.lomeli.ring.magic.SpellRegistry;
 public class SimpleUtil {
     private static Random rand = new Random();
 
-    public static MovingObjectPosition rayTrace(EntityLivingBase entity, World world) {
-        return rayTrace(entity, world, true);
+    public static MovingObjectPosition rayTrace(EntityLivingBase entity, World world, double range) {
+        return rayTrace(entity, world, range, true);
     }
 
-    public static MovingObjectPosition rayTrace(EntityLivingBase entity, World world, boolean hitLiquids) {
-        float f1 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * 1f;
-        float f2 = entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * 1f;
-        double d = entity.prevPosX + (entity.posX - entity.prevPosX) * 1f;
-        double d1 = entity.prevPosY + entity.getEyeHeight() + (entity.posY - entity.prevPosY) * (1f + 1.6200000000000001D);
-        double d2 = entity.prevPosZ + (entity.posZ - entity.prevPosZ) * 1f;
-        Vec3 vec3d = Vec3.createVectorHelper(d, d1, d2);
-        float f3 = MathHelper.cos(-f2 * 0.01745329f - 3.141593f);
-        float f4 = MathHelper.sin(-f2 * 0.01745329f - 3.141593f);
-        float f5 = -MathHelper.cos(-f1 * 0.01745329f);
-        float f6 = MathHelper.sin(-f1 * 0.01745329f);
-        float f7 = f4 * f5;
-        float f8 = f6;
-        float f9 = f3 * f5;
-        double d3 = 5000D;
-        Vec3 vec3d2 = vec3d.addVector(f7 * d3, f8 * d3, f9 * d3);
-        MovingObjectPosition mop = world.rayTraceBlocks(vec3d, vec3d2, hitLiquids);
+    public static MovingObjectPosition rayTrace(EntityLivingBase entity, World world, double range, boolean hitLiquids) {
+        Vec3 v = Vec3.createVectorHelper(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
+        Vec3 v1 = entity.getLook(1f);
+        Vec3 v2 = v.addVector(v1.xCoord * range, v1.yCoord * range, v1.zCoord * range);
+        MovingObjectPosition mop = world.rayTraceBlocks(v, v2, hitLiquids);
         return mop;
     }
 
@@ -82,7 +71,7 @@ public class SimpleUtil {
     }
 
     public static NBTTagCompound getRingTag(ItemStack stack) {
-        if (stack.getTagCompound() != null) {
+        if (stack != null && stack.hasTagCompound()) {
             if (stack.getTagCompound().hasKey(ModLibs.RING_TAG)) {
                 NBTTagCompound tag = stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG);
                 return tag;
@@ -91,14 +80,17 @@ public class SimpleUtil {
         return null;
     }
 
-    public static ISpell getSpell(NBTTagCompound tag) {
+    public static String getSpellIdFromTag(NBTTagCompound tag) {
         if (tag != null) {
-            if (tag.hasKey(ModLibs.SPELL_ID)) {
-                int spellID = tag.getInteger(ModLibs.SPELL_ID);
-                ISpell spell = SpellRegistry.getSpellLazy(spellID);
-                return spell;
-            }
+            if (tag.hasKey(ModLibs.SPELL_ID))
+                return tag.getString(ModLibs.SPELL_ID);
         }
+        return null;
+    }
+
+    public static ISpell getSpell(NBTTagCompound tag) {
+        if (tag != null)
+            return Rings.proxy.spellRegistry.getSpell(getSpellIdFromTag(tag));
         return null;
     }
 

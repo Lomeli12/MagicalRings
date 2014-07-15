@@ -16,13 +16,15 @@ import net.minecraft.util.StatCollector;
 
 import net.minecraftforge.oredict.OreDictionary;
 
+import net.lomeli.ring.Rings;
 import net.lomeli.ring.api.interfaces.ISpell;
 import net.lomeli.ring.item.ItemMagicRing;
 import net.lomeli.ring.lib.ModLibs;
 import net.lomeli.ring.magic.SpellRegistry;
 
 public class TileAltar extends TileItemAltar {
-    private int timer, spellID;
+    private int timer;
+    private String id;
     private boolean startInfusion, infoCollected;
     private List<TileItemAltar> tiles = new ArrayList<TileItemAltar>(), tilesToGetFrom = new ArrayList<TileItemAltar>();
     private List<ItemStack> tempInventory = new ArrayList<ItemStack>();
@@ -48,7 +50,7 @@ public class TileAltar extends TileItemAltar {
                 reset();
                 return;
             }
-            ISpell spell = SpellRegistry.getSpellLazy(spellID);
+            ISpell spell = Rings.proxy.spellRegistry.getSpell(id);
             if (spell != null) {
 
                 if (!this.infoCollected)
@@ -76,7 +78,7 @@ public class TileAltar extends TileItemAltar {
                                 if (stack.getTagCompound() == null)
                                     stack.stackTagCompound = new NBTTagCompound();
                                 NBTTagCompound tag = stack.getTagCompound().hasKey(ModLibs.RING_TAG) ? stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG) : new NBTTagCompound();
-                                tag.setInteger(ModLibs.SPELL_ID, spellID);
+                                tag.setString(ModLibs.SPELL_ID, id);
                                 stack.getTagCompound().setTag(ModLibs.RING_TAG, tag);
                             }
                             EntityLightningBolt light = new EntityLightningBolt(worldObj, xCoord, yCoord, zCoord);
@@ -101,7 +103,7 @@ public class TileAltar extends TileItemAltar {
     }
 
     public void simpleReset() {
-        this.spellID = -1;
+        this.id = null;
         this.timer = 0;
         this.tiles.clear();
         for (TileItemAltar tile : this.tilesToGetFrom) {
@@ -114,7 +116,7 @@ public class TileAltar extends TileItemAltar {
     }
 
     public void reset() {
-        this.spellID = -1;
+        this.id = null;
         this.timer = 0;
         this.tiles.clear();
         this.tilesToGetFrom.clear();
@@ -134,7 +136,7 @@ public class TileAltar extends TileItemAltar {
     }
 
     public void matchRecipe() {
-        Object[] ingredients = SpellRegistry.getMagicHandler().getSpellRecipe(spellID);
+        Object[] ingredients = Rings.proxy.spellRegistry.getSpellRecipe(id);
         if (ingredients == null) {
             reset();
             return;
@@ -213,7 +215,7 @@ public class TileAltar extends TileItemAltar {
         return true;
     }
 
-    public void startInfusion(EntityPlayer player, int spellId) {
+    public void startInfusion(EntityPlayer player, String spellId) {
 
         if (this.hasBeenInfused(getStackInSlot(0))) {
             if (player.experienceTotal >= 1205 || player.capabilities.isCreativeMode) {
@@ -221,7 +223,7 @@ public class TileAltar extends TileItemAltar {
                     player.addExperienceLevel(-35);
                     player.getCurrentEquippedItem().stackSize--;
                 }
-                this.spellID = spellId;
+                this.id = spellId;
                 this.startInfusion = true;
             } else {
                 if (!worldObj.isRemote)
@@ -233,7 +235,7 @@ public class TileAltar extends TileItemAltar {
                     player.addExperienceLevel(-30);
                     player.getCurrentEquippedItem().stackSize--;
                 }
-                this.spellID = spellId;
+                this.id = spellId;
                 this.startInfusion = true;
             } else {
                 if (!worldObj.isRemote)

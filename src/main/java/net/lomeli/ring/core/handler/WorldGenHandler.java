@@ -1,4 +1,4 @@
-package net.lomeli.ring.worldgen;
+package net.lomeli.ring.core.handler;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -22,14 +22,15 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 import net.lomeli.ring.Rings;
 import net.lomeli.ring.block.ModBlocks;
+import net.lomeli.ring.core.helper.LogHelper;
 import net.lomeli.ring.lib.ModLibs;
 
-public class WorldGenManager implements IWorldGenerator {
+public class WorldGenHandler implements IWorldGenerator {
     public HashMap<Integer, ArrayList<GeneratorInfo>> genList;
     public HashMap<Integer, ArrayList<ChunkCoord>> completedWork;
     public HashMap<Integer, ArrayList<ChunkCoord>> pendingWork;
 
-    public WorldGenManager() {
+    public WorldGenHandler() {
         this.genList = new HashMap<Integer, ArrayList<GeneratorInfo>>();
         this.completedWork = new HashMap<Integer, ArrayList<ChunkCoord>>();
         this.pendingWork = new HashMap<Integer, ArrayList<ChunkCoord>>();
@@ -131,7 +132,7 @@ public class WorldGenManager implements IWorldGenerator {
                         }
                     }
                     if (!flag) {
-                        Rings.log.log(Level.INFO, "Adding chunk " + cCoord.toString() + " to retro gen work load.");
+                        LogHelper.info("Adding chunk " + cCoord.toString() + " to retro gen work load.");
                         chunks.add(cCoord);
                         this.pendingWork.put(Integer.valueOf(dim), chunks);
                     }

@@ -35,6 +35,7 @@ public class Harvest implements ISpell {
                                 if (!world.isRemote) {
                                     if (grow.func_149852_a(world, world.rand, x + j, y, z + k)) {
                                         session.adjustMana(-cost(), false);
+                                        //blk.updateTick(world, x + j, y, z + k, world.rand);
                                         grow.func_149853_b(world, world.rand, x + j, y, z + k);
                                     }
                                 }
@@ -70,17 +71,20 @@ public class Harvest implements ISpell {
     public void onUpdateTick(ItemStack stack, World world, Entity entity, IPlayerSession session, int par4, boolean par5, int boost, int cost, boolean bool) {
         if (entity != null && entity instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) entity;
-            if (++tick >= 10) {
+            if (++tick >= 140) {
                 tick = 0;
                 for (int x = -(1 + boost); x < (2 + boost); x++)
                     for (int z = -(1 + boost); z < (2 + boost); z++) {
-                        if (session.hasEnoughMana(cost)) {
+                        if (session.hasEnoughMana(cost())) {
                             int blkX = (int) player.posX + x, blkY = (int) player.posY, blkZ = (int) player.posZ + z;
                             Block blk = world.getBlock(blkX, blkY, blkZ);
                             if (blk != null && !world.isAirBlock(blkX, blkY, blkZ)) {
                                 if (blk instanceof IGrowable) {
-                                    blk.updateTick(world, blkX, blkY, blkZ, world.rand);
-                                    session.adjustMana(-cost, false);
+                                    if (((IGrowable)blk).func_149851_a(world, blkX, blkY, blkZ, world.isRemote)) {
+                                        if (!world.isRemote)
+                                            blk.updateTick(world, blkX, blkY, blkZ, world.rand);
+                                        session.adjustMana(-cost(), false);
+                                    }
                                 }
                             }
                         } else
@@ -97,7 +101,7 @@ public class Harvest implements ISpell {
 
     @Override
     public int cost() {
-        return 30;
+        return 15;
     }
 
     @Override

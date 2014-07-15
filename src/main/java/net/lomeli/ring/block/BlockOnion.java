@@ -1,5 +1,6 @@
 package net.lomeli.ring.block;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.Item;
@@ -9,6 +10,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import net.lomeli.ring.item.ModItems;
+import net.lomeli.ring.lib.ModLibs;
 
 public class BlockOnion extends BlockCrops {
     @SideOnly(Side.CLIENT)
@@ -50,5 +52,10 @@ public class BlockOnion extends BlockCrops {
         for (int i = 0; i < this.field_149869_a.length; ++i) {
             this.field_149869_a[i] = p_149651_1_.registerIcon(this.getTextureName() + "_stage_" + i);
         }
+    }
+
+    @Override
+    public Block setBlockName(String p_149663_1_) {
+        return super.setBlockName(ModLibs.MOD_ID.toLowerCase() + "." + p_149663_1_);
     }
 }

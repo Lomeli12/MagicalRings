@@ -12,31 +12,31 @@ public class ModItems {
 
     public static void loadItems() {
         magicRing = new ItemMagicRing("ring").setUnlocalizedName("magicRing");
-        GameRegistry.registerItem(magicRing, magicRing.getUnlocalizedName());
+        registerItem(magicRing, "magicRing");
 
         book = new ItemSpellBook("spellbook").setUnlocalizedName("book");
-        GameRegistry.registerItem(book, book.getUnlocalizedName());
+        registerItem(book, "book");
 
         ironHammer = new ItemHammer("hammerIron", 15).setUnlocalizedName("ironHammer");
-        GameRegistry.registerItem(ironHammer, ironHammer.getUnlocalizedName());
+        registerItem(ironHammer, "ironHammer");
 
         diamondHammer = new ItemHammer("hammerDiamond", 40).setUnlocalizedName("diamondHammer");
-        GameRegistry.registerItem(diamondHammer, diamondHammer.getUnlocalizedName());
+        registerItem(diamondHammer, "diamondHammer");
 
         spellParchment = new ItemSpellParchment("parchment").setUnlocalizedName("spellParchment");
-        GameRegistry.registerItem(spellParchment, spellParchment.getUnlocalizedName());
+        registerItem(spellParchment, "spellParchment");
 
         oreItems = new ItemOreItems("ingot").setUnlocalizedName("ingot");
-        GameRegistry.registerItem(oreItems, oreItems.getUnlocalizedName());
+        registerItem(oreItems, "ingot");
 
         food = new ItemMagicFood().setUnlocalizedName("food");
-        GameRegistry.registerItem(food, food.getUnlocalizedName());
+        registerItem(food, "food");
 
         ghostSword = new ItemGhostSword().setUnlocalizedName("ghostSword");
-        GameRegistry.registerItem(ghostSword, ghostSword.getUnlocalizedName());
+        registerItem(ghostSword, "ghostSword");
 
         materials = new ItemMaterial().setUnlocalizedName("material");
-        GameRegistry.registerItem(materials, materials.getUnlocalizedName());
+        registerItem(materials, "material");
 
         OreDictionary.registerOre("ingotTungsten", new ItemStack(oreItems, 1, 0));
         OreDictionary.registerOre("ingotPlatinum", new ItemStack(oreItems, 1, 1));
@@ -47,5 +47,9 @@ public class ModItems {
         OreDictionary.registerOre("gemRuby", new ItemStack(oreItems, 1, 6));
         OreDictionary.registerOre("gemSapphire", new ItemStack(oreItems, 1, 7));
         OreDictionary.registerOre("gemAmethyst", new ItemStack(oreItems, 1, 8));
+    }
+
+    private static void registerItem(Item item, String id) {
+        GameRegistry.registerItem(item, id);
     }
 }

@@ -25,6 +25,7 @@ import net.lomeli.ring.Rings;
 import net.lomeli.ring.api.interfaces.IBookEntry;
 import net.lomeli.ring.block.tile.TileAltar;
 import net.lomeli.ring.block.tile.TileItemAltar;
+import net.lomeli.ring.core.helper.SimpleUtil;
 import net.lomeli.ring.item.ItemMagicRing;
 import net.lomeli.ring.item.ItemSpellParchment;
 import net.lomeli.ring.lib.ModLibs;
@@ -78,8 +79,11 @@ public class BlockAltars extends BlockRings implements ITileEntityProvider, IBoo
                     if (stack.getItem() instanceof ItemSpellParchment) {
                         if (tile instanceof TileAltar && tileStack != null) {
                             if (isRing(tileStack)) {
-                                ((TileAltar) tile).startInfusion(player, stack.getItemDamage());
-                                return true;
+                                String id = SimpleUtil.getSpellIdFromTag(stack.getTagCompound());
+                                if (id != null) {
+                                    ((TileAltar) tile).startInfusion(player, id);
+                                    return true;
+                                }
                             }
                         }
                     }

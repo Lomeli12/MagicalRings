@@ -25,11 +25,11 @@ import net.minecraft.util.*;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.oredict.OreDictionary;
 
+import net.lomeli.ring.Rings;
 import net.lomeli.ring.api.interfaces.ISpell;
 import net.lomeli.ring.api.Page;
-import net.lomeli.ring.core.SimpleUtil;
+import net.lomeli.ring.core.helper.SimpleUtil;
 import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.SpellRegistry;
 
 public class RenderSpellParchment implements IItemRenderer {
     protected static RenderItem itemRenderer = new RenderItem();
@@ -190,8 +190,9 @@ public class RenderSpellParchment implements IItemRenderer {
 
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glPopMatrix();
+        String spellID = SimpleUtil.getSpellIdFromTag(item.getTagCompound());
 
-        ISpell spell = getSpell(item);
+        ISpell spell = Rings.proxy.spellRegistry.getSpell(spellID);
         if (spell != null) {
             RenderHelper.enableGUIStandardItemLighting();
 
@@ -209,7 +210,7 @@ public class RenderSpellParchment implements IItemRenderer {
             if (text != null)
                 drawString(text, 2, 8, 0, 130);
 
-            Object[] required = SpellRegistry.getMagicHandler().getSpellRecipe(item.getItemDamage());
+            Object[] required = Rings.proxy.spellRegistry.getSpellRecipe(spellID);
             if (required != null && required.length > 0) {
                 for (int i = 0; i < required.length; i++) {
                     Object obj = required[i];
@@ -226,7 +227,7 @@ public class RenderSpellParchment implements IItemRenderer {
                         else if (obj instanceof String) {
                             List<ItemStack> list = OreDictionary.getOres((String) obj);
                             if (!list.isEmpty())
-                                itemstack = list.get(player.getEntityWorld().rand.nextInt(list.size()));
+                                itemstack = list.get(0);
                         }
                     }
                     if (itemstack != null) {
@@ -250,10 +251,6 @@ public class RenderSpellParchment implements IItemRenderer {
             GL11.glDisable(GL11.GL_BLEND);
             GL11.glPopMatrix();
         }
-    }
-
-    public ISpell getSpell(ItemStack stack) {
-        return SpellRegistry.getSpellLazy(stack.getItemDamage());
     }
 
     public void drawString(String text, int xOffset, int yOffset, int color, int wordWrap) {

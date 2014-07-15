@@ -19,7 +19,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 import net.lomeli.ring.api.interfaces.IBookEntry;
-import net.lomeli.ring.core.SimpleUtil;
+import net.lomeli.ring.core.helper.SimpleUtil;
 import net.lomeli.ring.item.ModItems;
 import net.lomeli.ring.lib.BookText;
 
@@ -44,8 +44,11 @@ public class HudHandler {
                                 Block block = mc.theWorld.getBlock(pos.blockX, pos.blockY, pos.blockZ);
                                 if (block != null && block instanceof IBookEntry) {
                                     int meta = mc.theWorld.getBlockMetadata(pos.blockX, pos.blockY, pos.blockZ);
-                                    renderInfoDisplay(new ItemStack(block, 1, meta), event.resolution);
-                                    return;
+                                    String key = ((IBookEntry) block).getBookPage(meta);
+                                    if (key != null) {
+                                        renderInfoDisplay(new ItemStack(block, 1, meta), event.resolution);
+                                        return;
+                                    }
                                 }
                             }
                         }
@@ -57,12 +60,18 @@ public class HudHandler {
                                     if (item.getItem() instanceof ItemBlock) {
                                         Block bl = Block.getBlockFromItem(item.getItem());
                                         if (bl != null && bl instanceof IBookEntry) {
+                                            String key = ((IBookEntry) bl).getBookPage(item.getItemDamage());
+                                            if (key != null) {
+                                                renderInfoDisplay(item, event.resolution);
+                                                return;
+                                            }
+                                        }
+                                    } else if (item.getItem() instanceof IBookEntry) {
+                                        String key = ((IBookEntry) item.getItem()).getBookPage(item.getItemDamage());
+                                        if (key != null) {
                                             renderInfoDisplay(item, event.resolution);
                                             return;
                                         }
-                                    } else if (item.getItem() instanceof IBookEntry) {
-                                        renderInfoDisplay(item, event.resolution);
-                                        return;
                                     }
                                 }
                             } else {

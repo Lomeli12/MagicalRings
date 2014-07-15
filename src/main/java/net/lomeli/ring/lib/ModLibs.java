@@ -58,6 +58,14 @@ public class ModLibs {
     public static final String DISARM = SPELL_NAME + "disarm";
     public static final String REARM = SPELL_NAME + "rearm";
     public static final String DISPLACE = SPELL_NAME + "displace";
+    public static final String CLEAR_WATER = SPELL_NAME + "clearWater";
+
+    // Command
+    public static final String COMMAND = MOD_ID.toLowerCase() + ".command.";
+    public static final String COMMAND_HELP = COMMAND + "basicInfo";
+    public static final String COMMAND_UNKNOWN = COMMAND + "unknown";
+    public static final String COMMAND_MANA_POS = COMMAND + "manaDisplay";
+
     public static int BASE_MP = 100;
     public static int RECHARGE_WAIT_TIME = 70;
     public static int DISPLAY_X = 2;
@@ -93,4 +101,7 @@ public class ModLibs {
     public static int rubyRate = 5;
     public static int sapphireRate = 5;
     public static int amethystRate = 4;
+
+    public static int manaFlowerQuantity = 3;
+    public static int manaFlowerDensity = 2;
 }

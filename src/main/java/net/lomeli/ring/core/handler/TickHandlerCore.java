@@ -1,15 +1,15 @@
 package net.lomeli.ring.core.handler;
 
 import java.util.ArrayList;
-import java.util.logging.Level;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
 import net.lomeli.ring.Rings;
+import net.lomeli.ring.core.helper.LogHelper;
 import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.worldgen.WorldGenManager.ChunkCoord;
-import net.lomeli.ring.worldgen.WorldGenManager.GeneratorInfo;
+import net.lomeli.ring.core.handler.WorldGenHandler.ChunkCoord;
+import net.lomeli.ring.core.handler.WorldGenHandler.GeneratorInfo;
 
 public class TickHandlerCore {
 
@@ -21,7 +21,7 @@ public class TickHandlerCore {
                 ArrayList<ChunkCoord> chunks = Rings.proxy.genManager.pendingWork.get(Integer.valueOf(dim));
                 if (chunks != null && !chunks.isEmpty()) {
                     ChunkCoord c = chunks.get(0);
-                    Rings.log.log(Level.INFO, "Retroactively generating ores at " + c.toString() + ".");
+                    LogHelper.info("Retroactively generating ores at " + c.toString() + ".");
                     ArrayList<ChunkCoord> completed = Rings.proxy.genManager.completedWork.get(Integer.valueOf(dim));
                     if (completed == null) {
                         Rings.proxy.genManager.completedWork.put(Integer.valueOf(dim), new ArrayList<ChunkCoord>());
@@ -35,7 +35,7 @@ public class TickHandlerCore {
                         }
                     }
 
-                    Rings.log.log(Level.INFO, "Finished retro gen for " + c.toString() + ". Removing from work load.");
+                    LogHelper.info("Finished retro gen for " + c.toString() + ". Removing from work load.");
                     chunks.remove(c);
                     Rings.proxy.genManager.pendingWork.put(Integer.valueOf(dim), chunks);
 

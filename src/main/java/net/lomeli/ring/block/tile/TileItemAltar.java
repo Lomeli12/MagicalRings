@@ -93,14 +93,16 @@ public class TileItemAltar extends TileEntity implements IInventory {
         inventory[var1] = var2;
         if (var2 != null && var2.stackSize > getInventoryStackLimit())
             var2.stackSize = getInventoryStackLimit();
-        if (!this.worldObj.isRemote) {
-            ItemStack display = inventory[0];
-            if (display != null)
-                lightValue = (byte) Block.getBlockFromItem(display.getItem()).getLightValue();
-            else
-                lightValue = 0;
+        if (this.worldObj != null) {
+            if (!this.worldObj.isRemote) {
+                ItemStack display = inventory[0];
+                if (display != null)
+                    lightValue = (byte) Block.getBlockFromItem(display.getItem()).getLightValue();
+                else
+                    lightValue = 0;
 
-            Rings.pktHandler.sendAllAround(new PacketUpdateAltar(this, display), new NetworkRegistry.TargetPoint(this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 128d));
+                Rings.pktHandler.sendAllAround(new PacketUpdateAltar(this, display), new NetworkRegistry.TargetPoint(this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 128d));
+            }
         }
         this.markDirty();
     }

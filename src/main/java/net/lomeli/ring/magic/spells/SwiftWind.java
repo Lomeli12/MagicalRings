@@ -85,7 +85,7 @@ public class SwiftWind implements ISpell {
 
     @Override
     public int cost() {
-        return 1;
+        return 2;
     }
 
     @Override

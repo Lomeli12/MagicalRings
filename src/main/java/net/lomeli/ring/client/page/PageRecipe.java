@@ -20,7 +20,7 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import net.lomeli.ring.api.Page;
 import net.lomeli.ring.client.gui.GuiSpellBook;
-import net.lomeli.ring.core.SimpleUtil;
+import net.lomeli.ring.core.helper.SimpleUtil;
 import net.lomeli.ring.lib.BookText;
 
 /**

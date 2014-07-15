@@ -20,11 +20,12 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import net.lomeli.ring.Rings;
+import net.lomeli.ring.api.interfaces.IBookEntry;
 import net.lomeli.ring.api.interfaces.IPlayerSession;
 import net.lomeli.ring.block.ModBlocks;
 import net.lomeli.ring.lib.ModLibs;
 
-public class ItemMagicFood extends ItemFood implements IPlantable {
+public class ItemMagicFood extends ItemFood implements IPlantable, IBookEntry {
 
     @SideOnly(Side.CLIENT)
     private IIcon[] iconArray;
@@ -170,4 +171,13 @@ public class ItemMagicFood extends ItemFood implements IPlantable {
         return 0;
     }
 
+    @Override
+    public String getBookPage(int metadata) {
+        return metadata == 3 ? ModLibs.MOD_ID.toLowerCase() + ".manaPotion" : metadata == 2 ? ModLibs.MOD_ID.toLowerCase() + ".mysteriousPotion" : null;
+    }
+
+    @Override
+    public int getData() {
+        return 0;
+    }
 }

@@ -32,6 +32,26 @@ public class BeingDisplacement implements ISpell {
                             if (tag.getCompoundTag("EntityData") != null)
                                 entity.readEntityFromNBT(tag.getCompoundTag("EntityData"));
                             if (entity != null) {
+                                switch (side) {
+                                    case 0:
+                                        --y;
+                                        break;
+                                    case 1:
+                                        ++y;
+                                        break;
+                                    case 2:
+                                        --z;
+                                        break;
+                                    case 3:
+                                        ++z;
+                                        break;
+                                    case 4:
+                                        --x;
+                                        break;
+                                    case 5:
+                                        ++x;
+                                        break;
+                                }
                                 entity.setPosition(x + 0.5, y + 1, z + 0.5);
                                 world.spawnEntityInWorld(entity);
                                 session.adjustMana(-(cost() / 2), false);

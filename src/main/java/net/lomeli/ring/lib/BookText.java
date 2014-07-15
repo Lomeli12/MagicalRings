@@ -13,6 +13,7 @@ public class BookText {
     public static final String CHARGE_STONE = BASE + "chargedGem";
     public static final String BAT_WING = BASE + "batWings";
     public static final String TENTACLE = BASE + "tentacle";
+    public static final String MANA_BERRY = BASE + "manaBerry";
     // Spell Book
     public static final String INTRO = BASE + "introPage";
     public static final String RING = BASE + "ring";
@@ -30,6 +31,8 @@ public class BookText {
     public static final String INFUSE_INFO = BASE + "infuseHowTo";
     public static final String MANA = BASE + "mp";
     public static final String MANA2 = BASE + "mp2";
+    public static final String MANA_FLOWER = BASE + "manaflower";
+    public static final String MANA_POTION = BASE + "manaPotion";
     //Baubles
     public static final String BAUBLE_BASE = BASE + "baubles";
     public static final String BAUBLE_INTRO = BAUBLE_BASE + "Intro";

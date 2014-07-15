@@ -20,6 +20,7 @@ import net.lomeli.ring.Rings;
 import net.lomeli.ring.api.event.SessionUpdatedEvent;
 import net.lomeli.ring.api.interfaces.IManaHandler;
 import net.lomeli.ring.api.interfaces.IPlayerSession;
+import net.lomeli.ring.core.helper.LogHelper;
 import net.lomeli.ring.lib.ModLibs;
 import net.lomeli.ring.magic.PlayerSession;
 import net.lomeli.ring.magic.RingSaveData;
@@ -83,10 +84,10 @@ public class ManaHandler implements IManaHandler {
                 for (int i = 0; i < sessionList.size(); i++) {
                     IPlayerSession session = sessionList.get(i);
                     if (session != null && session.getPlayerID().equalsIgnoreCase(player.getUniqueID().toString())) {
-                        Rings.log.log(Level.INFO, "Saving session data for " + player.getDisplayName());
+                        LogHelper.info("Saving session data for " + player.getDisplayName());
                         saveWorldData();
                         sessionList.remove(i);
-                        Rings.log.log(Level.INFO, "Removed " + player.getDisplayName() + " from session!");
+                        LogHelper.info("Removed " + player.getDisplayName() + " from session!");
                         return;
                     }
                 }
@@ -187,6 +188,14 @@ public class ManaHandler implements IManaHandler {
         }
     }
 
+    public void unloadAllData() {
+        LogHelper.info("Saving server data to world...");
+        saveWorldData();
+        LogHelper.info("Clearing data...");
+        saveData = null;
+        dimensionSession.clear();
+    }
+
     public void playerChangedDimension(EntityPlayer player, int oldDim, int newDim) {
         if (player != null) {
             IPlayerSession playerSession = null;
@@ -199,6 +208,7 @@ public class ManaHandler implements IManaHandler {
                     IPlayerSession session = sessionList.get(i);
                     if (session != null && session.getPlayerID().equalsIgnoreCase(player.getUniqueID().toString())) {
                         playerSession = session;
+                        index = i;
                         break;
                     }
                 }
@@ -218,7 +228,7 @@ public class ManaHandler implements IManaHandler {
     @SubscribeEvent
     public void onWorldUnload(WorldEvent.Unload event) {
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
-            Rings.log.log(Level.INFO, "Saving current session for dimension " + event.world.provider.dimensionId + "!");
+            LogHelper.info("Saving current session for dimension " + event.world.provider.dimensionId + "!");
             Rings.proxy.manaHandler.saveWorldData();
         }
     }
@@ -226,7 +236,7 @@ public class ManaHandler implements IManaHandler {
     @SubscribeEvent
     public void onWorldSave(WorldEvent.Save event) {
         if (FMLCommonHandler.instance().getEffectiveSide().isServer() && event.world.provider.dimensionId == 0) {
-            Rings.log.log(Level.INFO, "Saving all world data!");
+            LogHelper.info("Saving all world data!");
             Rings.proxy.manaHandler.saveWorldData();
         }
     }
@@ -243,7 +253,7 @@ public class ManaHandler implements IManaHandler {
                 }
                 Rings.proxy.manaHandler.saveData = ringSaveData;
             }
-            Rings.log.log(Level.INFO, "Beginning new session " + event.world.provider.dimensionId + "!");
+            LogHelper.info("Beginning new session " + event.world.provider.dimensionId + "!");
             Rings.proxy.manaHandler.beginNewSession(event.world.provider.dimensionId);
         }
     }

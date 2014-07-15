@@ -2,6 +2,7 @@ package net.lomeli.ring.item;
 
 import java.util.List;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -11,15 +12,21 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+
+import net.minecraftforge.common.EnumPlantType;
+import net.minecraftforge.common.IPlantable;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-import net.lomeli.ring.core.SimpleUtil;
+import net.lomeli.ring.block.ModBlocks;
+import net.lomeli.ring.core.helper.SimpleUtil;
 import net.lomeli.ring.lib.ModLibs;
 
-public class ItemMaterial extends ItemRings {
+public class ItemMaterial extends ItemRings implements IPlantable {
     @SideOnly(Side.CLIENT)
     private IIcon[] iconArray;
 
@@ -79,6 +86,16 @@ public class ItemMaterial extends ItemRings {
                 }
                 return true;
             }
+        } else if (stack.getItemDamage() == 5) {
+            if (!player.isSneaking() && player.canPlayerEdit(x, y, z, side, stack) && player.canPlayerEdit(x, y + 1, z, side, stack)) {
+                if (world.getBlock(x, y, z).canSustainPlant(world, x, y, z, ForgeDirection.UP, this) && world.isAirBlock(x, y + 1, z) && side == 1) {
+                    world.setBlock(x, y + 1, z, ModBlocks.manaFlower);
+                    if (!player.capabilities.isCreativeMode)
+                        stack.stackSize--;
+                    return true;
+                } else
+                    return false;
+            }
         }
         return super.onItemUse(stack, player, world, x, y, z, side, hitX, hitY, hitZ);
     }
@@ -86,7 +103,7 @@ public class ItemMaterial extends ItemRings {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister register) {
-        iconArray = new IIcon[5];
+        iconArray = new IIcon[6];
         for (int i = 0; i < iconArray.length; i++) {
             iconArray[i] = register.registerIcon(ModLibs.MOD_ID.toLowerCase() + ":materials/" + this.itemTexture + "_" + i);
         }
@@ -115,5 +132,20 @@ public class ItemMaterial extends ItemRings {
     @Override
     public String getUnlocalizedName(ItemStack stack) {
         return this.getUnlocalizedName() + "." + stack.getItemDamage();
+    }
+
+    @Override
+    public EnumPlantType getPlantType(IBlockAccess world, int x, int y, int z) {
+        return EnumPlantType.Plains;
+    }
+
+    @Override
+    public Block getPlant(IBlockAccess world, int x, int y, int z) {
+        return ModBlocks.manaFlower;
+    }
+
+    @Override
+    public int getPlantMetadata(IBlockAccess world, int x, int y, int z) {
+        return 5;
     }
 }

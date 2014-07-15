@@ -71,7 +71,7 @@ public class FriendlyFire implements ISpell {
 
     @Override
     public int cost() {
-        return 150;
+        return 100;
     }
 
     @Override

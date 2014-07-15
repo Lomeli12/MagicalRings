@@ -13,7 +13,7 @@ import cpw.mods.fml.relauncher.Side;
 
 import net.lomeli.ring.Rings;
 import net.lomeli.ring.api.interfaces.IPlayerSession;
-import net.lomeli.ring.core.SimpleUtil;
+import net.lomeli.ring.core.helper.SimpleUtil;
 import net.lomeli.ring.item.ItemHammer;
 import net.lomeli.ring.item.ItemMaterial;
 import net.lomeli.ring.lib.ModLibs;

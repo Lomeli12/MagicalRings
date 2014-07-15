@@ -6,6 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
@@ -17,7 +18,7 @@ import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 
 import net.lomeli.ring.api.interfaces.IPlayerSession;
 import net.lomeli.ring.api.interfaces.ISpell;
-import net.lomeli.ring.core.SimpleUtil;
+import net.lomeli.ring.core.helper.SimpleUtil;
 import net.lomeli.ring.lib.ModLibs;
 
 public class EnderPort implements ISpell {
@@ -32,17 +33,15 @@ public class EnderPort implements ISpell {
     @Override
     public void onUse(World world, EntityPlayer player, IPlayerSession session, ItemStack stack, int boost, int cost) {
         if (session.hasEnoughMana(cost())) {
-            MovingObjectPosition mop = SimpleUtil.rayTrace(player, world);
+            MovingObjectPosition mop = SimpleUtil.rayTrace(player, world, 43 + (boost * 2));
             if (mop != null) {
                 int oldX = MathHelper.floor_double(player.posX), oldY = MathHelper.floor_double(player.posY), oldZ = MathHelper.floor_double(player.posZ);
                 int newX = MathHelper.floor_double(player.posX), newY = MathHelper.floor_double(player.posY), newZ = MathHelper.floor_double(player.posZ);
-                double distance = 43;
                 boolean teleport = false;
                 if (mop.typeOfHit == MovingObjectType.BLOCK) {
                     newX = mop.blockX;
                     newY = mop.blockY;
                     newZ = mop.blockZ;
-                    distance = player.getDistance(newX, newY, newZ);
                     Block blk = world.getBlock(newX, newY, newZ);
                     if (blk != null && !world.isAirBlock(newX, newY, newZ))
                         teleport = true;
@@ -50,10 +49,9 @@ public class EnderPort implements ISpell {
                     newX = MathHelper.floor_double(mop.entityHit.posX);
                     newY = MathHelper.floor_double(mop.entityHit.posY);
                     newZ = MathHelper.floor_double(mop.entityHit.posZ);
-                    distance = player.getDistance(newX, newY, newZ);
                     teleport = true;
                 }
-                if (teleport && distance <= 42) {
+                if (teleport) {
                     teleportTo(player, newX, newY, newZ);
                     if (MathHelper.floor_double(player.posX) != oldX || MathHelper.floor_double(player.posY) != oldY || MathHelper.floor_double(player.posZ) != oldZ)
                         session.adjustMana(-cost(), false);
@@ -111,79 +109,31 @@ public class EnderPort implements ISpell {
         EnderTeleportEvent event = new EnderTeleportEvent(entity, d0, d1, d2, 0);
         if (MinecraftForge.EVENT_BUS.post(event))
             return false;
-        double var7 = entity.posX;
-        double var9 = entity.posY;
-        double var11 = entity.posZ;
-        entity.posX = d0;
-        entity.posY = d1;
-        entity.posZ = d2;
-        boolean var13 = false;
-        int var14 = MathHelper.floor_double(entity.posX);
-        int var15 = MathHelper.floor_double(entity.posY);
-        int var16 = MathHelper.floor_double(entity.posZ);
-        Block var18;
+        for (int i = 0; i < 32; ++i) {
+            entity.worldObj.spawnParticle("portal", d0, d1 + this.rand.nextDouble() * 2.0D, d2, this.rand.nextGaussian(), 0.0D, this.rand.nextGaussian());
+        }
 
-        if (entity.worldObj.blockExists(var14, var15, var16)) {
-            boolean var17 = false;
-
-            while (!var17 && var15 > 0) {
-                var18 = entity.worldObj.getBlock(var14, var15 - 1, var16);
-
-                if (var18 != null && var18.getMaterial().blocksMovement())
-                    var17 = true;
-                else {
-                    --entity.posY;
-                    --var15;
+        boolean successful = false;
+        if (!entity.worldObj.isRemote) {
+            if (entity instanceof EntityPlayerMP) {
+                EntityPlayerMP entityplayermp = (EntityPlayerMP) entity;
+                if (entityplayermp.playerNetServerHandler.func_147362_b().isChannelOpen()) {
+                    if (entityplayermp.isRiding())
+                        entityplayermp.mountEntity(null);
+                    entityplayermp.setPositionAndUpdate(d0, d1, d2);
+                    entityplayermp.fallDistance = 0f;
                 }
+            } else {
+                if (entity.isRiding())
+                    entity.mountEntity(null);
+                entity.setPositionAndUpdate(d0, d1, d2);
+                entity.fallDistance = 0f;
             }
-
-            if (var17) {
-                if (!entity.worldObj.isRemote)
-                    entity.setPositionAndUpdate(entity.posX, entity.posY, entity.posZ);
-
-                if (entity.worldObj.getCollidingBoundingBoxes(entity, entity.boundingBox).isEmpty() && !entity.worldObj.isAnyLiquid(entity.boundingBox))
-                    var13 = true;
-            }
+            if (entity.posX == d0 && entity.posY == d1 && entity.posZ == d2)
+                successful = true;
         }
-
-        if (!var13) {
-            if (!entity.worldObj.isRemote)
-                entity.setPositionAndUpdate(var7, var9, var11);
-            return false;
-        } else {
-            short var30 = 128;
-
-            for (int j = 0; j < var30; ++j) {
-                double var19 = j / (var30 - 1.0D);
-                float var21 = (entity.worldObj.rand.nextFloat() - 0.5F) * 0.2F;
-                float var22 = (entity.worldObj.rand.nextFloat() - 0.5F) * 0.2F;
-                float var23 = (entity.worldObj.rand.nextFloat() - 0.5F) * 0.2F;
-                double var24 = var7 + (entity.posX - var7) * var19 + (entity.worldObj.rand.nextDouble() - 0.5D) * entity.width * 2.0D;
-                double var26 = var9 + (entity.posY - var9) * var19 + entity.worldObj.rand.nextDouble() * entity.height;
-                double var28 = var11 + (entity.posZ - var11) * var19 + (entity.worldObj.rand.nextDouble() - 0.5D) * entity.width * 2.0D;
-                entity.worldObj.spawnParticle("portal", var24, var26, var28, var21, var22, var23);
-            }
-
-            entity.worldObj.playSoundEffect(var7, var9, var11, "mob.endermen.portal", 1.0F, 1.0F);
-            entity.playSound("mob.endermen.portal", 1.0F, 1.0F);
-            return true;
-        }
-        /*
-         * EnderTeleportEvent event = new EnderTeleportEvent(entity, d0, d1, d2,
-         * 0); if (MinecraftForge.EVENT_BUS.post(event)) return false; double
-         * oldX = entity.posX; double oldY = entity.posY; double oldZ =
-         * entity.posZ; double newX = d0; double newY = d1; double newZ = d2; if
-         * (!entity.worldObj.isAirBlock((int) d0, (int) (d1 + (entity.height /
-         * 2)), (int) d2)) { newX = d0 + (this.rand.nextDouble() + 0.5D); newZ =
-         * d2 + (this.rand.nextDouble() + 0.5D); } entity.setPosition(newX,
-         * newY, newZ); float f = (rand.nextFloat() - 0.5F) * 0.2F; float f1 =
-         * (rand.nextFloat() - 0.5F) * 0.2F; float f2 = (rand.nextFloat() -
-         * 0.5F) * 0.2F; entity.worldObj.spawnParticle("portal", newX, newY,
-         * newZ, f, f1, f2); entity.worldObj.spawnParticle("portal", oldX, oldY,
-         * oldZ, f, f1, f2); entity.worldObj.playSoundEffect(newX, newY, newZ,
-         * "mob.endermen.portal", 1.0F, 1.0F);
-         * entity.playSound("mob.endermen.portal", 1.0F, 1.0F); return true;
-         */
+        entity.worldObj.playSoundAtEntity(entity, "mob.endermen.portal", 1.0F, 1.0F);
+        return successful;
     }
 
     @Override

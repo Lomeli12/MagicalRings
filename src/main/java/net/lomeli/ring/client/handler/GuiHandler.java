@@ -14,13 +14,13 @@ import net.minecraft.world.World;
 import cpw.mods.fml.common.network.IGuiHandler;
 
 import net.lomeli.ring.Rings;
-import net.lomeli.ring.api.interfaces.IBookEntry;
 import net.lomeli.ring.api.Page;
+import net.lomeli.ring.api.interfaces.IBookEntry;
 import net.lomeli.ring.block.tile.TileRingForge;
 import net.lomeli.ring.client.gui.GuiRingForge;
 import net.lomeli.ring.client.gui.GuiSpellBook;
 import net.lomeli.ring.client.page.PageUtil;
-import net.lomeli.ring.core.SimpleUtil;
+import net.lomeli.ring.core.helper.SimpleUtil;
 import net.lomeli.ring.inventory.ContainerRingForge;
 import net.lomeli.ring.lib.ModLibs;
 import net.lomeli.ring.network.PacketSavePage;
@@ -64,10 +64,16 @@ public class GuiHandler implements IGuiHandler {
                             if (item != null && item.getItem() != null && player.isSneaking()) {
                                 if (item.getItem() instanceof ItemBlock) {
                                     bl = Block.getBlockFromItem(item.getItem());
-                                    if (bl != null && bl instanceof IBookEntry)
-                                        pageNum = getPageByID(((IBookEntry) bl).getBookPage(item.getItemDamage()), bookGui);
-                                } else if (item.getItem() instanceof IBookEntry)
-                                    pageNum = getPageByID(((IBookEntry) item.getItem()).getBookPage(item.getItemDamage()), bookGui);
+                                    if (bl != null && bl instanceof IBookEntry) {
+                                        String key = ((IBookEntry) bl).getBookPage(item.getItemDamage());
+                                        if (key != null)
+                                            pageNum = getPageByID(key, bookGui);
+                                    }
+                                } else if (item.getItem() instanceof IBookEntry) {
+                                    String key = ((IBookEntry) item.getItem()).getBookPage(item.getItemDamage());
+                                    if (key != null)
+                                    pageNum = getPageByID(key, bookGui);
+                                }
                             }
                         }
                     }

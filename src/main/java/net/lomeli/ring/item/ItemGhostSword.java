@@ -24,10 +24,8 @@ public class ItemGhostSword extends ItemSword {
                 if (stack.getItemDamage() < stack.getMaxDamage())
                     stack.damageItem(1, (EntityLivingBase) entity);
                 if (stack.getItemDamage() >= stack.getMaxDamage())
-                    stack.stackSize--;
+                    stack = null;
             }
-            if (stack.getItemDamage() >= stack.getMaxDamage())
-                stack.stackSize--;
         }
     }
 

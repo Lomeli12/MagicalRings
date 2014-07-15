@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 
 import net.lomeli.ring.api.interfaces.IPlayerSession;
 import net.lomeli.ring.api.interfaces.ISpell;
-import net.lomeli.ring.core.SimpleUtil;
+import net.lomeli.ring.core.helper.SimpleUtil;
 import net.lomeli.ring.lib.ModLibs;
 
 public class HeavenStrike implements ISpell {
@@ -25,7 +25,7 @@ public class HeavenStrike implements ISpell {
     @Override
     public void onUse(World world, EntityPlayer player, IPlayerSession session, ItemStack stack, int boost, int cost) {
         if (session.hasEnoughMana(cost())) {
-            MovingObjectPosition mop = SimpleUtil.rayTrace(player, world);
+            MovingObjectPosition mop = SimpleUtil.rayTrace(player, world, 43);
             if (mop != null) {
                 if (mop.typeOfHit == MovingObjectType.BLOCK) {
                     int blockX = mop.blockX;
@@ -67,7 +67,7 @@ public class HeavenStrike implements ISpell {
 
     @Override
     public int cost() {
-        return 90;
+        return 45;
     }
 
     @Override

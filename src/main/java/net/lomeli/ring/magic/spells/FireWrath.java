@@ -112,7 +112,7 @@ public class FireWrath implements ISpell {
 
     @Override
     public int cost() {
-        return 35;
+        return 15;
     }
 
     @Override

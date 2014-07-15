@@ -26,13 +26,12 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import net.lomeli.ring.Rings;
+import net.lomeli.ring.api.event.SpellCastedEvent;
 import net.lomeli.ring.api.interfaces.IBookEntry;
 import net.lomeli.ring.api.interfaces.IPlayerSession;
 import net.lomeli.ring.api.interfaces.ISpell;
-import net.lomeli.ring.api.event.SpellCastedEvent;
-import net.lomeli.ring.core.SimpleUtil;
+import net.lomeli.ring.core.helper.SimpleUtil;
 import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.SpellRegistry;
 
 @Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class ItemMagicRing extends ItemRings implements IBauble, IBookEntry {
@@ -70,29 +69,26 @@ public class ItemMagicRing extends ItemRings implements IBauble, IBookEntry {
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) {
         if (Loader.isModLoaded("Baubles") ? !(entity instanceof EntityPlayer) : true) {
-            if (stack.getTagCompound() != null) {
-                NBTTagCompound tag = stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG);
-                if (tag != null) {
-                    if (tag.hasKey(ModLibs.SPELL_ID)) {
-                        int spellID = tag.getInteger(ModLibs.SPELL_ID);
-                        ISpell spell = SpellRegistry.getSpellLazy(spellID);
-                        if (spell != null) {
-                            int trueCost = spell.cost() + (tag.getInteger(ModLibs.MATERIAL_BOOST) * 5);
-                            if (entity instanceof EntityPlayer && Rings.proxy.manaHandler.playerHasSession((EntityPlayer) entity)) {
-                                IPlayerSession session = Rings.proxy.manaHandler.getPlayerSession((EntityPlayer) entity);
-                                SpellCastedEvent spellEvent = new SpellCastedEvent((EntityLivingBase)entity, spell, session);
-                                if (MinecraftForge.EVENT_BUS.post(spellEvent))
-                                    return;
-                                spell.onUpdateTick(stack, world, entity, session, par4, par5, tag.getInteger(ModLibs.MATERIAL_BOOST), trueCost, tag.getBoolean(ModLibs.ACTIVE_EFFECT_ENABLED));
-                                if (serverSide() && !((EntityPlayer) entity).capabilities.isCreativeMode)
-                                    Rings.proxy.manaHandler.updatePlayerSession(session, world.provider.dimensionId);
-                            } else if (entity instanceof EntityLivingBase) {
-                                SpellCastedEvent spellEvent = new SpellCastedEvent((EntityLivingBase)entity, spell, null);
-                                if (MinecraftForge.EVENT_BUS.post(spellEvent))
-                                    return;
-                                spell.onUpdateTick(stack, world, entity, null, par4, par5, tag.getInteger(ModLibs.MATERIAL_BOOST), trueCost, tag.getBoolean(ModLibs.ACTIVE_EFFECT_ENABLED));
-                            }
+            if (stack.hasTagCompound()) {
+                NBTTagCompound tag = SimpleUtil.getRingTag(stack);
+                String spellID = SimpleUtil.getSpellIdFromTag(tag);
+                if (spellID != null && tag != null) {
+                    ISpell spell = Rings.proxy.spellRegistry.getSpell(spellID);
+                    if (spell != null) {
+                        int trueCost = getSpellCost(tag, spell);
+                        IPlayerSession session = null;
+                        if (entity instanceof EntityPlayer) {
+                            if (Rings.proxy.manaHandler.playerHasSession((EntityPlayer) entity))
+                                session = Rings.proxy.manaHandler.getPlayerSession((EntityPlayer) entity);
+                            else
+                                return;
                         }
+                        SpellCastedEvent spellEvent = new SpellCastedEvent((EntityLivingBase) entity, spell, session);
+                        if (MinecraftForge.EVENT_BUS.post(spellEvent))
+                            return;
+                        spell.onUpdateTick(stack, world, entity, session, par4, par5, tag.getInteger(ModLibs.MATERIAL_BOOST), trueCost, tag.getBoolean(ModLibs.ACTIVE_EFFECT_ENABLED));
+                        if (session != null && serverSide() && !((EntityPlayer) entity).capabilities.isCreativeMode)
+                            Rings.proxy.manaHandler.updatePlayerSession(session, world.provider.dimensionId);
                     }
                 }
             }
@@ -111,31 +107,31 @@ public class ItemMagicRing extends ItemRings implements IBauble, IBookEntry {
 
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-        if (player.isSneaking()) {
-            if (stack.getTagCompound() != null) {
-                NBTTagCompound tag = stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG);
-                if (tag != null) {
+        if (stack != null && stack.hasTagCompound()) {
+            NBTTagCompound tag = SimpleUtil.getRingTag(stack);
+            String spellID = SimpleUtil.getSpellIdFromTag(tag);
+            if (tag != null) {
+                if (player.isSneaking()) {
                     boolean active = tag.getBoolean(ModLibs.ACTIVE_EFFECT_ENABLED);
                     tag.setBoolean(ModLibs.ACTIVE_EFFECT_ENABLED, !active);
                     if (serverSide())
                         player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal(ModLibs.ACTIVE_EFFECT) + ": " + !active));
-                }
-            }
-        } else {
-            NBTTagCompound tag = SimpleUtil.getRingTag(stack);
-            if (tag != null && Rings.proxy.manaHandler.playerHasSession(player)) {
-                ISpell spell = SimpleUtil.getSpell(tag);
-                if (spell != null) {
-                    int cost = getSpellCost(tag, spell);
-                    int boost = getRingBoost(tag);
-                    IPlayerSession session = Rings.proxy.manaHandler.getPlayerSession(player);
-                    SpellCastedEvent spellEvent = new SpellCastedEvent(player, spell, session);
-                    if (MinecraftForge.EVENT_BUS.post(spellEvent))
-                        return stack;
-                    spell.onUse(world, player, session, stack, boost, cost);
-                    if (serverSide() && !player.capabilities.isCreativeMode)
-                        Rings.proxy.manaHandler.updatePlayerSession(session, world.provider.dimensionId);
-                    playBurp(tag, world, player);
+                } else {
+                    if (spellID != null && Rings.proxy.manaHandler.playerHasSession(player)) {
+                        IPlayerSession session = Rings.proxy.manaHandler.getPlayerSession(player);
+                        ISpell spell = Rings.proxy.spellRegistry.getSpell(spellID);
+                        if (spell != null && session != null) {
+                            int cost = getSpellCost(tag, spell);
+                            int boost = getRingBoost(tag);
+                            SpellCastedEvent spellEvent = new SpellCastedEvent(player, spell, session);
+                            if (MinecraftForge.EVENT_BUS.post(spellEvent))
+                                return stack;
+                            spell.onUse(world, player, session, stack, boost, cost);
+                            if (serverSide() && !player.capabilities.isCreativeMode)
+                                Rings.proxy.manaHandler.updatePlayerSession(session, world.provider.dimensionId);
+                            playBurp(tag, world, player);
+                        }
+                    }
                 }
             }
         }
@@ -144,21 +140,24 @@ public class ItemMagicRing extends ItemRings implements IBauble, IBookEntry {
 
     @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-        NBTTagCompound tag = SimpleUtil.getRingTag(stack);
-        if (tag != null && Rings.proxy.manaHandler.playerHasSession(player)) {
-            ISpell spell = SimpleUtil.getSpell(tag);
-            if (spell != null) {
-                int cost = getSpellCost(tag, spell);
-                int boost = getRingBoost(tag);
-                IPlayerSession session = Rings.proxy.manaHandler.getPlayerSession(player);
-                SpellCastedEvent spellEvent = new SpellCastedEvent(player, spell, session);
-                if (MinecraftForge.EVENT_BUS.post(spellEvent))
-                    return false;
-                spell.useOnBlock(world, player, session, x, y, z, side, hitX, hitY, hitZ, boost, cost);
-                if (serverSide() && !player.capabilities.isCreativeMode)
-                    Rings.proxy.manaHandler.updatePlayerSession(session, world.provider.dimensionId);
-                playBurp(tag, world, player);
-                return true;
+        if (stack != null && stack.hasTagCompound()) {
+            NBTTagCompound tag = SimpleUtil.getRingTag(stack);
+            String spellID = SimpleUtil.getSpellIdFromTag(tag);
+            if (tag != null && spellID != null && Rings.proxy.manaHandler.playerHasSession(player)) {
+                ISpell spell = SimpleUtil.getSpell(tag);
+                if (spell != null) {
+                    int cost = getSpellCost(tag, spell);
+                    int boost = getRingBoost(tag);
+                    IPlayerSession session = Rings.proxy.manaHandler.getPlayerSession(player);
+                    SpellCastedEvent spellEvent = new SpellCastedEvent(player, spell, session);
+                    if (MinecraftForge.EVENT_BUS.post(spellEvent))
+                        return false;
+                    spell.useOnBlock(world, player, session, x, y, z, side, hitX, hitY, hitZ, boost, cost);
+                    if (serverSide() && !player.capabilities.isCreativeMode)
+                        Rings.proxy.manaHandler.updatePlayerSession(session, world.provider.dimensionId);
+                    playBurp(tag, world, player);
+                    return true;
+                }
             }
         }
         return false;
@@ -166,23 +165,14 @@ public class ItemMagicRing extends ItemRings implements IBauble, IBookEntry {
 
     public int getSpellCost(NBTTagCompound tag, ISpell spell) {
         if (tag != null && spell != null)
-            return -spell.cost() + getRingBoost(tag);
+            return spell.cost() + getRingBoost(tag);
         return 0;
     }
 
     public int getRingBoost(NBTTagCompound tag) {
         if (tag != null)
-            return tag.getInteger(ModLibs.MATERIAL_BOOST) * 5;
+            return tag.getInteger(ModLibs.MATERIAL_BOOST);
         return 0;
-    }
-
-    public boolean canPlayerUseMagic(EntityPlayer player) {
-        if (!Rings.proxy.manaHandler.playerHasSession(player)) {
-            if (!player.worldObj.isRemote)
-                player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal(ModLibs.NO_MANA)));
-            return false;
-        }
-        return true;
     }
 
     public void playBurp(NBTTagCompound tag, World world, EntityPlayer player) {
@@ -242,18 +232,19 @@ public class ItemMagicRing extends ItemRings implements IBauble, IBookEntry {
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
-        if (stack.getTagCompound() != null && stack.getTagCompound().hasKey(ModLibs.RING_TAG)) {
-            NBTTagCompound tag = stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG);
-            if (tag.hasKey(ModLibs.SPELL_ID)) {
-                int id = tag.getInteger(ModLibs.SPELL_ID);
-                ISpell spell = SpellRegistry.getSpellLazy(id);
-                if (spell != null)
-                    list.add(StatCollector.translateToLocal(ModLibs.SPELL) + ": " + StatCollector.translateToLocal(spell.getUnlocalizedName()));
-            }
-            if (tag.hasKey(ModLibs.MATERIAL_BOOST)) {
-                int boost = tag.getInteger(ModLibs.MATERIAL_BOOST);
-                if (boost != 0)
-                    list.add((boost > 0 ? "+" + boost : boost) + " " + StatCollector.translateToLocal(ModLibs.BOOST));
+        if (stack.hasTagCompound()) {
+            NBTTagCompound tag = SimpleUtil.getRingTag(stack);
+            if (tag != null) {
+                if (tag.hasKey(ModLibs.SPELL_ID)) {
+                    ISpell spell = Rings.proxy.spellRegistry.getSpell(SimpleUtil.getSpellIdFromTag(tag));
+                    if (spell != null)
+                        list.add(StatCollector.translateToLocal(ModLibs.SPELL) + ": " + StatCollector.translateToLocal(spell.getUnlocalizedName()));
+                }
+                if (tag.hasKey(ModLibs.MATERIAL_BOOST)) {
+                    int boost = tag.getInteger(ModLibs.MATERIAL_BOOST);
+                    if (boost != 0)
+                        list.add((boost > 0 ? "+" + boost : boost) + " " + StatCollector.translateToLocal(ModLibs.BOOST));
+                }
             }
         }
     }
@@ -266,21 +257,19 @@ public class ItemMagicRing extends ItemRings implements IBauble, IBookEntry {
     @Override
     public void onWornTick(ItemStack stack, EntityLivingBase player) {
         if (stack.getTagCompound() != null && player instanceof EntityPlayer) {
-            NBTTagCompound tag = stack.getTagCompound().getCompoundTag(ModLibs.RING_TAG);
-            if (tag != null && Rings.proxy.manaHandler.playerHasSession((EntityPlayer) player)) {
-                if (tag.hasKey(ModLibs.SPELL_ID)) {
-                    int spellID = tag.getInteger(ModLibs.SPELL_ID);
-                    ISpell spell = SpellRegistry.getSpellLazy(spellID);
-                    if (spell != null) {
-                        int trueCost = spell.cost() + (tag.getInteger(ModLibs.MATERIAL_BOOST) * 5);
-                        IPlayerSession session = Rings.proxy.manaHandler.getPlayerSession((EntityPlayer) player);
-                        SpellCastedEvent spellEvent = new SpellCastedEvent(player, spell, session);
-                        if (MinecraftForge.EVENT_BUS.post(spellEvent))
-                            return;
-                        spell.onUpdateTick(stack, player.worldObj, player, session, 0, true, tag.getInteger(ModLibs.MATERIAL_BOOST), trueCost, tag.getBoolean(ModLibs.ACTIVE_EFFECT_ENABLED));
-                        if (serverSide() && !((EntityPlayer)player).capabilities.isCreativeMode)
-                            Rings.proxy.manaHandler.updatePlayerSession(session, ((EntityPlayer) player).worldObj.provider.dimensionId);
-                    }
+            NBTTagCompound tag = SimpleUtil.getRingTag(stack);
+            String spellID = SimpleUtil.getSpellIdFromTag(tag);
+            if (tag != null && spellID != null && Rings.proxy.manaHandler.playerHasSession((EntityPlayer) player)) {
+                ISpell spell = Rings.proxy.spellRegistry.getSpell(spellID);
+                if (spell != null) {
+                    int cost = getSpellCost(tag, spell);
+                    IPlayerSession session = Rings.proxy.manaHandler.getPlayerSession((EntityPlayer) player);
+                    SpellCastedEvent spellEvent = new SpellCastedEvent(player, spell, session);
+                    if (MinecraftForge.EVENT_BUS.post(spellEvent))
+                        return;
+                    spell.onUpdateTick(stack, player.worldObj, player, session, 0, true, tag.getInteger(ModLibs.MATERIAL_BOOST), cost, tag.getBoolean(ModLibs.ACTIVE_EFFECT_ENABLED));
+                    if (serverSide() && !((EntityPlayer) player).capabilities.isCreativeMode)
+                        Rings.proxy.manaHandler.updatePlayerSession(session, ((EntityPlayer) player).worldObj.provider.dimensionId);
                 }
             }
         }
@@ -288,22 +277,19 @@ public class ItemMagicRing extends ItemRings implements IBauble, IBookEntry {
 
     @Override
     public void onEquipped(ItemStack itemstack, EntityLivingBase player) {
-        NBTTagCompound tag = SimpleUtil.getRingTag(itemstack);
-        if (tag != null) {
-            if (player instanceof EntityPlayer) {
-                EntityPlayer pl = (EntityPlayer) player;
-                if (canPlayerUseMagic(pl)) {
-                    ISpell spell = SimpleUtil.getSpell(tag);
-                    if (spell != null) {
-                        IPlayerSession session = Rings.proxy.manaHandler.getPlayerSession(pl);
-                        SpellCastedEvent spellEvent = new SpellCastedEvent(player, spell, session);
-                        if (MinecraftForge.EVENT_BUS.post(spellEvent))
-                            return;
-                        spell.onEquipped(itemstack, player, session);
-                        if (serverSide() && !pl.capabilities.isCreativeMode)
-                            Rings.proxy.manaHandler.updatePlayerSession(session, pl.getEntityWorld().provider.dimensionId);
-                        playBurp(tag, pl.worldObj, pl);
-                    }
+        if (itemstack.getTagCompound() != null && player instanceof EntityPlayer) {
+            NBTTagCompound tag = SimpleUtil.getRingTag(itemstack);
+            String spellID = SimpleUtil.getSpellIdFromTag(tag);
+            if (tag != null && spellID != null && Rings.proxy.manaHandler.playerHasSession((EntityPlayer) player)) {
+                ISpell spell = Rings.proxy.spellRegistry.getSpell(spellID);
+                if (spell != null) {
+                    IPlayerSession session = Rings.proxy.manaHandler.getPlayerSession((EntityPlayer) player);
+                    SpellCastedEvent spellEvent = new SpellCastedEvent(player, spell, session);
+                    if (MinecraftForge.EVENT_BUS.post(spellEvent))
+                        return;
+                    spell.onEquipped(itemstack, player, session);
+                    if (serverSide() && !((EntityPlayer) player).capabilities.isCreativeMode)
+                        Rings.proxy.manaHandler.updatePlayerSession(session, ((EntityPlayer) player).worldObj.provider.dimensionId);
                 }
             }
         }
@@ -311,22 +297,19 @@ public class ItemMagicRing extends ItemRings implements IBauble, IBookEntry {
 
     @Override
     public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {
-        NBTTagCompound tag = SimpleUtil.getRingTag(itemstack);
-        if (tag != null) {
-            if (player instanceof EntityPlayer && Rings.proxy.manaHandler.playerHasSession((EntityPlayer) player)) {
-                EntityPlayer pl = (EntityPlayer) player;
-                if (canPlayerUseMagic(pl)) {
-                    ISpell spell = SimpleUtil.getSpell(tag);
-                    if (spell != null) {
-                        IPlayerSession session = Rings.proxy.manaHandler.getPlayerSession(pl);
-                        SpellCastedEvent spellEvent = new SpellCastedEvent(player, spell, session);
-                        if (MinecraftForge.EVENT_BUS.post(spellEvent))
-                            return;
-                        spell.onUnEquipped(itemstack, player, session);
-                        if (serverSide() && !pl.capabilities.isCreativeMode)
-                            Rings.proxy.manaHandler.updatePlayerSession(session, pl.getEntityWorld().provider.dimensionId);
-                        playBurp(tag, pl.worldObj, pl);
-                    }
+        if (itemstack.getTagCompound() != null && player instanceof EntityPlayer) {
+            NBTTagCompound tag = SimpleUtil.getRingTag(itemstack);
+            String spellID = SimpleUtil.getSpellIdFromTag(tag);
+            if (tag != null && spellID != null && Rings.proxy.manaHandler.playerHasSession((EntityPlayer) player)) {
+                ISpell spell = Rings.proxy.spellRegistry.getSpell(spellID);
+                if (spell != null) {
+                    IPlayerSession session = Rings.proxy.manaHandler.getPlayerSession((EntityPlayer) player);
+                    SpellCastedEvent spellEvent = new SpellCastedEvent(player, spell, session);
+                    if (MinecraftForge.EVENT_BUS.post(spellEvent))
+                        return;
+                    spell.onUnEquipped(itemstack, player, session);
+                    if (serverSide() && !((EntityPlayer) player).capabilities.isCreativeMode)
+                        Rings.proxy.manaHandler.updatePlayerSession(session, ((EntityPlayer) player).worldObj.provider.dimensionId);
                 }
             }
         }

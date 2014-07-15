@@ -57,7 +57,9 @@ public class PageUtil implements IPageRegistry {
         screen.avaliablePages.add(new PageImage(screen, BookText.BAUBLE1, BookText.BAUBLE_INTRO, BookText.IMAGES, 0, 0, 107, 100));
         screen.avaliablePages.add(new PageText(screen, BookText.BAUBLE_INTRO, BookText.BAUBLE2));
         screen.avaliablePages.add(new PageText(screen, ModLibs.MANA, BookText.MANA));
-        screen.avaliablePages.add(new PageRecipe(screen, new ItemStack(ModItems.food, 1, 2), BookText.MANA2));
+        screen.avaliablePages.add(new PageItem(screen, new ItemStack(ModBlocks.manaFlower, 1, 3), BookText.MANA_FLOWER).setID(ModLibs.MOD_ID.toLowerCase() + ".manaFlower"));
+        screen.avaliablePages.add(new PageRecipe(screen, new ItemStack(ModItems.food, 1, 3), BookText.MANA_POTION).setID(ModLibs.MOD_ID.toLowerCase() + ".manaPotion"));
+        screen.avaliablePages.add(new PageRecipe(screen, new ItemStack(ModItems.food, 1, 2), BookText.MANA2).setID(ModLibs.MOD_ID.toLowerCase() + ".mysteriousPotion"));
         if (!addonPages.isEmpty()) {
             for (Page pg : addonPages) {
                 if (pg.gui == null)
@@ -77,6 +79,7 @@ public class PageUtil implements IPageRegistry {
         gui.avaliablePages.add(new PageItem(gui, new ItemStack(ModItems.materials, 1, 2), BookText.ERUPTING_STONE, goldColor));
         gui.avaliablePages.add(new PageRecipe(gui, new ItemStack(ModItems.materials, 1, 3), BookText.CHARGE_STONE, goldColor));
         gui.avaliablePages.add(new PageItem(gui, new ItemStack(ModItems.materials, 1, 4), BookText.TENTACLE, goldColor));
+        gui.avaliablePages.add(new PageItem(gui, new ItemStack(ModItems.materials, 1, 5), BookText.MANA_BERRY, goldColor));
         gui.avaliablePages.add(new PageTitle(gui, BookText.RING_MATERIAL, goldColor));
         for (int i = 0; i < Rings.proxy.ringMaterials.validMaterial.size(); i++) {
             Object[] objects = new Object[5];
