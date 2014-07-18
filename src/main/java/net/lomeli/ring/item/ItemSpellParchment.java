@@ -23,9 +23,8 @@ import net.lomeli.ring.api.interfaces.IBookEntry;
 import net.lomeli.ring.api.interfaces.ISpell;
 import net.lomeli.ring.core.helper.SimpleUtil;
 import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.SpellRegistry;
 
-public class ItemSpellParchment extends ItemRings implements IBookEntry{
+public class ItemSpellParchment extends ItemRings implements IBookEntry {
 
     public ItemSpellParchment(String texture) {
         super(texture);

@@ -14,14 +14,14 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import net.lomeli.ring.Rings;
 import net.lomeli.ring.api.Page;
-import net.lomeli.ring.client.gui.GuiSpellBook;
+import net.lomeli.ring.api.interfaces.IBookGui;
 import net.lomeli.ring.lib.ModLibs;
 
 public class PageMaterial extends Page {
     private Object[] objs;
     private int color;
 
-    public PageMaterial(GuiSpellBook guiSpellBook, int color, Object... obj) {
+    public PageMaterial(IBookGui guiSpellBook, int color, Object... obj) {
         super(guiSpellBook);
         this.color = color;
         objs = new Object[5];
@@ -29,6 +29,10 @@ public class PageMaterial extends Page {
             if (i < obj.length)
                 objs[i] = obj[i];
         }
+    }
+
+    public PageMaterial(IBookGui guiSpellBook, Object... obj) {
+        this(guiSpellBook, Color.CYAN.getRGB(), obj);
     }
 
     @Override

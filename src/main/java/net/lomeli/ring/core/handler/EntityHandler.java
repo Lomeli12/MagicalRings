@@ -20,9 +20,9 @@ import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 import net.lomeli.ring.Rings;
+import net.lomeli.ring.api.event.SpellCastedEvent;
 import net.lomeli.ring.api.interfaces.IPlayerSession;
 import net.lomeli.ring.api.interfaces.ISpell;
-import net.lomeli.ring.api.event.SpellCastedEvent;
 import net.lomeli.ring.core.helper.SimpleUtil;
 import net.lomeli.ring.entity.EntityFireProofItem;
 import net.lomeli.ring.entity.EntityFireStone;

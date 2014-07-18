@@ -10,7 +10,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class RenderHandler {
-    public static boolean clearFog = false;
+    public boolean clearFog = false;
 
     @SideOnly(Side.CLIENT)
     @SubscribeEvent

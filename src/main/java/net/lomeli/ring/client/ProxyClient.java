@@ -39,10 +39,10 @@ public class ProxyClient extends Proxy {
         MinecraftForgeClient.registerItemRenderer(ModItems.ghostSword, new RenderGhostSword());
         MinecraftForgeClient.registerItemRenderer(ModItems.magicRing, new RenderRing());
 
-        FMLCommonHandler.instance().bus().register(new TickHandlerClient());
+        FMLCommonHandler.instance().bus().register(tickClient);
 
         MinecraftForge.EVENT_BUS.register(new HudHandler());
-        MinecraftForge.EVENT_BUS.register(new RenderHandler());
+        MinecraftForge.EVENT_BUS.register(renderHandler);
     }
 
     @Override

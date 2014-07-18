@@ -11,4 +11,6 @@ public interface IRingAPI {
     IMaterialRegistry materialRegistry();
 
     IManaHandler manaHandler();
+
+    IInfusionRegistry infusionRegistry();
 }

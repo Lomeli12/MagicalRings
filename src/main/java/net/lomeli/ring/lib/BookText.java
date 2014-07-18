@@ -29,10 +29,14 @@ public class BookText {
     public static final String INFUSE = BASE + "infuseConstruct";
     public static final String INFUSE2 = BASE + "infuseConstruct2";
     public static final String INFUSE_INFO = BASE + "infuseHowTo";
+    public static final String INFUSION_SIGIL = BASE + "infusionSigil";
     public static final String MANA = BASE + "mp";
     public static final String MANA2 = BASE + "mp2";
     public static final String MANA_FLOWER = BASE + "manaflower";
     public static final String MANA_POTION = BASE + "manaPotion";
+    public static final String MANA_STAR = BASE + "manaStar";
+    public static final String MATERIAL_BOOK = BASE + "materialBook";
+    public static final String SPELL_BOOK = BASE + "spellBook";
     //Baubles
     public static final String BAUBLE_BASE = BASE + "baubles";
     public static final String BAUBLE_INTRO = BAUBLE_BASE + "Intro";
@@ -41,4 +45,5 @@ public class BookText {
     public static final String BAUBLE2 = BAUBLE_BASE + "2";
     public static final String INFO = BASE + "moreInfo";
     public static final String SHAPELESS = BASE + "shapeless";
+    public static final String MANA_COST = BASE + "manaCost";
 }

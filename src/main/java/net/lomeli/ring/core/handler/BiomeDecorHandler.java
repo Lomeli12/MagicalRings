@@ -20,7 +20,7 @@ public class BiomeDecorHandler {
         BiomeGenBase biome = event.world.getBiomeGenForCoords(event.chunkX, event.chunkZ);
         if (biome != null && isValidBiomeType(biome)) {
             if ((event.getResult() == Event.Result.ALLOW || event.getResult() == Event.Result.DEFAULT) && event.type == DecorateBiomeEvent.Decorate.EventType.FLOWERS) {
-                for(int i = 0; i < ModLibs.manaFlowerQuantity; i++) {
+                for (int i = 0; i < ModLibs.manaFlowerQuantity; i++) {
                     int x = event.chunkX + event.rand.nextInt(16) + 8;
                     int z = event.chunkZ + event.rand.nextInt(16) + 8;
                     int y = event.world.getTopSolidOrLiquidBlock(x, z);
@@ -30,7 +30,7 @@ public class BiomeDecorHandler {
                         int y1 = y + event.rand.nextInt(4) - event.rand.nextInt(4);
                         int z1 = z + event.rand.nextInt(8) - event.rand.nextInt(8);
 
-                        if(event.world.isAirBlock(x1, y1, z1) && (!event.world.provider.hasNoSky || y1 < 127) && ModBlocks.manaFlower.canBlockStay(event.world, x1, y1, z1))
+                        if (event.world.isAirBlock(x1, y1, z1) && (!event.world.provider.hasNoSky || y1 < 127) && ModBlocks.manaFlower.canBlockStay(event.world, x1, y1, z1))
                             event.world.setBlock(x1, y1, z1, ModBlocks.manaFlower, event.rand.nextInt(3), 2);
                     }
                 }

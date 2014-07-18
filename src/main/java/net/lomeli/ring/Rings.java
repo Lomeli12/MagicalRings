@@ -21,8 +21,8 @@ import net.lomeli.ring.network.PacketHandler;
 
 @Mod(modid = ModLibs.MOD_ID, name = ModLibs.MOD_NAME, version = ModLibs.VERSION, dependencies = "after:Baubles", guiFactory = ModLibs.CONFIG_FACTORY)
 public class Rings {
-    public static ConfigurationHandler configHandler;
     public static final CreativeTabs modTab = new CreativeRing(ModLibs.MOD_ID.toLowerCase() + ".tab");
+    public static ConfigurationHandler configHandler;
     @Mod.Instance(ModLibs.MOD_ID)
     public static Rings instance;
     @SidedProxy(clientSide = ModLibs.PROXY_CLIENT, serverSide = ModLibs.PROXY_SERVER)

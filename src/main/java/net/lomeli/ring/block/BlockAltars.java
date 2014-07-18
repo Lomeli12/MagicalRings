@@ -28,6 +28,7 @@ import net.lomeli.ring.block.tile.TileItemAltar;
 import net.lomeli.ring.core.helper.SimpleUtil;
 import net.lomeli.ring.item.ItemMagicRing;
 import net.lomeli.ring.item.ItemSpellParchment;
+import net.lomeli.ring.item.ModItems;
 import net.lomeli.ring.lib.ModLibs;
 
 public class BlockAltars extends BlockRings implements ITileEntityProvider, IBookEntry {
@@ -80,10 +81,17 @@ public class BlockAltars extends BlockRings implements ITileEntityProvider, IBoo
                         if (tile instanceof TileAltar && tileStack != null) {
                             if (isRing(tileStack)) {
                                 String id = SimpleUtil.getSpellIdFromTag(stack.getTagCompound());
-                                if (id != null) {
+                                if (id != null && !((TileAltar) tile).isInfusing()) {
                                     ((TileAltar) tile).startInfusion(player, id);
                                     return true;
                                 }
+                            }
+                        }
+                    } else if (stack.getItem() == ModItems.sigil) {
+                        if (tile instanceof TileAltar && tileStack != null) {
+                            if (!((TileAltar) tile).isInfusing()) {
+                                ((TileAltar) tile).startInfusion(player, null);
+                                return true;
                             }
                         }
                     }

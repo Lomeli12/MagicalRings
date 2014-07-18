@@ -26,7 +26,7 @@ public interface IManaHandler {
      */
     public void addPlayerSession(EntityPlayer player, int mana, int max);
 
-    public void addPlayerSession(IPlayerSession playerSession, int dimensionID);
+    public void addPlayerSession(String uuid, IPlayerSession playerSession, int dimensionID);
 
     /**
      * Gets the player's session

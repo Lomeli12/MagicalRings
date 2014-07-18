@@ -17,8 +17,8 @@ import net.lomeli.ring.Rings;
 import net.lomeli.ring.api.Page;
 import net.lomeli.ring.api.interfaces.IBookEntry;
 import net.lomeli.ring.block.tile.TileRingForge;
+import net.lomeli.ring.client.gui.GuiRingBook;
 import net.lomeli.ring.client.gui.GuiRingForge;
-import net.lomeli.ring.client.gui.GuiSpellBook;
 import net.lomeli.ring.client.page.PageUtil;
 import net.lomeli.ring.core.helper.SimpleUtil;
 import net.lomeli.ring.inventory.ContainerRingForge;
@@ -47,7 +47,7 @@ public class GuiHandler implements IGuiHandler {
         } else if (ID == ModLibs.BOOK_GUI) {
             ItemStack stack = player.getCurrentEquippedItem();
             if (stack != null) {
-                GuiSpellBook bookGui = new GuiSpellBook();
+                GuiRingBook bookGui = new GuiRingBook();
                 int pageNum = 0;
                 Block bl = world.getBlock(x, y, z);
                 Entity entity = SimpleUtil.getEntityPointedAt(world, player, 0.5d, 10d, true);
@@ -72,7 +72,7 @@ public class GuiHandler implements IGuiHandler {
                                 } else if (item.getItem() instanceof IBookEntry) {
                                     String key = ((IBookEntry) item.getItem()).getBookPage(item.getItemDamage());
                                     if (key != null)
-                                    pageNum = getPageByID(key, bookGui);
+                                        pageNum = getPageByID(key, bookGui);
                                 }
                             }
                         }
@@ -96,7 +96,7 @@ public class GuiHandler implements IGuiHandler {
         return null;
     }
 
-    private int getPageByID(String id, GuiSpellBook gui) {
+    private int getPageByID(String id, GuiRingBook gui) {
         for (int i = 0; i < gui.avaliablePages.size(); i++) {
             Page page = gui.avaliablePages.get(i);
             if (page != null && page.pageID() != null) {

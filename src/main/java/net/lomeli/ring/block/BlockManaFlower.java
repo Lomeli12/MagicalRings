@@ -119,7 +119,7 @@ public class BlockManaFlower extends BlockRings implements IGrowable, IPlantable
         if (canBlockStay(world, x, y, z)) {
             int meta = world.getBlockMetadata(x, y, z);
             if (meta < 3 && world.canBlockSeeTheSky(x, y + 1, z)) {
-                if (rand.nextInt(5) == 0) {
+                if (rand.nextInt(10) == 0) {
                     world.setBlockMetadataWithNotify(x, y, z, meta + 1, 2);
                     onNeighborBlockChange(world, x, y, z, this);
                 }
@@ -162,7 +162,7 @@ public class BlockManaFlower extends BlockRings implements IGrowable, IPlantable
 
     @Override
     public Block getPlant(IBlockAccess world, int x, int y, int z) {
-        return this;
+        return ModBlocks.manaFlower;
     }
 
     @Override

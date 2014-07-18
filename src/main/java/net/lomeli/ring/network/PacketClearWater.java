@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 
 import net.minecraft.entity.player.EntityPlayer;
 
+import net.lomeli.ring.Rings;
 import net.lomeli.ring.client.handler.RenderHandler;
 
 public class PacketClearWater implements IPacket {
@@ -28,7 +29,7 @@ public class PacketClearWater implements IPacket {
 
     @Override
     public void readClient(EntityPlayer player) {
-        RenderHandler.clearFog = this.clear;
+        Rings.proxy.renderHandler.clearFog = this.clear;
     }
 
     @Override

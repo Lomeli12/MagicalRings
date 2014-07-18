@@ -61,7 +61,7 @@ public class AngelKiss implements ISpell {
 
     @Override
     public int cost() {
-        return 50;
+        return 20;
     }
 
     @Override

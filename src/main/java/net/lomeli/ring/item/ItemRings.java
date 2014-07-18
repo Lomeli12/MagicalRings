@@ -2,6 +2,7 @@ package net.lomeli.ring.item;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 
 import cpw.mods.fml.relauncher.Side;
@@ -13,12 +14,24 @@ import net.lomeli.ring.lib.ModLibs;
 public class ItemRings extends Item {
     protected String itemTexture;
     protected IIcon blankIcon;
+    private boolean hasEffect;
 
     public ItemRings(String texture) {
+        this(texture, false);
+    }
+
+    public ItemRings(String texture, boolean hasEffect) {
         super();
         this.setCreativeTab(Rings.modTab);
         this.setTextureName(ModLibs.MOD_ID.toLowerCase() + ":" + texture);
         this.itemTexture = texture;
+        this.hasEffect = hasEffect;
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public boolean hasEffect(ItemStack par1ItemStack, int pass) {
+        return hasEffect ? hasEffect : super.hasEffect(par1ItemStack, pass);
     }
 
     @Override

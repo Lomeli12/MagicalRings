@@ -12,17 +12,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
 
-import net.minecraftforge.oredict.OreDictionary;
-
 import net.lomeli.ring.Rings;
 import net.lomeli.ring.api.interfaces.IMaterialRegistry;
+import net.lomeli.ring.core.helper.SimpleUtil;
 import net.lomeli.ring.item.ModItems;
 import net.lomeli.ring.lib.ModLibs;
 
 public class RingMaterialRegistry implements IMaterialRegistry {
     public LinkedHashMap<Object, Integer> validMaterial = new LinkedHashMap<Object, Integer>();
-    private LinkedHashMap<Object, Integer> materialBoost = new LinkedHashMap<Object, Integer>();
     public LinkedHashMap<Object, Integer> gemMaterial = new LinkedHashMap<Object, Integer>();
+    private LinkedHashMap<Object, Integer> materialBoost = new LinkedHashMap<Object, Integer>();
     private LinkedHashMap<Object, Integer> gemBoost = new LinkedHashMap<Object, Integer>();
 
     public RingMaterialRegistry() {
@@ -187,10 +186,8 @@ public class RingMaterialRegistry implements IMaterialRegistry {
                             return set.getValue();
                     }
                     if (obj instanceof String) {
-                        for (ItemStack st : OreDictionary.getOres((String) obj)) {
-                            if ((st.getItem() == stack.getItem()) && (st.getItemDamage() == stack.getItemDamage()))
-                                return set.getValue();
-                        }
+                        if (SimpleUtil.isStackRegisteredAsOreDic(stack, (String) obj))
+                            return set.getValue();
                     }
                 }
             }
@@ -210,10 +207,8 @@ public class RingMaterialRegistry implements IMaterialRegistry {
                             return set.getValue();
                     }
                     if (obj instanceof String) {
-                        for (ItemStack st : OreDictionary.getOres((String) obj)) {
-                            if ((st.getItem() == stack.getItem()) && (st.getItemDamage() == stack.getItemDamage()))
-                                return set.getValue();
-                        }
+                        if (SimpleUtil.isStackRegisteredAsOreDic(stack, (String) obj))
+                            return set.getValue();
                     }
                 }
             }
@@ -231,11 +226,9 @@ public class RingMaterialRegistry implements IMaterialRegistry {
                     match = (st.getItem() == stack.getItem()) && (st.getItemDamage() == stack.getItemDamage());
                 }
                 if (obj instanceof String) {
-                    for (ItemStack st : OreDictionary.getOres((String) obj)) {
-                        if ((st.getItem() == stack.getItem()) && (st.getItemDamage() == stack.getItemDamage())) {
-                            match = true;
-                            break;
-                        }
+                    if (SimpleUtil.isStackRegisteredAsOreDic(stack, (String) obj)) {
+                        match = true;
+                        break;
                     }
                 }
                 if (match)
@@ -259,11 +252,9 @@ public class RingMaterialRegistry implements IMaterialRegistry {
                     }
                 }
                 if (obj instanceof String) {
-                    for (ItemStack st : OreDictionary.getOres((String) obj)) {
-                        if ((st.getItem() == stack.getItem()) && (st.getItemDamage() == stack.getItemDamage())) {
-                            match = true;
-                            break materialLoop;
-                        }
+                    if (SimpleUtil.isStackRegisteredAsOreDic(stack, (String) obj)) {
+                        match = true;
+                        break materialLoop;
                     }
                 }
             }
@@ -283,10 +274,8 @@ public class RingMaterialRegistry implements IMaterialRegistry {
                             return set.getValue();
                     }
                     if (obj instanceof String) {
-                        for (ItemStack st : OreDictionary.getOres((String) obj)) {
-                            if ((st.getItem() == stack.getItem()) && (st.getItemDamage() == stack.getItemDamage()))
-                                return set.getValue();
-                        }
+                        if (SimpleUtil.isStackRegisteredAsOreDic(stack, (String) obj))
+                            return set.getValue();
                     }
                 }
             }
@@ -306,10 +295,8 @@ public class RingMaterialRegistry implements IMaterialRegistry {
                             return set.getValue();
                     }
                     if (obj instanceof String) {
-                        for (ItemStack st : OreDictionary.getOres((String) obj)) {
-                            if ((st.getItem() == stack.getItem()) && (st.getItemDamage() == stack.getItemDamage()))
-                                return set.getValue();
-                        }
+                        if (SimpleUtil.isStackRegisteredAsOreDic(stack, (String) obj))
+                            return set.getValue();
                     }
                 }
             }

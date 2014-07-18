@@ -6,10 +6,10 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
 import net.lomeli.ring.Rings;
-import net.lomeli.ring.core.helper.LogHelper;
-import net.lomeli.ring.lib.ModLibs;
 import net.lomeli.ring.core.handler.WorldGenHandler.ChunkCoord;
 import net.lomeli.ring.core.handler.WorldGenHandler.GeneratorInfo;
+import net.lomeli.ring.core.helper.LogHelper;
+import net.lomeli.ring.lib.ModLibs;
 
 public class TickHandlerCore {
 

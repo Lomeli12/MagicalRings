@@ -1,5 +1,8 @@
 package net.lomeli.ring.magic.spells;
 
+import java.awt.Color;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -7,9 +10,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import net.lomeli.ring.Rings;
 import net.lomeli.ring.api.interfaces.IPlayerSession;
 import net.lomeli.ring.api.interfaces.ISpell;
+import net.lomeli.ring.client.entity.EntityManaFX;
 import net.lomeli.ring.lib.ModLibs;
 import net.lomeli.ring.network.PacketAllowFlying;
 
@@ -58,7 +65,7 @@ public class SwiftWind implements ISpell {
                         if (player.capabilities.allowFlying == false)
                             player.capabilities.allowFlying = true;
 
-                        if (++tick >= 10) {
+                        if (++tick >= 11) {
                             if (player.capabilities.isFlying)
                                 session.adjustMana(-cost(), false);
                             else if (player.fallDistance >= 4F)
@@ -71,6 +78,10 @@ public class SwiftWind implements ISpell {
                         if (player.capabilities.isFlying == true)
                             player.capabilities.isFlying = false;
                     }
+
+                    if (world.isRemote && player.capabilities.isFlying && (player.motionX != 0 || player.motionZ != 0 || player.motionY != 0))
+                        spawnParticle(world, player, player.posX, player.posY, player.posZ);
+
                     if (canFlyNow != player.capabilities.allowFlying)
                         Rings.pktHandler.sendToServer(new PacketAllowFlying(player, player.capabilities.allowFlying));
                 }
@@ -91,5 +102,15 @@ public class SwiftWind implements ISpell {
     @Override
     public String getSpellDescription() {
         return ModLibs.WING + "Desc";
+    }
+
+    public void spawnParticle(World world, EntityLivingBase entity, double x, double y, double z) {
+        Minecraft mc = Minecraft.getMinecraft();
+        int rgb = Color.CYAN.getRGB();
+        float r = (rgb >> 16 & 255) / 255.0F;
+        float g = (rgb >> 8 & 255) / 255.0F;
+        float b = (rgb & 255) / 255.0F;
+        boolean color = world.rand.nextBoolean();
+        mc.effectRenderer.addEffect(new EntityManaFX(world, x - 0.5 + world.rand.nextFloat(), y - (entity.getEyeHeight()* 10), z - 0.5 + world.rand.nextFloat(), 0.325f, color ? r : 1f, color ? g : 1f, color ? b : 1f, 0.75f, 4));
     }
 }

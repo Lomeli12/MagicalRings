@@ -80,7 +80,7 @@ public class Harvest implements ISpell {
                             Block blk = world.getBlock(blkX, blkY, blkZ);
                             if (blk != null && !world.isAirBlock(blkX, blkY, blkZ)) {
                                 if (blk instanceof IGrowable) {
-                                    if (((IGrowable)blk).func_149851_a(world, blkX, blkY, blkZ, world.isRemote)) {
+                                    if (((IGrowable) blk).func_149851_a(world, blkX, blkY, blkZ, world.isRemote)) {
                                         if (!world.isRemote)
                                             blk.updateTick(world, blkX, blkY, blkZ, world.rand);
                                         session.adjustMana(-cost(), false);

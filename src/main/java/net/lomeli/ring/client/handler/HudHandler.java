@@ -102,8 +102,8 @@ public class HudHandler {
         int x = res.getScaledWidth() / 2;
         int y = res.getScaledHeight() / 2;
 
-        mc.fontRenderer.drawStringWithShadow(info, x + 20, y + 6, color);
-        mc.fontRenderer.drawStringWithShadow(StatCollector.translateToLocal(BookText.INFO), x + 20, y + 18, color);
+        mc.fontRenderer.drawStringWithShadow(info, x + 23, y + 6, color);
+        mc.fontRenderer.drawStringWithShadow(StatCollector.translateToLocal(BookText.INFO), x + 23, y + 18, color);
 
         itemRender.renderItemIntoGUI(mc.fontRenderer, mc.renderEngine, new ItemStack(ModItems.book, 1, 0), x + 4, y + 2);
 

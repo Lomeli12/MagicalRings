@@ -15,9 +15,10 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import net.lomeli.ring.Rings;
+import net.lomeli.ring.api.interfaces.IBookEntry;
 import net.lomeli.ring.lib.ModLibs;
 
-public class ItemSpellBook extends ItemRings {
+public class ItemSpellBook extends ItemRings implements IBookEntry {
     @SideOnly(Side.CLIENT)
     private IIcon[] iconArray;
 
@@ -87,4 +88,13 @@ public class ItemSpellBook extends ItemRings {
         return super.onItemUse(stack, player, world, x, y, z, side, hitX, hitY, hitZ);
     }
 
+    @Override
+    public String getBookPage(int metadata) {
+        return ModLibs.MOD_ID.toLowerCase() + "." + (metadata == 0 ? "spellBook" : "materialBook");
+    }
+
+    @Override
+    public int getData() {
+        return 0;
+    }
 }

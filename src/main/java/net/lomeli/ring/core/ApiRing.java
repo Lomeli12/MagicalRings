@@ -32,4 +32,9 @@ public class ApiRing implements IRingAPI {
     public IManaHandler manaHandler() {
         return Rings.proxy.manaHandler;
     }
+
+    @Override
+    public IInfusionRegistry infusionRegistry() {
+        return Rings.proxy.infusionRegistry;
+    }
 }

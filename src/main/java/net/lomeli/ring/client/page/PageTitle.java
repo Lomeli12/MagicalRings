@@ -5,20 +5,20 @@ import java.awt.Color;
 import net.minecraft.util.StatCollector;
 
 import net.lomeli.ring.api.Page;
-import net.lomeli.ring.client.gui.GuiSpellBook;
+import net.lomeli.ring.api.interfaces.IBookGui;
 
 public class PageTitle extends Page {
 
     private String title;
     private int color;
 
-    public PageTitle(GuiSpellBook screen, String title) {
+    public PageTitle(IBookGui screen, String title) {
         super(screen);
         this.title = title;
         this.color = Color.CYAN.getRGB();
     }
 
-    public PageTitle(GuiSpellBook screen, String title, int color) {
+    public PageTitle(IBookGui screen, String title, int color) {
         this(screen, title);
         this.color = color;
     }

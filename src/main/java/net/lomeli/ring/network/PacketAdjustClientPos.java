@@ -4,7 +4,6 @@ import io.netty.buffer.ByteBuf;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-import net.lomeli.ring.Rings;
 import net.lomeli.ring.lib.ModLibs;
 
 public class PacketAdjustClientPos implements IPacket {

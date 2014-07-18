@@ -1,8 +1,8 @@
 package net.lomeli.ring.magic;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.WorldSavedData;
@@ -11,18 +11,18 @@ import net.lomeli.ring.api.interfaces.IPlayerSession;
 import net.lomeli.ring.lib.ModLibs;
 
 public class RingSaveData extends WorldSavedData {
-    private List<IPlayerSession> sessions;
+    private HashMap<String, IPlayerSession> sessions;
 
     public RingSaveData(String map) {
         super(map);
-        sessions = new ArrayList<IPlayerSession>();
+        sessions = new HashMap<String, IPlayerSession>();
     }
 
-    public List<IPlayerSession> getSavaData() {
+    public HashMap<String, IPlayerSession> getSavaData() {
         return sessions;
     }
 
-    public void setSaveData(List<IPlayerSession> list) {
+    public void setSaveData(HashMap<String, IPlayerSession> list) {
         sessions = list;
         markDirty();
     }
@@ -37,7 +37,7 @@ public class RingSaveData extends WorldSavedData {
                 String id = s.split("_")[1];
                 int mana = tag.getInteger(ModLibs.PLAYER_MP);
                 int max = tag.getInteger(ModLibs.PLAYER_MAX);
-                sessions.add(new PlayerSession(id, mana, max));
+                sessions.put(id, new PlayerSession(id, mana, max));
             }
         }
     }
@@ -45,12 +45,14 @@ public class RingSaveData extends WorldSavedData {
     @Override
     public void writeToNBT(NBTTagCompound tagCompound) {
         if (sessions != null) {
-            for (IPlayerSession session : sessions) {
-                NBTTagCompound tag = new NBTTagCompound();
-                //tag.setString("UUID", session.getPlayerID());
-                tag.setInteger(ModLibs.PLAYER_MP, session.getMana());
-                tag.setInteger(ModLibs.PLAYER_MAX, session.getMaxMana());
-                tagCompound.setTag(ModLibs.MOD_ID.toLowerCase() + "_" + session.getPlayerID(), tag);
+            for (Map.Entry<String, IPlayerSession> session : sessions.entrySet()) {
+                IPlayerSession pSession = session.getValue();
+                if (pSession != null) {
+                    NBTTagCompound tag = new NBTTagCompound();
+                    tag.setInteger(ModLibs.PLAYER_MP, pSession.getMana());
+                    tag.setInteger(ModLibs.PLAYER_MAX, pSession.getMaxMana());
+                    tagCompound.setTag(ModLibs.MOD_ID.toLowerCase() + "_" + session.getKey(), tag);
+                }
             }
         }
     }

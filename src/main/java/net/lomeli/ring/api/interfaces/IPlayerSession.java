@@ -1,7 +1,5 @@
 package net.lomeli.ring.api.interfaces;
 
-import net.minecraft.nbt.NBTTagCompound;
-
 public interface IPlayerSession {
     public int getMana();
 
@@ -28,17 +26,18 @@ public interface IPlayerSession {
      */
     public int adjustMana(int j, boolean simulated);
 
+    /**
+     * Basically the same as adjustMana, but integer will become negative
+     * @param j
+     * @param simulated
+     * @return
+     */
+    public int useMana(int j, boolean simulated);
+
+    /**
+     * Check if player has enough mana
+     * @param i
+     * @return
+     */
     public boolean hasEnoughMana(int i);
-
-    /**
-     * @param tagCompound Unused ATM
-     */
-    @Deprecated
-    public void writeToNBT(NBTTagCompound tagCompound);
-
-    /**
-     * @param tagCompound Unused ATM
-     */
-    @Deprecated
-    public void readFromNBT(NBTTagCompound tagCompound);
 }

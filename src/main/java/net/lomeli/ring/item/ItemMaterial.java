@@ -22,6 +22,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+import net.lomeli.ring.Rings;
+import net.lomeli.ring.api.interfaces.IPlayerSession;
 import net.lomeli.ring.block.ModBlocks;
 import net.lomeli.ring.core.helper.SimpleUtil;
 import net.lomeli.ring.lib.ModLibs;
@@ -51,6 +53,23 @@ public class ItemMaterial extends ItemRings implements IPlantable {
                     break;
             }
         }
+    }
+
+    @Override
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+        if (stack.getItemDamage() == 6) {
+            if (Rings.proxy.manaHandler.playerHasSession(player)) {
+                IPlayerSession session = Rings.proxy.manaHandler.getPlayerSession(player);
+                if (session != null && session.getMana() < session.getMaxMana()) {
+                    session.adjustMana(session.getMaxMana() - session.getMana(), false);
+                    if (!world.isRemote)
+                        Rings.proxy.manaHandler.updatePlayerSession(session, world.provider.dimensionId);
+                    if (!player.capabilities.isCreativeMode)
+                        stack.stackSize--;
+                }
+            }
+        }
+        return stack;
     }
 
     @Override
@@ -103,7 +122,7 @@ public class ItemMaterial extends ItemRings implements IPlantable {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister register) {
-        iconArray = new IIcon[6];
+        iconArray = new IIcon[7];
         for (int i = 0; i < iconArray.length; i++) {
             iconArray[i] = register.registerIcon(ModLibs.MOD_ID.toLowerCase() + ":materials/" + this.itemTexture + "_" + i);
         }

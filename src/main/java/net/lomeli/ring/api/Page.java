@@ -7,17 +7,16 @@ import java.util.List;
 import java.util.Random;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 
-import net.lomeli.ring.client.gui.GuiSpellBook;
+import net.lomeli.ring.api.interfaces.IBookGui;
 
 public abstract class Page {
     protected static RenderItem itemRenderer = new RenderItem();
     protected static Random rand = new Random();
-    public GuiScreen gui;
+    public IBookGui gui;
     protected Minecraft mc = Minecraft.getMinecraft();
     protected int drawX, drawY, wordWrap;
     protected String id;
@@ -25,7 +24,7 @@ public abstract class Page {
     public Page() {
     }
 
-    public Page(GuiScreen screen) {
+    public Page(IBookGui screen) {
         this.gui = screen;
     }
 
@@ -61,13 +60,13 @@ public abstract class Page {
         return this;
     }
 
-    public void setGui(GuiSpellBook screen) {
+    public void setGui(IBookGui screen) {
         this.gui = screen;
     }
 
     public void draw() {
-        this.drawX = (this.gui.width - 192) / 2 + 35;
-        this.drawY = (this.gui.height - 192) / 2 + 15;
+        this.drawX = (this.gui.getWidth() - 192) / 2 + 35;
+        this.drawY = (this.gui.getHeight() - 192) / 2 + 15;
         this.wordWrap = 192 - 75;
         GL11.glColor4f(1f, 1f, 1f, 1f);
     }

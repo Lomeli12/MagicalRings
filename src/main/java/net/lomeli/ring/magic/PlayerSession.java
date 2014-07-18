@@ -1,7 +1,6 @@
 package net.lomeli.ring.magic;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
 
 import net.lomeli.ring.api.interfaces.IPlayerSession;
 
@@ -16,7 +15,7 @@ public class PlayerSession implements IPlayerSession {
     }
 
     public PlayerSession(EntityPlayer player, int mana, int maxMana) {
-        this(player.getUniqueID().toString(), mana, maxMana);
+        this(player.getGameProfile().getId().toString(), mana, maxMana);
     }
 
     @Override
@@ -63,24 +62,12 @@ public class PlayerSession implements IPlayerSession {
     }
 
     @Override
+    public int useMana(int j, boolean simulated) {
+        return adjustMana(-j, simulated);
+    }
+
+    @Override
     public boolean hasEnoughMana(int i) {
         return mana > i;
-    }
-
-    @Override
-    public void writeToNBT(NBTTagCompound tagCompound) {
-        //NBTTagCompound manaTag = new NBTTagCompound();
-        //manaTag.setInteger(ModLibs.PLAYER_MP, mana);
-        //manaTag.setInteger(ModLibs.PLAYER_MAX, maxMana);
-        //tagCompound.setTag(ModLibs.PLAYER_DATA, manaTag);
-    }
-
-    @Override
-    public void readFromNBT(NBTTagCompound tagCompound) {
-        //NBTTagCompound manaTag = tagCompound.getCompoundTag(ModLibs.PLAYER_DATA);
-        //if (manaTag != null) {
-        //    mana = manaTag.getInteger(ModLibs.PLAYER_MP);
-        //    maxMana = manaTag.getInteger(ModLibs.PLAYER_MAX);
-        //}
     }
 }

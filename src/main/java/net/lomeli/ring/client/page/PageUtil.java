@@ -9,13 +9,12 @@ import net.lomeli.ring.Rings;
 import net.lomeli.ring.api.Page;
 import net.lomeli.ring.api.interfaces.IPageRegistry;
 import net.lomeli.ring.block.ModBlocks;
-import net.lomeli.ring.client.gui.GuiSpellBook;
+import net.lomeli.ring.client.gui.GuiRingBook;
 import net.lomeli.ring.item.ModItems;
 import net.lomeli.ring.lib.BookText;
 import net.lomeli.ring.lib.ModLibs;
 
 public class PageUtil implements IPageRegistry {
-    private static List<Page> addonPages = new ArrayList<Page>();
     public static int[][] stackorder = new int[][]{
             {0, 0},
             {1, 0},
@@ -26,6 +25,7 @@ public class PageUtil implements IPageRegistry {
             {2, 0},
             {2, 1},
             {2, 2}};
+    private static List<Page> addonPages = new ArrayList<Page>();
 
     public static void addPage(Page pg) {
         if (addonPages.contains(pg))
@@ -33,15 +33,17 @@ public class PageUtil implements IPageRegistry {
         addonPages.add(pg);
     }
 
-    public static void loadBaseBook(GuiSpellBook screen) {
+    public static void loadBaseBook(GuiRingBook screen) {
         screen.avaliablePages.clear();
         screen.avaliablePages.add(new PageTitle(screen, new ItemStack(ModItems.book).getDisplayName()));
         screen.avaliablePages.add(new PageText(screen, BookText.INTRO));
+        screen.avaliablePages.add(new PageRecipe(screen, new ItemStack(ModItems.book, 1, 0), BookText.SPELL_BOOK).setID(ModLibs.MOD_ID.toLowerCase() + ".spellBook"));
         screen.avaliablePages.add(new PageItem(screen, new ItemStack(ModItems.magicRing), BookText.RING).setID(ModLibs.MOD_ID.toLowerCase() + ".ring"));
         screen.avaliablePages.add(new PageItem(screen, new ItemStack(ModBlocks.ringForge), BookText.FORGE).setID(ModLibs.MOD_ID.toLowerCase() + ".ringForge"));
         screen.avaliablePages.add(new PageRecipe(screen, new ItemStack(ModBlocks.ringForge), BookText.FORGE2));
         screen.avaliablePages.add(new PageRecipe(screen, new ItemStack(ModItems.ironHammer)).setID(ModLibs.MOD_ID.toLowerCase() + ".hammer"));
         screen.avaliablePages.add(new PageRecipe(screen, new ItemStack(ModItems.diamondHammer)));
+        screen.avaliablePages.add(new PageRecipe(screen, new ItemStack(ModItems.book, 1, 1), BookText.MATERIAL_BOOK).setID(ModLibs.MOD_ID.toLowerCase() + ".materialBook"));
         screen.avaliablePages.add(new PageText(screen, BookText.ALTAR_INTRO, BookText.ALTAR));
         screen.avaliablePages.add(new PageImage(screen, "", BookText.ALTAR_INTRO, BookText.IMAGES, 0, 107, 115, 86));
         screen.avaliablePages.add(new PageItem(screen, new ItemStack(ModBlocks.altar), BookText.ALTAR2).setID(ModLibs.MOD_ID.toLowerCase() + ".infusionAltar"));
@@ -50,6 +52,7 @@ public class PageUtil implements IPageRegistry {
         screen.avaliablePages.add(new PageRecipe(screen, new ItemStack(ModBlocks.altar, 1, 1)));
         screen.avaliablePages.add(new PageInfusionSetup(screen));
         screen.avaliablePages.add(new PageText(screen, BookText.ALTAR_INTRO, BookText.INFUSE_INFO));
+        screen.avaliablePages.add(new PageRecipe(screen, new ItemStack(ModItems.sigil), BookText.INFUSION_SIGIL).setID(ModLibs.MOD_ID.toLowerCase() + ".sigil"));
         screen.avaliablePages.add(new PageItem(screen, new ItemStack(ModItems.spellParchment), BookText.SPELL).setID(ModLibs.MOD_ID.toLowerCase() + ".spellParchment"));
         screen.avaliablePages.add(new PageRecipe(screen, new ItemStack(ModItems.spellParchment), BookText.SPELL2));
         screen.avaliablePages.add(new PageText(screen, BookText.RING_USE));
@@ -59,7 +62,9 @@ public class PageUtil implements IPageRegistry {
         screen.avaliablePages.add(new PageText(screen, ModLibs.MANA, BookText.MANA));
         screen.avaliablePages.add(new PageItem(screen, new ItemStack(ModBlocks.manaFlower, 1, 3), BookText.MANA_FLOWER).setID(ModLibs.MOD_ID.toLowerCase() + ".manaFlower"));
         screen.avaliablePages.add(new PageRecipe(screen, new ItemStack(ModItems.food, 1, 3), BookText.MANA_POTION).setID(ModLibs.MOD_ID.toLowerCase() + ".manaPotion"));
-        screen.avaliablePages.add(new PageRecipe(screen, new ItemStack(ModItems.food, 1, 2), BookText.MANA2).setID(ModLibs.MOD_ID.toLowerCase() + ".mysteriousPotion"));
+        screen.avaliablePages.add(new PageInfusionRecipe(screen, new ItemStack(ModItems.food, 1, 3)));
+        screen.avaliablePages.add(new PageItem(screen, new ItemStack(ModItems.food, 1, 2), BookText.MANA2).setID(ModLibs.MOD_ID.toLowerCase() + ".mysteriousPotion"));
+        screen.avaliablePages.add(new PageInfusionRecipe(screen, new ItemStack(ModItems.food, 1, 2)));
         if (!addonPages.isEmpty()) {
             for (Page pg : addonPages) {
                 if (pg.gui == null)
@@ -69,7 +74,7 @@ public class PageUtil implements IPageRegistry {
         }
     }
 
-    public static void loadMaterialBook(GuiSpellBook gui) {
+    public static void loadMaterialBook(GuiRingBook gui) {
         gui.avaliablePages.clear();
         int goldColor = new Color(255, 175, 0).getRGB();
         gui.avaliablePages.add(new PageTitle(gui, new ItemStack(ModItems.book, 1, 1).getDisplayName(), goldColor));
@@ -80,6 +85,8 @@ public class PageUtil implements IPageRegistry {
         gui.avaliablePages.add(new PageRecipe(gui, new ItemStack(ModItems.materials, 1, 3), BookText.CHARGE_STONE, goldColor));
         gui.avaliablePages.add(new PageItem(gui, new ItemStack(ModItems.materials, 1, 4), BookText.TENTACLE, goldColor));
         gui.avaliablePages.add(new PageItem(gui, new ItemStack(ModItems.materials, 1, 5), BookText.MANA_BERRY, goldColor));
+        gui.avaliablePages.add(new PageItem(gui, new ItemStack(ModItems.materials, 1, 6), BookText.MANA_STAR, goldColor));
+        gui.avaliablePages.add(new PageInfusionRecipe(gui, new ItemStack(ModItems.materials, 1, 6), goldColor));
         gui.avaliablePages.add(new PageTitle(gui, BookText.RING_MATERIAL, goldColor));
         for (int i = 0; i < Rings.proxy.ringMaterials.validMaterial.size(); i++) {
             Object[] objects = new Object[5];

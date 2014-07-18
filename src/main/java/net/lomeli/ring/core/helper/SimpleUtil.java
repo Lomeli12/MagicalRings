@@ -10,17 +10,17 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+
+import net.minecraftforge.oredict.OreDictionary;
 
 import cpw.mods.fml.relauncher.ReflectionHelper;
 
 import net.lomeli.ring.Rings;
 import net.lomeli.ring.api.interfaces.ISpell;
 import net.lomeli.ring.lib.ModLibs;
-import net.lomeli.ring.magic.SpellRegistry;
 
 public class SimpleUtil {
     private static Random rand = new Random();
@@ -135,5 +135,24 @@ public class SimpleUtil {
 
     public static int randDist(int random) {
         return rand.nextInt(random) * (rand.nextBoolean() ? -1 : 1);
+    }
+
+    public static boolean isStackRegisteredAsOreDic(ItemStack stack, String oreDicName) {
+        if (stack != null && stack.getItem() != null) {
+            List<ItemStack> stackList = OreDictionary.getOres(oreDicName);
+            if (stackList != null && !stackList.isEmpty()) {
+                for (ItemStack item : stackList) {
+                    if (areStacksSame(item, stack))
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean areStacksSame(ItemStack item1, ItemStack item2) {
+        if (item1 != null && item1.getItem() != null && item2 != null && item2.getItem() != null)
+            return item1.getItem() == item2.getItem() && item1.getItemDamage() == item2.getItemDamage();
+        return false;
     }
 }

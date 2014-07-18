@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 import net.lomeli.ring.api.interfaces.IBookEntry;
 import net.lomeli.ring.lib.ModLibs;
 
-public class ItemHammer extends ItemRings implements IBookEntry{
+public class ItemHammer extends ItemRings implements IBookEntry {
 
     public ItemHammer(String texture, int damage) {
         super(texture);

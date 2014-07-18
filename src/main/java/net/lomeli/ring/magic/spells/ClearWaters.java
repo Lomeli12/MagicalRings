@@ -4,14 +4,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 
 import net.lomeli.ring.Rings;
 import net.lomeli.ring.api.interfaces.IPlayerSession;
 import net.lomeli.ring.api.interfaces.ISpell;
-import net.lomeli.ring.client.handler.RenderHandler;
 import net.lomeli.ring.lib.ModLibs;
 import net.lomeli.ring.network.PacketClearWater;
 
@@ -52,13 +49,12 @@ public class ClearWaters implements ISpell {
             if (session != null && player.isInWater()) {
                 if (session.hasEnoughMana(cost())) {
                     if (world.isRemote) {
-                        if (!RenderHandler.clearFog)
+                        if (!Rings.proxy.renderHandler.clearFog)
                             Rings.pktHandler.sendTo(new PacketClearWater(true), player);
                     }
                     if (++tick >= 40) {
                         session.adjustMana(-cost(), false);
                         tick = 0;
-
                     }
                 } else
                     Rings.pktHandler.sendTo(new PacketClearWater(false), player);

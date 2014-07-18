@@ -4,6 +4,7 @@ import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -16,6 +17,7 @@ import net.lomeli.ring.api.interfaces.IPlayerSession;
 import net.lomeli.ring.core.helper.SimpleUtil;
 import net.lomeli.ring.item.ItemHammer;
 import net.lomeli.ring.item.ItemMaterial;
+import net.lomeli.ring.item.ModItems;
 import net.lomeli.ring.lib.ModLibs;
 
 public class GameEventHandler {
@@ -31,7 +33,7 @@ public class GameEventHandler {
                     if (++this.tick >= ModLibs.RECHARGE_WAIT_TIME) {
                         if (!player.capabilities.isCreativeMode) {
                             if (player.getFoodStats().getFoodLevel() > 4)
-                                playerSession.adjustMana(((player.getFoodStats().getFoodLevel() - 3) / 5), false);
+                                playerSession.adjustMana(((player.getFoodStats().getFoodLevel() / 4)), false);
                         } else
                             playerSession.setMana(playerSession.getMaxMana());
                         Rings.proxy.manaHandler.updatePlayerSession(playerSession, player.getEntityWorld().provider.dimensionId);
@@ -47,6 +49,7 @@ public class GameEventHandler {
         IInventory craftMatrix = event.craftMatrix;
         ItemStack output = event.crafting;
         EntityPlayer player = event.player;
+        NBTTagCompound tag = null;
         for (int i = 0; i < craftMatrix.getSizeInventory(); i++) {
             ItemStack itemstack = craftMatrix.getStackInSlot(i);
             if (itemstack != null && itemstack.getItem() != null) {
@@ -59,6 +62,9 @@ public class GameEventHandler {
                     if (damaged != null)
                         craftMatrix.setInventorySlotContents(i, damaged);
                     break;
+                } else if (itemstack.getItem() == ModItems.spellParchment) {
+                    if (itemstack.hasTagCompound())
+                        tag = itemstack.stackTagCompound;
                 }
             }
         }
@@ -68,6 +74,14 @@ public class GameEventHandler {
                     if (!player.getEntityWorld().isRemote && player.getEntityWorld().rand.nextInt(1000) < 75)
                         player.getEntityWorld().spawnEntityInWorld(new EntityLightningBolt(player.getEntityWorld(), player.posX + SimpleUtil.randDist(3), player.posY + SimpleUtil.randDist(3), player.posZ + SimpleUtil.randDist(3)));
                 }
+            } else if (output.getItem() == ModItems.spellParchment) {
+                if (tag != null) {
+                    String id = tag.getString(ModLibs.SPELL_ID);
+                    if (!event.crafting.hasTagCompound())
+                        event.crafting.stackTagCompound = new NBTTagCompound();
+                    event.crafting.getTagCompound().setString(ModLibs.SPELL_ID, id);
+                } else
+                    event.crafting.stackSize = 0;
             }
         }
     }

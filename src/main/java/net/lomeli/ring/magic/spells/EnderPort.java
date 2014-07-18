@@ -33,7 +33,7 @@ public class EnderPort implements ISpell {
     @Override
     public void onUse(World world, EntityPlayer player, IPlayerSession session, ItemStack stack, int boost, int cost) {
         if (session.hasEnoughMana(cost())) {
-            MovingObjectPosition mop = SimpleUtil.rayTrace(player, world, 43 + (boost * 2));
+            MovingObjectPosition mop = SimpleUtil.rayTrace(player, world, 70 + (boost * 2));
             if (mop != null) {
                 int oldX = MathHelper.floor_double(player.posX), oldY = MathHelper.floor_double(player.posY), oldZ = MathHelper.floor_double(player.posZ);
                 int newX = MathHelper.floor_double(player.posX), newY = MathHelper.floor_double(player.posY), newZ = MathHelper.floor_double(player.posZ);
@@ -95,7 +95,7 @@ public class EnderPort implements ISpell {
 
     @Override
     public int cost() {
-        return 60;
+        return 30;
     }
 
     protected boolean teleportRandomly(EntityLivingBase entity) {
@@ -120,13 +120,13 @@ public class EnderPort implements ISpell {
                 if (entityplayermp.playerNetServerHandler.func_147362_b().isChannelOpen()) {
                     if (entityplayermp.isRiding())
                         entityplayermp.mountEntity(null);
-                    entityplayermp.setPositionAndUpdate(d0, d1, d2);
+                    entityplayermp.setPositionAndUpdate(d0, d1 + 1, d2);
                     entityplayermp.fallDistance = 0f;
                 }
             } else {
                 if (entity.isRiding())
                     entity.mountEntity(null);
-                entity.setPositionAndUpdate(d0, d1, d2);
+                entity.setPositionAndUpdate(d0, d1 + 1, d2);
                 entity.fallDistance = 0f;
             }
             if (entity.posX == d0 && entity.posY == d1 && entity.posZ == d2)

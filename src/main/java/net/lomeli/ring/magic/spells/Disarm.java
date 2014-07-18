@@ -69,7 +69,7 @@ public class Disarm implements ISpell {
 
     @Override
     public int cost() {
-        return 50;
+        return 30;
     }
 
     @Override

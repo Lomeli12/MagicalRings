@@ -39,9 +39,16 @@ public class CommandRing extends CommandBase {
                     EntityPlayer player = cSender.getEntityWorld().getPlayerEntityByName(cSender.getCommandSenderName());
                     if (player != null)
                         Rings.pktHandler.sendTo(new PacketAdjustClientPos(x, y), player);
-                } else {
+                } else
                     this.sendMessage(cSender, "\u00a7c/rings manaDisplay [xPosition] [yPosition]");
-                }
+            } else if (command.equalsIgnoreCase("enableManaHUD")) {
+                Rings.proxy.tickClient.display = !Rings.proxy.tickClient.display;
+                String message;
+                if (Rings.proxy.tickClient.display)
+                    message = ModLibs.COMMAND_DISPLAY_ON;
+                else
+                    message = ModLibs.COMMAND_DISPLAY_OFF;
+                this.sendMessage(cSender, StatCollector.translateToLocal(message));
             } else if (command.equalsIgnoreCase("pig")) {
                 EntityPig pig = new EntityPig(cSender.getEntityWorld());
                 pig.posX = cSender.getPlayerCoordinates().posX;
@@ -50,8 +57,9 @@ public class CommandRing extends CommandBase {
                 cSender.getEntityWorld().spawnEntityInWorld(pig);
             } else if (command.equalsIgnoreCase("help") || command.equalsIgnoreCase("?")) {
                 this.sendMessage(cSender, "/rings manaDisplay [xPosition] [yPosition] - " + StatCollector.translateToLocal(ModLibs.COMMAND_MANA_POS));
+                this.sendMessage(cSender, "/rings enableManaHUD - " + StatCollector.translateToLocal(ModLibs.COMMAND_DISPLAY_MANA));
             } else
-                this.sendMessage(cSender, StatCollector.translateToLocal(ModLibs.COMMAND_UNKNOWN) + " " + StatCollector.translateToLocal(ModLibs.COMMAND_HELP));
+                this.sendMessage(cSender, StatCollector.translateToLocal("magiaclrings.command.unknown") + " " + StatCollector.translateToLocal(ModLibs.COMMAND_HELP));
         } else
             this.sendMessage(cSender, StatCollector.translateToLocal(ModLibs.COMMAND_HELP));
     }

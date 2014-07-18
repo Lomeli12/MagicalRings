@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
-import java.util.logging.Level;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
@@ -20,7 +19,6 @@ import net.minecraftforge.event.world.ChunkDataEvent;
 import cpw.mods.fml.common.IWorldGenerator;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-import net.lomeli.ring.Rings;
 import net.lomeli.ring.block.ModBlocks;
 import net.lomeli.ring.core.helper.LogHelper;
 import net.lomeli.ring.lib.ModLibs;

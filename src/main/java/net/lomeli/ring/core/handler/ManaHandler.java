@@ -1,10 +1,7 @@
 package net.lomeli.ring.core.handler;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
@@ -26,26 +23,24 @@ import net.lomeli.ring.magic.PlayerSession;
 import net.lomeli.ring.magic.RingSaveData;
 
 public class ManaHandler implements IManaHandler {
-    private HashMap<Integer, List<IPlayerSession>> dimensionSession;
+    private HashMap<Integer, HashMap<String, IPlayerSession>> dimensionSession;
     private RingSaveData saveData;
 
     public ManaHandler() {
-        dimensionSession = new HashMap<Integer, List<IPlayerSession>>();
+        dimensionSession = new HashMap<Integer, HashMap<String, IPlayerSession>>();
     }
 
     public IPlayerSession getPlayerData(EntityPlayer player) {
         if (!saveData.getSavaData().isEmpty()) {
-            for (IPlayerSession session : saveData.getSavaData()) {
-                if (session != null && session.getPlayerID().equalsIgnoreCase(player.getUniqueID().toString()))
-                    return session;
-            }
+            if (saveData.getSavaData().containsKey(player.getGameProfile().getId().toString()))
+                return saveData.getSavaData().get(player.getGameProfile().getId().toString());
         }
         return null;
     }
 
     public void beginNewSession(int dimensionID) {
         saveWorldData();
-        List<IPlayerSession> sessionList = null;
+        HashMap<String, IPlayerSession> sessionList = null;
         if (dimensionSession.containsKey(dimensionID))
             sessionList = dimensionSession.get(dimensionID);
         if (sessionList != null) {
@@ -64,10 +59,10 @@ public class ManaHandler implements IManaHandler {
             IPlayerSession session = getPlayerData(player);
             if (session != null) {
                 int id = player.getEntityWorld().provider.dimensionId;
-                List<IPlayerSession> sessionList = new ArrayList<IPlayerSession>();
+                HashMap<String, IPlayerSession> sessionList = new HashMap<String, IPlayerSession>();
                 if (dimensionSession.containsKey(id))
                     sessionList = dimensionSession.get(id);
-                sessionList.add(session);
+                sessionList.put(player.getGameProfile().getId().toString(), session);
                 dimensionSession.put(id, sessionList);
             }
         }
@@ -77,19 +72,15 @@ public class ManaHandler implements IManaHandler {
     public void unloadPlayerSession(EntityPlayer player) {
         if (player != null) {
             int id = player.getEntityWorld().provider.dimensionId;
-            List<IPlayerSession> sessionList = null;
+            HashMap<String, IPlayerSession> sessionList = null;
             if (dimensionSession.containsKey(id))
                 sessionList = dimensionSession.get(id);
             if (sessionList != null) {
-                for (int i = 0; i < sessionList.size(); i++) {
-                    IPlayerSession session = sessionList.get(i);
-                    if (session != null && session.getPlayerID().equalsIgnoreCase(player.getUniqueID().toString())) {
-                        LogHelper.info("Saving session data for " + player.getDisplayName());
-                        saveWorldData();
-                        sessionList.remove(i);
-                        LogHelper.info("Removed " + player.getDisplayName() + " from session!");
-                        return;
-                    }
+                if (sessionList.containsKey(player.getGameProfile().getId().toString())) {
+                    LogHelper.info("Saving session data for " + player.getDisplayName());
+                    saveWorldData();
+                    sessionList.remove(player.getGameProfile().getId().toString());
+                    LogHelper.info("Removed " + player.getDisplayName() + " from session!");
                 }
                 dimensionSession.put(id, sessionList);
             }
@@ -98,10 +89,10 @@ public class ManaHandler implements IManaHandler {
 
     public void saveWorldData() {
         if (saveData != null) {
-            List<IPlayerSession> sessionList = new ArrayList<IPlayerSession>();
-            for (Map.Entry<Integer, List<IPlayerSession>> entry : dimensionSession.entrySet()) {
+            HashMap<String, IPlayerSession> sessionList = new HashMap<String, IPlayerSession>();
+            for (Map.Entry<Integer, HashMap<String, IPlayerSession>> entry : dimensionSession.entrySet()) {
                 if (!entry.getValue().isEmpty())
-                    sessionList.addAll(entry.getValue());
+                    sessionList.putAll(entry.getValue());
             }
             if (!sessionList.isEmpty())
                 saveData.setSaveData(sessionList);
@@ -112,16 +103,11 @@ public class ManaHandler implements IManaHandler {
     public boolean playerHasSession(EntityPlayer player) {
         if (player != null) {
             int id = player.getEntityWorld().provider.dimensionId;
-            List<IPlayerSession> sessionList = null;
+            HashMap<String, IPlayerSession> sessionList = null;
             if (dimensionSession.containsKey(id))
                 sessionList = dimensionSession.get(id);
-            if (sessionList != null) {
-                for (int i = 0; i < sessionList.size(); i++) {
-                    IPlayerSession session = sessionList.get(i);
-                    if (session != null && session.getPlayerID().equalsIgnoreCase(player.getUniqueID().toString()))
-                        return true;
-                }
-            }
+            if (sessionList != null)
+                return sessionList.containsKey(player.getGameProfile().getId().toString());
         }
         return false;
     }
@@ -129,21 +115,19 @@ public class ManaHandler implements IManaHandler {
     @Override
     public void addPlayerSession(EntityPlayer player, int mana, int max) {
         if (player != null)
-            addPlayerSession(new PlayerSession(player, mana, max), player.getEntityWorld().provider.dimensionId);
+            addPlayerSession(player.getGameProfile().getId().toString(), new PlayerSession(player, mana, max), player.getEntityWorld().provider.dimensionId);
     }
 
     @Override
-    public void addPlayerSession(IPlayerSession playerSession, int id) {
+    public void addPlayerSession(String uuid, IPlayerSession playerSession, int id) {
         if (playerSession != null) {
-            List<IPlayerSession> sessionList = new ArrayList<IPlayerSession>();
+            HashMap<String, IPlayerSession> sessionList = new HashMap<String, IPlayerSession>();
             if (dimensionSession.containsKey(id))
                 sessionList = dimensionSession.get(id);
             if (sessionList != null) {
-                for (IPlayerSession session : sessionList) {
-                    if (session != null && session.getPlayerID().equalsIgnoreCase(playerSession.getPlayerID()))
-                        return;
-                }
-                sessionList.add(playerSession);
+                if (sessionList.containsKey(uuid))
+                    return;
+                sessionList.put(uuid, playerSession);
                 dimensionSession.put(id, sessionList);
             }
         }
@@ -153,14 +137,12 @@ public class ManaHandler implements IManaHandler {
     public IPlayerSession getPlayerSession(EntityPlayer player) {
         if (player != null) {
             int id = player.getEntityWorld().provider.dimensionId;
-            List<IPlayerSession> sessionList = null;
+            HashMap<String, IPlayerSession> sessionList = null;
             if (dimensionSession.containsKey(id))
                 sessionList = dimensionSession.get(id);
             if (sessionList != null) {
-                for (IPlayerSession session : sessionList) {
-                    if (session != null && session.getPlayerID().equalsIgnoreCase(player.getUniqueID().toString()))
-                        return session;
-                }
+                if (sessionList.containsKey(player.getGameProfile().getId().toString()))
+                    return sessionList.get(player.getGameProfile().getId().toString());
             }
         }
         return null;
@@ -169,21 +151,18 @@ public class ManaHandler implements IManaHandler {
     @Override
     public void updatePlayerSession(IPlayerSession playerSession, int id) {
         if (playerSession != null) {
-            List<IPlayerSession> sessionList = null;
+            HashMap<String, IPlayerSession> sessionList = null;
             if (dimensionSession.containsKey(id))
                 sessionList = dimensionSession.get(id);
             if (sessionList != null && !sessionList.isEmpty()) {
                 SessionUpdatedEvent event = new SessionUpdatedEvent(playerSession, id, sessionList);
                 if (MinecraftForge.EVENT_BUS.post(event))
                     return;
-                for (int i = 0; i < sessionList.size(); i++) {
-                    IPlayerSession session = sessionList.get(i);
-                    if (session != null && session.getPlayerID().equalsIgnoreCase(playerSession.getPlayerID())) {
-                        sessionList.remove(i);
-                        sessionList.add(playerSession);
-                        return;
-                    }
+                if (sessionList.containsKey(playerSession.getPlayerID())) {
+                    sessionList.put(playerSession.getPlayerID(), playerSession);
+                    return;
                 }
+                dimensionSession.put(id, sessionList);
             }
         }
     }
@@ -199,26 +178,20 @@ public class ManaHandler implements IManaHandler {
     public void playerChangedDimension(EntityPlayer player, int oldDim, int newDim) {
         if (player != null) {
             IPlayerSession playerSession = null;
-            List<IPlayerSession> sessionList = null;
+            HashMap<String, IPlayerSession> sessionList = null;
             if (dimensionSession.containsKey(oldDim))
                 sessionList = dimensionSession.get(oldDim);
             if (sessionList != null) {
-                int index = -1;
-                for (int i = 0; i < sessionList.size(); i++) {
-                    IPlayerSession session = sessionList.get(i);
-                    if (session != null && session.getPlayerID().equalsIgnoreCase(player.getUniqueID().toString())) {
-                        playerSession = session;
-                        index = i;
-                        break;
-                    }
-                }
+                String id = player.getGameProfile().getId().toString();
+                if (sessionList.containsKey(id))
+                    playerSession = sessionList.get(id);
                 if (playerSession != null) {
-                    sessionList.remove(index);
+                    sessionList.remove(id);
                     dimensionSession.put(oldDim, sessionList);
-                    sessionList = new ArrayList<IPlayerSession>();
+                    sessionList = new HashMap<String, IPlayerSession>();
                     if (dimensionSession.containsKey(newDim))
                         sessionList = dimensionSession.get(newDim);
-                    sessionList.add(playerSession);
+                    sessionList.put(id, playerSession);
                     dimensionSession.put(newDim, sessionList);
                 }
             }

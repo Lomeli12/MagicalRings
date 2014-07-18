@@ -16,6 +16,7 @@ public interface IBookEntry {
 
     /**
      * Used by entities that don't extend EntityItem to use in lue of metadata
+     *
      * @return
      */
     public int getData();

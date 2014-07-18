@@ -1,6 +1,6 @@
 package net.lomeli.ring.client.render;
 
-import org.lwjgl.opengl.GL11;
+import static org.lwjgl.opengl.GL11.*;
 import org.lwjgl.opengl.GL12;
 
 import java.util.ArrayList;
@@ -26,8 +26,8 @@ import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.oredict.OreDictionary;
 
 import net.lomeli.ring.Rings;
-import net.lomeli.ring.api.interfaces.ISpell;
 import net.lomeli.ring.api.Page;
+import net.lomeli.ring.api.interfaces.ISpell;
 import net.lomeli.ring.core.helper.SimpleUtil;
 import net.lomeli.ring.lib.ModLibs;
 
@@ -66,10 +66,10 @@ public class RenderSpellParchment implements IItemRenderer {
         float ep = (Float) SimpleUtil.getObject(ItemRenderer.class, mc.entityRenderer.itemRenderer, "equippedProgress", "f", "field_78454_c");
         float f2 = pep + (ep - pep) * renderTick;
         if (player.isSneaking()) {
-            GL11.glPopMatrix();
-            GL11.glPushMatrix();
-            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-            GL11.glScalef(2.5f, 2.5f, 2.5f);
+            glPopMatrix();
+            glPushMatrix();
+            glEnable(GL12.GL_RESCALE_NORMAL);
+            glScalef(2.5f, 2.5f, 2.5f);
 
             float pi = 3.141593f;
 
@@ -77,13 +77,13 @@ public class RenderSpellParchment implements IItemRenderer {
             float f5 = MathHelper.sin(f4 * f4 * pi);
             float f6 = MathHelper.sin(MathHelper.sqrt_float(f4) * pi);
 
-            GL11.glRotatef(-f6 * 80f, -1f, 0f, 0f);
-            GL11.glRotatef(-f6 * 20f, 0f, 0f, -1f);
-            GL11.glRotatef(-f5 * 20f, 0f, -1f, 0f);
-            GL11.glRotatef(45f, 0f, -1f, 0f);
-            GL11.glTranslatef(-0.7f * f1, -(-0.65f * f1 - (1.0f - f1) * 0.6f), 0.9f * f1);
+            glRotatef(-f6 * 80f, -1f, 0f, 0f);
+            glRotatef(-f6 * 20f, 0f, 0f, -1f);
+            glRotatef(-f5 * 20f, 0f, -1f, 0f);
+            glRotatef(45f, 0f, -1f, 0f);
+            glTranslatef(-0.7f * f1, -(-0.65f * f1 - (1.0f - f1) * 0.6f), 0.9f * f1);
 
-            GL11.glPushMatrix();
+            glPushMatrix();
 
             int i0 = 65536;
             int x = MathHelper.floor_double(player.posX), y = MathHelper.floor_double(player.posY), z = MathHelper.floor_double(player.posZ);
@@ -92,17 +92,17 @@ public class RenderSpellParchment implements IItemRenderer {
             int i1 = i % i0;
             int i2 = i / i0;
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, i1 / f7, i2 / f7);
-            GL11.glColor4f(1f, 1f, 1f, 1f);
+            glColor4f(1f, 1f, 1f, 1f);
 
             i = item.getItem().getColorFromItemStack(item, 0);
             f4 = (i >> 16 & 0xFF) / 255f;
             f5 = (i >> 8 & 0xFF) / 255f;
             f6 = (i & 0xFF) / 255f;
-            GL11.glColor4f(f7 * f4, f1 * f5, f1 * f6, 1f);
+            glColor4f(f7 * f4, f1 * f5, f1 * f6, 1f);
 
             f5 = MathHelper.sin(f4 * pi);
             f6 = MathHelper.sin(MathHelper.sqrt_float(f4) * pi);
-            GL11.glTranslatef(-f6 * 0.4f, MathHelper.sin(MathHelper.sqrt_float(f4) * pi * 2f) * 0.2f, -f5);
+            glTranslatef(-f6 * 0.4f, MathHelper.sin(MathHelper.sqrt_float(f4) * pi * 2f) * 0.2f, -f5);
 
             f4 = f7 - f / 45f + 0.1F;
             if (f4 < 0f)
@@ -111,52 +111,52 @@ public class RenderSpellParchment implements IItemRenderer {
                 f4 = 1f;
             f4 = -MathHelper.cos(f4 * pi) * 0.5f + 0.5f;
 
-            GL11.glTranslatef(0f, 0f * f1 - (1f - f2) * 1.2f - f4 * 0.5f + 0.04f, -0.9f * f1);
-            GL11.glRotatef(90f, 0f, 1f, 0f);
-            GL11.glRotatef(f4 * -85f, 0f, 0f, 1f);
-            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+            glTranslatef(0f, 0f * f1 - (1f - f2) * 1.2f - f4 * 0.5f + 0.04f, -0.9f * f1);
+            glRotatef(90f, 0f, 1f, 0f);
+            glRotatef(f4 * -85f, 0f, 0f, 1f);
+            glEnable(GL12.GL_RESCALE_NORMAL);
 
             mc.renderEngine.bindTexture(mc.thePlayer.getLocationSkin());
 
             for (i2 = 0; i2 < 2; i2++) {
                 int i3 = i2 * 2 - 1;
-                GL11.glPushMatrix();
-                GL11.glTranslatef(-0f, -0.6f, 1.1f * i3);
-                GL11.glRotatef(-45 * i3, 1f, 0f, 0f);
-                GL11.glRotatef(-90f, 0f, 0f, 1f);
-                GL11.glRotatef(59f, 0f, 0f, 1f);
-                GL11.glRotatef(-65 * i3, 0f, 1f, 0f);
+                glPushMatrix();
+                glTranslatef(-0f, -0.6f, 1.1f * i3);
+                glRotatef(-45 * i3, 1f, 0f, 0f);
+                glRotatef(-90f, 0f, 0f, 1f);
+                glRotatef(59f, 0f, 0f, 1f);
+                glRotatef(-65 * i3, 0f, 1f, 0f);
                 Render render = RenderManager.instance.getEntityRenderObject(mc.thePlayer);
                 RenderPlayer renderplayer = (RenderPlayer) render;
-                GL11.glScalef(1f, 1f, 1f);
+                glScalef(1f, 1f, 1f);
                 renderplayer.renderFirstPersonArm(mc.thePlayer);
-                GL11.glPopMatrix();
+                glPopMatrix();
             }
 
             f5 = player.getSwingProgress(renderTick);
             f6 = MathHelper.sin(f5 * f5 * pi);
             float f8 = MathHelper.sin(MathHelper.sqrt_float(f5) * pi);
 
-            GL11.glRotatef(-f6 * 20f, 0f, 1f, 0f);
-            GL11.glRotatef(-f8 * 20f, 0f, 0f, 1f);
-            GL11.glRotatef(-f8 * 80f, 1f, 0f, 0f);
+            glRotatef(-f6 * 20f, 0f, 1f, 0f);
+            glRotatef(-f8 * 20f, 0f, 0f, 1f);
+            glRotatef(-f8 * 80f, 1f, 0f, 0f);
 
             float f9 = 0.38f;
 
-            GL11.glScalef(f9, f9, f9);
-            GL11.glRotatef(90f, 0f, 1f, 0f);
-            GL11.glRotatef(180f, 0f, 0f, 1f);
-            GL11.glTranslatef(-1f, -1f, 0f);
+            glScalef(f9, f9, f9);
+            glRotatef(90f, 0f, 1f, 0f);
+            glRotatef(180f, 0f, 0f, 1f);
+            glTranslatef(-1f, -1f, 0f);
 
             float f10 = 0.015625f;
 
-            GL11.glScalef(f10, f10, f10);
+            glScalef(f10, f10, f10);
 
             renderSpellParchment(item, mc.thePlayer);
 
-            GL11.glPopMatrix();
+            glPopMatrix();
         } else {
-            GL11.glPushMatrix();
+            glPushMatrix();
             IIcon icon = item.getItem().getIcon(item, 0);
             if (icon == null)
                 return;
@@ -166,19 +166,19 @@ public class RenderSpellParchment implements IItemRenderer {
             float uv3 = icon.getMinV();
             float uv4 = icon.getMaxV();
             ItemRenderer.renderItemIn2D(tess, uv2, uv3, uv1, uv4, icon.getIconWidth(), icon.getIconHeight(), 0.0625F);
-            GL11.glPopMatrix();
+            glPopMatrix();
         }
     }
 
     public void renderSpellParchment(ItemStack item, EntityPlayer player) {
         this.fontRenderer = mc.fontRenderer;
-        GL11.glPushMatrix();
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        glPushMatrix();
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         mc.renderEngine.bindTexture(new ResourceLocation(ModLibs.MOD_ID.toLowerCase() + ":gui/parchment.png"));
         Tessellator tess = Tessellator.instance;
-        GL11.glNormal3f(0f, 0f, -1f);
+        glNormal3f(0f, 0f, -1f);
 
         tess.startDrawingQuads();
         byte b0 = 7;
@@ -188,19 +188,19 @@ public class RenderSpellParchment implements IItemRenderer {
         tess.addVertexWithUV((double) (0 - b0), (double) (0 - b0), 0d, 0d, 0d);
         tess.draw();
 
-        GL11.glDisable(GL11.GL_BLEND);
-        GL11.glPopMatrix();
+        glDisable(GL_BLEND);
+        glPopMatrix();
         String spellID = SimpleUtil.getSpellIdFromTag(item.getTagCompound());
 
         ISpell spell = Rings.proxy.spellRegistry.getSpell(spellID);
         if (spell != null) {
             RenderHelper.enableGUIStandardItemLighting();
 
-            GL11.glPushMatrix();
-            GL11.glEnable(GL11.GL_BLEND);
-            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+            glPushMatrix();
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-            GL11.glTranslatef(0f, 0f, -1f);
+            glTranslatef(0f, 0f, -1f);
 
             String title = StatCollector.translateToLocal(spell.getUnlocalizedName());
             String text = StatCollector.translateToLocal(spell.getSpellDescription());
@@ -231,25 +231,25 @@ public class RenderSpellParchment implements IItemRenderer {
                         }
                     }
                     if (itemstack != null) {
-                        GL11.glPushMatrix();
-                        GL11.glEnable(GL11.GL_BLEND);
-                        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+                        glPushMatrix();
+                        glEnable(GL_BLEND);
+                        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-                        GL11.glColor4f(1f, 1f, 1f, 1f);
+                        glColor4f(1f, 1f, 1f, 1f);
 
                         if (translate)
-                            GL11.glTranslatef(0f, 0.25f, -15f);
+                            glTranslatef(0f, 0.25f, -15f);
                         int drawX = 25, drawY = 93;
                         itemRenderer.renderItemIntoGUI(mc.fontRenderer, mc.renderEngine, itemstack, (drawX + (17 * (i - (i < 4 ? 0 : 4)))), drawY + (i < 4 ? 0 : 20));
 
-                        GL11.glDisable(GL11.GL_BLEND);
-                        GL11.glPopMatrix();
+                        glDisable(GL_BLEND);
+                        glPopMatrix();
                     }
                 }
             }
 
-            GL11.glDisable(GL11.GL_BLEND);
-            GL11.glPopMatrix();
+            glDisable(GL_BLEND);
+            glPopMatrix();
         }
     }
 

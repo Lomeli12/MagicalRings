@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 
 import net.lomeli.ring.api.Page;
-import net.lomeli.ring.client.gui.GuiSpellBook;
+import net.lomeli.ring.api.interfaces.IBookGui;
 
 public class PageItem extends Page {
 
@@ -14,11 +14,11 @@ public class PageItem extends Page {
     private String text;
     private int color;
 
-    public PageItem(GuiSpellBook screen, ItemStack item, String text) {
+    public PageItem(IBookGui screen, ItemStack item, String text) {
         this(screen, item, text, Color.CYAN.getRGB());
     }
 
-    public PageItem(GuiSpellBook screen, ItemStack item, String text, int color) {
+    public PageItem(IBookGui screen, ItemStack item, String text, int color) {
         super(screen);
         this.stack = item;
         this.text = text;

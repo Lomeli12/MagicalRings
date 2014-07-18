@@ -2,18 +2,18 @@ package net.lomeli.ring.lib;
 
 public class ModLibs {
     public static final String MOD_ID = "MagicalRings";
-    // Ring NBTTags
-    public static final String RING_TAG = MOD_ID + "_ringData";
-    // Player NBTTags
-    public static final String PLAYER_DATA = MOD_ID + "_PlayerMagicData";
     public static final String MOD_NAME = "Magical Rings";
-    public static final String SAVE_DATA = "RingSaveData";
-    public static final String VERSION = "1.0";
+    public static final int MAJOR = 1, MINOR = 0, REVISION = 0;
+    public static final String VERSION = MAJOR + "." + MINOR + "." + REVISION;
     public static final String PACKAGE = "net.lomeli.ring.";
     public static final String PROXY_SERVER = PACKAGE + "core.Proxy";
     public static final String PROXY_CLIENT = PACKAGE + "client.ProxyClient";
-    public static final String BAUBLES = "Baubles";
     public static final String CONFIG_FACTORY = "net.lomeli.ring.client.gui.GuiConfigFactory";
+    // Ring NBTTags
+    public static final String RING_TAG = MOD_ID + "_ringData";
+    // Player NBTTags
+    public static final String SAVE_DATA = "RingSaveData";
+    public static final String BAUBLES = "Baubles";
     public static final String SPELL_ID = "Spell_ID";
     public static final String LAYER1 = "layer1_";
     public static final String L1RGB = LAYER1 + "rgb";
@@ -32,8 +32,9 @@ public class ModLibs {
     public static final String PLAYER_MAX = "max";
     // Message
     public static final String MESSAGE = MOD_ID.toLowerCase() + ".message.";
-    public static final String NO_EXP = MESSAGE + "enoughEXP";
-    public static final String NO_EXP_PLUS = MESSAGE + "enoughEXP2";
+    public static final String NO_EXP = MESSAGE + "EXP";
+    public static final String EXP_1 = MESSAGE + "enoughEXP";
+    public static final String EXP_2 = MESSAGE + "enoughEXP2";
     public static final String ACTIVE_EFFECT = MESSAGE + "effect";
     public static final String SPELL = MESSAGE + "spell";
     public static final String BOOST = MESSAGE + "magicBoost";
@@ -43,7 +44,7 @@ public class ModLibs {
     public static final String HAMMER_INFO = MESSAGE + "hammer";
     public static final String MORE_INFO = MESSAGE + "shift";
     public static final String MANA = MESSAGE + "mana";
-    public static final String NO_MANA = MESSAGE + "nomana";
+    public static final String NO_MANA = MESSAGE + "noMana";
     public static final int RING_FORGE_GUI = 0;
     public static final int BOOK_GUI = 1;
     // Spell names
@@ -63,8 +64,10 @@ public class ModLibs {
     // Command
     public static final String COMMAND = MOD_ID.toLowerCase() + ".command.";
     public static final String COMMAND_HELP = COMMAND + "basicInfo";
-    public static final String COMMAND_UNKNOWN = COMMAND + "unknown";
     public static final String COMMAND_MANA_POS = COMMAND + "manaDisplay";
+    public static final String COMMAND_DISPLAY_MANA = COMMAND + "displayMana";
+    public static final String COMMAND_DISPLAY_ON = COMMAND + "displayManaOn";
+    public static final String COMMAND_DISPLAY_OFF = COMMAND + "displayManaOff";
 
     public static int BASE_MP = 100;
     public static int RECHARGE_WAIT_TIME = 70;
