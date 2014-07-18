@@ -50,6 +50,19 @@ public class BlockManaFlower extends BlockRings implements IGrowable, IPlantable
     }
 
     @Override
+    public void breakBlock(World world, int x, int y, int z, Block block, int p_149749_6_) {
+        int metadata = world.getBlockMetadata(x, y, z);
+        if (metadata >= 3) {
+            ItemStack stack = new ItemStack(ModItems.materials, 1 + world.rand.nextInt(2), 5);
+            if (!world.isRemote)
+                world.spawnEntityInWorld(new EntityItem(world, x, y, z, stack));
+            world.setBlockMetadataWithNotify(x, y, z, 0, 2);
+            onNeighborBlockChange(world, x, y, z, this);
+        }
+        super.breakBlock(world, x, y, z, block, p_149749_6_);
+    }
+
+    @Override
     public IIcon getIcon(int side, int meta) {
         return this.iconArray[meta % this.iconArray.length];
     }
