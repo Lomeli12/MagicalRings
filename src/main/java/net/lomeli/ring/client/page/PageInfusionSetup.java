@@ -87,7 +87,7 @@ public class PageInfusionSetup extends Page {
     }
 
     public void renderBlock(Block block, int meta, int x, int y) {
-        itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, new ItemStack(block, 1, meta), x, y);
+        this.renderItem(new ItemStack(block, 1, meta), x, y);
     }
 
     public void drawSlot(int x, int y) {

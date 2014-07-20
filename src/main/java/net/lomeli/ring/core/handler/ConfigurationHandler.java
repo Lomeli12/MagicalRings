@@ -22,8 +22,8 @@ public class ConfigurationHandler {
     public void updateConfig() {
         String modOptions = "options";
 
-        ModLibs.BASE_MP = config.getInt("StartingValue", modOptions, ModLibs.BASE_MP, 1, 500, "The base Max MP players start with");
-        ModLibs.RECHARGE_WAIT_TIME = config.getInt("rechargeWaitTime", modOptions, ModLibs.RECHARGE_WAIT_TIME, 1, Integer.MAX_VALUE, "Number of ticks between a player's MP recharging. 20 ticks per second");
+        ModLibs.BASE_MP = config.getInt("StartingValue", modOptions, ModLibs.BASE_MP, 100, 500, "The base Max MP players start with");
+        ModLibs.RECHARGE_WAIT_TIME = config.getInt("rechargeWaitTime", modOptions, ModLibs.RECHARGE_WAIT_TIME, 20, Integer.MAX_VALUE, "Number of ticks between a player's MP recharging. 20 ticks per second");
 
         String world = "worldgen";
         config.addCustomCategoryComment(world, "Adjust and enable/disable world gen. Rate = number of times a veins can spawn per chunk");

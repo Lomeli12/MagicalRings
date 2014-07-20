@@ -98,18 +98,11 @@ public class GuiRingBook extends GuiScreen implements IBookGui {
         int k = (this.width - this.bookImageWidth) / 2;
         int b0 = (this.height - this.bookImageHeight) / 2;
         this.drawTexturedModalRect(k, b0, 0, 0, this.bookImageWidth, this.bookImageHeight);
-        GL11.glPushMatrix();
-        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-        RenderHelper.enableGUIStandardItemLighting();
+        super.drawScreen(par1, par2, par3);
 
         this.currentPage = avaliablePages.size() > 0 ? (this.pageNumber < avaliablePages.size() ? avaliablePages.get(this.pageNumber) : null) : null;
         if (this.currentPage != null)
             this.currentPage.draw();
-
-        RenderHelper.disableStandardItemLighting();
-        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-        GL11.glPopMatrix();
-        super.drawScreen(par1, par2, par3);
     }
 
     @Override
@@ -123,12 +116,14 @@ public class GuiRingBook extends GuiScreen implements IBookGui {
         super.handleMouseInput();
     }
 
-    public void drawToolTipOverArea(int minX, int minY, int maxX, int maxY, String msg) {
-        if ((mouseX >= minX && mouseX <= maxX) && (mouseY >= minY && mouseY <= maxY)) {
-            List<String> list = new ArrayList<String>();
-            list.add(msg);
-            this.drawHoveringText(list, mouseX, mouseY, mc.fontRenderer);
-        }
+    @Override
+    public int getMouseX() {
+        return mouseX;
+    }
+
+    @Override
+    public int getMouseY() {
+        return mouseY;
     }
 
     @Override
@@ -154,5 +149,10 @@ public class GuiRingBook extends GuiScreen implements IBookGui {
     @Override
     public int getTop() {
         return 0;
+    }
+
+    @Override
+    public boolean doesGuiPauseGame() {
+        return false;
     }
 }

@@ -172,27 +172,4 @@ public class PageUtil implements IPageRegistry {
             rlyY = y;
         }
     }
-
-    public static class ToolTipInfo {
-        private int x, y;
-        private String toolTipText;
-
-        public ToolTipInfo(int x, int y, String text) {
-            this.x = x;
-            this.y = y;
-            this.toolTipText = text;
-        }
-
-        public int getX() {
-            return x;
-        }
-
-        public int getY() {
-            return y;
-        }
-
-        public String getToolTipText() {
-            return toolTipText;
-        }
-    }
 }

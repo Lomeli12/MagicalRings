@@ -54,7 +54,7 @@ public class PageMaterial extends Page {
             ItemStack stack = getStackFromObj(obj);
             if (stack != null && stack.getItem() != null) {
                 GL11.glColor4f(1f, 1f, 1f, 1f);
-                itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, stack, drawX, drawY - 5 + padding);
+                this.renderItem(stack, drawX, drawY - 5 + padding);
                 mc.fontRenderer.drawStringWithShadow(stack.getDisplayName(), drawX + 20, drawY + padding, color);
                 int boost = 0;
                 if (Rings.proxy.ringMaterials.doesMaterialMatch(stack))

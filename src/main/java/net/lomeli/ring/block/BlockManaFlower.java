@@ -96,6 +96,7 @@ public class BlockManaFlower extends BlockRings implements IGrowable, IPlantable
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
         if (!this.canBlockStay(world, x, y, z))
             world.func_147480_a(x, y, z, true);
+        this.checkAndDropBlock(world, x, y, z);
     }
 
     @Override
@@ -129,6 +130,7 @@ public class BlockManaFlower extends BlockRings implements IGrowable, IPlantable
     @Override
     public void updateTick(World world, int x, int y, int z, Random rand) {
         super.updateTick(world, x, y, z, rand);
+        this.checkAndDropBlock(world, x, y, z);
         if (canBlockStay(world, x, y, z)) {
             int meta = world.getBlockMetadata(x, y, z);
             if (meta < 3 && world.canBlockSeeTheSky(x, y + 1, z)) {
@@ -137,6 +139,13 @@ public class BlockManaFlower extends BlockRings implements IGrowable, IPlantable
                     onNeighborBlockChange(world, x, y, z, this);
                 }
             }
+        }
+    }
+
+    protected void checkAndDropBlock(World p_149855_1_, int p_149855_2_, int p_149855_3_, int p_149855_4_) {
+        if (!this.canBlockStay(p_149855_1_, p_149855_2_, p_149855_3_, p_149855_4_)) {
+            this.dropBlockAsItem(p_149855_1_, p_149855_2_, p_149855_3_, p_149855_4_, 0, 0);
+            p_149855_1_.setBlock(p_149855_2_, p_149855_3_, p_149855_4_, getBlockById(0), 0, 2);
         }
     }
 
@@ -175,7 +184,7 @@ public class BlockManaFlower extends BlockRings implements IGrowable, IPlantable
 
     @Override
     public Block getPlant(IBlockAccess world, int x, int y, int z) {
-        return ModBlocks.manaFlower;
+        return this;
     }
 
     @Override
@@ -193,7 +202,7 @@ public class BlockManaFlower extends BlockRings implements IGrowable, IPlantable
         return 0;
     }
 
-    public static class ItemManaBush extends ItemBlock {
+    public static class ItemManaBush extends ItemBlock implements IPlantable {
 
         public ItemManaBush(Block p_i45328_1_) {
             super(p_i45328_1_);
@@ -210,6 +219,21 @@ public class BlockManaFlower extends BlockRings implements IGrowable, IPlantable
         @SideOnly(Side.CLIENT)
         public IIcon getIconFromDamage(int par1) {
             return this.field_150939_a.getIcon(0, par1);
+        }
+
+        @Override
+        public EnumPlantType getPlantType(IBlockAccess world, int x, int y, int z) {
+            return EnumPlantType.Plains;
+        }
+
+        @Override
+        public Block getPlant(IBlockAccess world, int x, int y, int z) {
+            return this.field_150939_a;
+        }
+
+        @Override
+        public int getPlantMetadata(IBlockAccess world, int x, int y, int z) {
+            return 0;
         }
     }
 }

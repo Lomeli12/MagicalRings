@@ -54,6 +54,35 @@ processResources {
 
 
 jar {
-	appendix = "build"
+	appendix = "$mcVersion"
     exclude(['baubles'])
+}
+
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    exclude(['baubles'])
+    appendix = "dev"
+}
+
+ext.dirApi = "./api"
+ext.dirDest = './build/libs'
+
+task apiJar(type: Jar, dependsOn: 'classes') {
+	from (dirApi) {
+		include '**'
+	}
+
+	from (sourceSets.main.output) {
+		include 'net/lomeli/ring/api/**'
+	}
+
+	destinationDir = file(dirDest)
+    exclude(['baubles'])
+	extension = 'jar'
+	appendix = 'api'
+}
+
+artifacts {
+    archives apiJar
+    archives deobfJar
 }

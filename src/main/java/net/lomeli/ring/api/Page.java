@@ -1,13 +1,16 @@
 package net.lomeli.ring.api;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 
@@ -26,6 +29,19 @@ public abstract class Page {
 
     public Page(IBookGui screen) {
         this.gui = screen;
+    }
+
+    public void renderItem(ItemStack stack, int x, int y) {
+        GL11.glPushMatrix();
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        RenderHelper.enableGUIStandardItemLighting();
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), stack, x, y);
+        itemRenderer.renderItemOverlayIntoGUI(mc.fontRenderer, mc.getTextureManager(), stack, x, y);
+        RenderHelper.disableStandardItemLighting();
+        GL11.glPopMatrix();
     }
 
     public static boolean isFormatColor(char par0) {
@@ -69,11 +85,6 @@ public abstract class Page {
         this.drawY = (this.gui.getHeight() - 192) / 2 + 15;
         this.wordWrap = 192 - 75;
         GL11.glColor4f(1f, 1f, 1f, 1f);
-    }
-
-    public void drawSplitStringWithShadow(String par1Str, int par2, int par3, int par4, int par5) {
-        drawString(par1Str, par2 + 1, par3 + 1, 0);
-        drawString(par1Str, par2, par3, par5);
     }
 
     public void drawString(String text, int xOffset, int yOffset, int color) {

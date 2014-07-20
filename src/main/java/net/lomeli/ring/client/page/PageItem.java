@@ -35,7 +35,7 @@ public class PageItem extends Page {
     public void draw() {
         super.draw();
         if (this.stack != null && this.text != null) {
-            itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, stack, drawX, drawY - 5);
+            this.renderItem(stack, drawX, drawY - 5);
             mc.fontRenderer.drawStringWithShadow(stack.getDisplayName(), drawX + 20, drawY, this.color);
             drawString(StatCollector.translateToLocal(text), drawX, drawY + 5, 0);
         }

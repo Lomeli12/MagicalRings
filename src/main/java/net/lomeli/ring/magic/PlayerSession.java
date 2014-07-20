@@ -15,7 +15,7 @@ public class PlayerSession implements IPlayerSession {
     }
 
     public PlayerSession(EntityPlayer player, int mana, int maxMana) {
-        this(player.getGameProfile().getId().toString(), mana, maxMana);
+        this(player.getUniqueID().toString(), mana, maxMana);
     }
 
     @Override

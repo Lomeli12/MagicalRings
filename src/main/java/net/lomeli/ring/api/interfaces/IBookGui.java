@@ -11,4 +11,8 @@ public interface IBookGui {
     public int getLeft();
 
     public int getTop();
+
+    public int getMouseX();
+
+    public int getMouseY();
 }

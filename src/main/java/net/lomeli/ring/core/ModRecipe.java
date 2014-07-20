@@ -63,8 +63,8 @@ public class ModRecipe {
     private static void shapelessRecipes() {
         addShapeless(new ItemStack(ModItems.spellParchment, 2), ModItems.spellParchment, Items.paper, Items.ender_pearl);
         addShapeless(new ItemStack(ModItems.book, 1, 0), Items.book, "ingotIron");
-        addShapeless(new ItemStack(ModItems.book, 1, 1), new ItemStack(ModItems.book, 1, 0), ModItems.ironHammer);
-        addShapeless(new ItemStack(ModItems.book, 1, 1), new ItemStack(ModItems.book, 1, 0), ModItems.diamondHammer);
+        addShapeless(new ItemStack(ModItems.book, 1, 1), new ItemStack(ModItems.book, 1, 0), new ItemStack(ModItems.ironHammer, 1, OreDictionary.WILDCARD_VALUE));
+        addShapeless(new ItemStack(ModItems.book, 1, 1), new ItemStack(ModItems.book, 1, 0), new ItemStack(ModItems.diamondHammer, 1, OreDictionary.WILDCARD_VALUE));
         addShapeless(ModItems.sigil, Items.paper, ModItems.ironHammer, "berryMana", Items.ender_pearl);
         addShapeless(ModItems.sigil, Items.paper, ModItems.diamondHammer, "berryMana", Items.ender_pearl);
     }

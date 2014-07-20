@@ -14,6 +14,7 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -22,6 +23,7 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 import net.lomeli.ring.api.Page;
 import net.lomeli.ring.api.interfaces.IBookGui;
 import net.lomeli.ring.client.gui.GuiRingBook;
+import net.lomeli.ring.client.handler.RenderHandler;
 import net.lomeli.ring.core.helper.SimpleUtil;
 import net.lomeli.ring.lib.BookText;
 
@@ -30,12 +32,9 @@ import net.lomeli.ring.lib.BookText;
  */
 public class PageRecipe extends Page {
     private PageUtil.StackPosition[] recipe;
-    private Object[] cache;
-    private ItemStack output;
+    protected ItemStack output, toolTipStack;
     private String itemDescription;
-    private int tick, color;
-    private int[] arrayIndex;
-    private List<PageUtil.ToolTipInfo> toolTips = new ArrayList<PageUtil.ToolTipInfo>();
+    private int color;
     private boolean shapeless;
 
     public PageRecipe(IBookGui screen, ItemStack item, String itemDescription) {
@@ -44,8 +43,6 @@ public class PageRecipe extends Page {
 
     public PageRecipe(IBookGui screen, ItemStack item, String itemDescription, int color) {
         super(screen);
-        this.cache = new Object[9];
-        this.arrayIndex = new int[9];
         if (item != null) {
             this.output = item;
             this.recipe = getItemRecipe(item);
@@ -138,34 +135,40 @@ public class PageRecipe extends Page {
     @Override
     public void draw() {
         super.draw();
-        toolTips.clear();
         if (this.output != null && (this.recipe != null && this.recipe.length > 0)) {
             mc.fontRenderer.drawSplitString(output.getDisplayName(), drawX + 21, drawY + 1, this.wordWrap - 5, 0);
             mc.fontRenderer.drawSplitString(output.getDisplayName(), drawX + 20, drawY, this.wordWrap - 5, this.color);
-            this.renderItem(output, drawX, drawY - 5, 0);
-            renderSlots();
 
-            for (int x = 0; x < 3; x++) {
-                for (int y = 0; y < 3; y++) {
-                    int yOffset = drawY + 20 + (20 * y);
-                    int xOffset = (drawX + 25) + (20 * x);
-                    Object obj = getObjectForPosition(x, y);
-                    int index = x + (y * 3);
-                    if (obj != null) {
-                        this.renderItem(obj, xOffset, yOffset, index);
-                    }
+            renderRecipe();
+
+            super.renderItem(output, drawX, drawY - 5);
+
+            if (toolTipStack != null)
+                RenderHandler.renderItemToolTip(gui.getMouseX(), gui.getMouseY(), toolTipStack);
+            toolTipStack = null;
+        }
+    }
+
+    public void renderRecipe() {
+        renderSlots();
+
+        for (int x = 0; x < 3; x++) {
+            for (int y = 0; y < 3; y++) {
+                int yOffset = drawY + 20 + (20 * y);
+                int xOffset = (drawX + 25) + (20 * x);
+                Object obj = getObjectForPosition(x, y);
+                int index = x + (y * 3);
+                if (obj != null) {
+                    this.renderItemObject(obj, xOffset, yOffset);
                 }
             }
-
-            if (this.itemDescription != null)
-                this.drawString(StatCollector.translateToLocal(this.itemDescription), this.drawX, this.drawY + 76, 0);
-
-            if (this.shapeless)
-                this.drawString(StatCollector.translateToLocal(BookText.SHAPELESS), this.drawX, this.drawY + 68, 0);
-
-            if (!toolTips.isEmpty())
-                this.drawToolTips();
         }
+
+        if (this.itemDescription != null)
+            this.drawString(StatCollector.translateToLocal(this.itemDescription), this.drawX, this.drawY + 76, 0);
+
+        if (this.shapeless)
+            this.drawString(StatCollector.translateToLocal(BookText.SHAPELESS), this.drawX, this.drawY + 68, 0);
     }
 
     private Object getObjectForPosition(int x, int y) {
@@ -180,6 +183,7 @@ public class PageRecipe extends Page {
     }
 
     public void renderSlots() {
+        GL11.glPushMatrix();
         mc.renderEngine.bindTexture(((GuiRingBook) gui).guiTexture);
         GL11.glColor3f(1f, 1f, 1f);
         for (int x = 0; x < 3; x++) {
@@ -189,43 +193,34 @@ public class PageRecipe extends Page {
                 ((GuiScreen) gui).drawTexturedModalRect(xOffset, yOffset, 62, 196, 18, 18);
             }
         }
+        GL11.glPopMatrix();
     }
 
-    private void renderItem(Object obj, int x, int y, int index) {
+    protected void renderItemObject(Object obj, int x, int y) {
         if (obj != null) {
-            String toolTip = null;
-            if (obj instanceof Item) {
-                itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, new ItemStack((Item) obj), x, y);
-                toolTip = new ItemStack((Item) obj).getDisplayName();
-            } else if (obj instanceof Block) {
-                itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, new ItemStack((Block) obj), x, y);
-                toolTip = new ItemStack((Block) obj).getDisplayName();
-            } else if (obj instanceof ItemStack) {
-                itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, ((ItemStack) obj), x, y);
-                toolTip = ((ItemStack) obj).getDisplayName();
-            } else if (obj instanceof ArrayList<?>) {
+            if (obj instanceof Item)
+                renderItem(new ItemStack((Item) obj), x, y);
+            else if (obj instanceof Block)
+                renderItem(new ItemStack((Block) obj), x, y);
+            else if (obj instanceof ItemStack)
+                renderItem(((ItemStack) obj), x, y);
+            else if (obj instanceof ArrayList<?>) {
                 Object obj1 = ((ArrayList<?>) obj).get(0);
 
-                if (obj1 instanceof Item) {
-                    itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, new ItemStack((Item) obj1), x, y);
-                    toolTip = new ItemStack((Item) obj1).getDisplayName();
-                } else if (obj1 instanceof Block) {
-                    itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, new ItemStack((Block) obj1), x, y);
-                    toolTip = new ItemStack((Block) obj1).getDisplayName();
-                } else if (obj1 instanceof ItemStack) {
-                    itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, ((ItemStack) obj1), x, y);
-                    toolTip = ((ItemStack) obj1).getDisplayName();
-                }
+                if (obj1 instanceof Item)
+                    renderItem(new ItemStack((Item) obj1), x, y);
+                else if (obj1 instanceof Block)
+                    renderItem(new ItemStack((Block) obj1), x, y);
+                else if (obj1 instanceof ItemStack)
+                    renderItem(((ItemStack) obj1), x, y);
             }
-            if (toolTip != null)
-                toolTips.add(new PageUtil.ToolTipInfo(x, y, toolTip));
         }
     }
 
-    public void drawToolTips() {
-        for (PageUtil.ToolTipInfo toolTip : toolTips) {
-            int x = toolTip.getX(), y = toolTip.getY();
-            ((GuiRingBook) gui).drawToolTipOverArea(x, y, x + 16, y + 16, toolTip.getToolTipText());
-        }
+    @Override
+    public void renderItem(ItemStack stack, int x, int y) {
+        super.renderItem(stack, x, y);
+        if ((gui.getMouseX() >= x && gui.getMouseX() <= x + 16) && (gui.getMouseY() >= y && gui.getMouseY() <= y + 16))
+            toolTipStack = stack;
     }
 }
