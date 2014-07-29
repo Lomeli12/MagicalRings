@@ -68,7 +68,7 @@ public class ItemSpellBook extends ItemRings implements IBookEntry {
 
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-        if (!player.isSneaking()) {
+        if (player != null && !player.isSneaking()) {
             if (!world.isRemote && stack.getItemDamage() == 0) {
                 if (!Rings.proxy.manaHandler.playerHasSession(player))
                     Rings.proxy.manaHandler.addPlayerSession(player, 0, ModLibs.BASE_MP);
@@ -80,11 +80,13 @@ public class ItemSpellBook extends ItemRings implements IBookEntry {
 
     @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-        if (!world.isRemote && stack.getItemDamage() == 0) {
-            if (!Rings.proxy.manaHandler.playerHasSession(player))
-                Rings.proxy.manaHandler.addPlayerSession(player, 0, ModLibs.BASE_MP);
+        if (player != null) {
+            if (!world.isRemote && stack.getItemDamage() == 0) {
+                if (!Rings.proxy.manaHandler.playerHasSession(player))
+                    Rings.proxy.manaHandler.addPlayerSession(player, 0, ModLibs.BASE_MP);
+            }
+            player.openGui(Rings.instance, ModLibs.BOOK_GUI, world, x, y, z);
         }
-        player.openGui(Rings.instance, ModLibs.BOOK_GUI, world, x, y, z);
         return super.onItemUse(stack, player, world, x, y, z, side, hitX, hitY, hitZ);
     }
 

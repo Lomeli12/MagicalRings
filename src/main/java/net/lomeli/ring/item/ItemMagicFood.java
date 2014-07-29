@@ -94,7 +94,6 @@ public class ItemMagicFood extends ItemFood implements IPlantable, IBookEntry {
                     session.setMaxMana(session.getMaxMana() + 100);
                     Rings.proxy.manaHandler.updatePlayerSession(session, world.provider.dimensionId);
                 }
-                //Rings.pktHandler.sendToServer(new PacketModifyMp(player, 0, 100));
                 if (!player.capabilities.isCreativeMode) {
                     stack.stackSize--;
                     player.inventory.addItemStackToInventory(new ItemStack(Items.glass_bottle));
@@ -106,7 +105,6 @@ public class ItemMagicFood extends ItemFood implements IPlantable, IBookEntry {
                     session.adjustMana(75, false);
                     Rings.proxy.manaHandler.updatePlayerSession(session, world.provider.dimensionId);
                 }
-                //Rings.pktHandler.sendToServer(new PacketModifyMp(player, 75, 0));
                 if (!player.capabilities.isCreativeMode) {
                     stack.stackSize--;
                     player.inventory.addItemStackToInventory(new ItemStack(Items.glass_bottle));

@@ -9,9 +9,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 import net.lomeli.ring.block.tile.TileAltar;
 import net.lomeli.ring.block.tile.TileItemAltar;
-import net.lomeli.ring.client.handler.HudHandler;
-import net.lomeli.ring.client.handler.RenderHandler;
-import net.lomeli.ring.client.handler.TickHandlerClient;
 import net.lomeli.ring.client.render.RenderAltar;
 import net.lomeli.ring.client.render.RenderGhostSword;
 import net.lomeli.ring.client.render.RenderRing;
@@ -41,7 +38,6 @@ public class ProxyClient extends Proxy {
 
         FMLCommonHandler.instance().bus().register(tickClient);
 
-        MinecraftForge.EVENT_BUS.register(new HudHandler());
         MinecraftForge.EVENT_BUS.register(renderHandler);
     }
 

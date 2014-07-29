@@ -30,6 +30,7 @@ public class Proxy {
     public PageUtil pageUtil;
     public InfusionRegistry infusionRegistry;
     public RenderHandler renderHandler;
+    public AddonHandler addonHandler;
 
     public void preInit() {
         ModItems.loadItems();
@@ -43,6 +44,7 @@ public class Proxy {
         infusionRegistry = new InfusionRegistry();
         renderHandler = new RenderHandler();
         tickClient = new TickHandlerClient();
+        addonHandler = new AddonHandler();
     }
 
     public void init() {
@@ -65,6 +67,8 @@ public class Proxy {
         FMLCommonHandler.instance().bus().register(tickHandler);
 
         ModEntities.registerEntities();
+
+        addonHandler.registerHarvestHandler();
     }
 
     public void postInit() {

@@ -26,48 +26,15 @@ public class SimpleUtil {
     private static Random rand = new Random();
 
     public static MovingObjectPosition rayTrace(EntityLivingBase entity, World world, double range) {
-        return rayTrace(entity, world, range, true);
+        return rayTrace(entity, world, range, true, false);
     }
 
-    public static MovingObjectPosition rayTrace(EntityLivingBase entity, World world, double range, boolean hitLiquids) {
+    public static MovingObjectPosition rayTrace(EntityLivingBase entity, World world, double range, boolean hitLiquids, boolean noClipBlocks) {
         Vec3 v = Vec3.createVectorHelper(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
         Vec3 v1 = entity.getLook(1f);
         Vec3 v2 = v.addVector(v1.xCoord * range, v1.yCoord * range, v1.zCoord * range);
-        MovingObjectPosition mop = world.rayTraceBlocks(v, v2, hitLiquids);
+        MovingObjectPosition mop = world.func_147447_a(v, v2, hitLiquids, noClipBlocks, false);
         return mop;
-    }
-
-    public static Entity getEntityPointedAt(World world, EntityPlayer player, double midrange, double range, boolean noCollide) {
-        Entity pEntity = null;
-        Vec3 v = Vec3.createVectorHelper(player.posX, player.posY + player.getEyeHeight(), player.posZ);
-        Vec3 v1 = player.getLook(1f);
-        Vec3 v2 = v.addVector(v1.xCoord * range, v1.yCoord * range, v1.zCoord * range);
-        List list = world.getEntitiesWithinAABBExcludingEntity(player, player.boundingBox.addCoord(v1.xCoord * range, v1.yCoord * range, v1.zCoord * range));
-        if (!list.isEmpty()) {
-            double d = 0;
-            for (int i = 0; i < list.size(); i++) {
-                Entity entity = (Entity) list.get(i);
-                if (entity.getDistanceToEntity(player) >= midrange && (entity.canBeCollidedWith() || noCollide) &&
-                        world.func_147447_a(Vec3.createVectorHelper(player.posX, player.posY + player.getEyeHeight(), player.posZ), Vec3.createVectorHelper(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ), false, true, false) == null) {
-                    float f = Math.max(0.8f, entity.getCollisionBorderSize());
-                    AxisAlignedBB aabb = entity.boundingBox.expand(f, f, f);
-                    MovingObjectPosition mov = aabb.calculateIntercept(v, v2);
-                    if (aabb.isVecInside(v)) {
-                        if (0d < d || d == 0d) {
-                            d = 0d;
-                            pEntity = entity;
-                        }
-                    } else if (mov != null) {
-                        double d1 = v.distanceTo(mov.hitVec);
-                        if (d1 < d || d == 0d) {
-                            d = d1;
-                            pEntity = entity;
-                        }
-                    }
-                }
-            }
-        }
-        return pEntity;
     }
 
     public static NBTTagCompound getRingTag(ItemStack stack) {

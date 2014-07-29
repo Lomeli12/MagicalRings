@@ -42,7 +42,7 @@ public class EntityManaFX extends EntityFX {
         glBlendFunc(GL11.GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glAlphaFunc(GL_GREATER, 0.003921569f);
         tess.startDrawingQuads();
-        tess.setBrightness(getBrightnessForRender(partialTick));
+        tess.setBrightness(255);
         float scale = this.particleScale * partialTick;
         float x = (float) (prevPosX + (posX - prevPosX) * partialTick - interpPosX);
         float y = (float) (prevPosY + (posY - prevPosY) * partialTick - interpPosY);

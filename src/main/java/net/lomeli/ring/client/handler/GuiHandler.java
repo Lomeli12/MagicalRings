@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
@@ -49,34 +50,42 @@ public class GuiHandler implements IGuiHandler {
             if (stack != null) {
                 GuiRingBook bookGui = new GuiRingBook();
                 int pageNum = 0;
-                Block bl = world.getBlock(x, y, z);
-                Entity entity = SimpleUtil.getEntityPointedAt(world, player, 0.5d, 10d, true);
+                Block bl;
+                int metadata;
                 if (stack.hasTagCompound())
                     pageNum = stack.getTagCompound().getInteger("LastSavedPage");
                 if (stack.getItemDamage() == 0) {
                     PageUtil.loadBaseBook(bookGui);
-                    bookGui.setGuiTexture(new ResourceLocation(ModLibs.MOD_ID.toLowerCase() + ":gui/book.png"));
-                    if (bl != null && bl instanceof IBookEntry && player.isSneaking())
-                        pageNum = getPageByID(((IBookEntry) bl).getBookPage(world.getBlockMetadata(x, y, z)), bookGui);
-                    else if (entity != null) {
-                        if (entity instanceof EntityItem) {
-                            ItemStack item = ((EntityItem) entity).getEntityItem();
-                            if (item != null && item.getItem() != null && player.isSneaking()) {
-                                if (item.getItem() instanceof ItemBlock) {
-                                    bl = Block.getBlockFromItem(item.getItem());
-                                    if (bl != null && bl instanceof IBookEntry) {
-                                        String key = ((IBookEntry) bl).getBookPage(item.getItemDamage());
-                                        if (key != null)
-                                            pageNum = getPageByID(key, bookGui);
+                    MovingObjectPosition pos = SimpleUtil.rayTrace(player, world, 8);
+                    if (pos != null && pos.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
+                        bl = world.getBlock(pos.blockX, pos.blockY, pos.blockZ);
+                        metadata = world.getBlockMetadata(pos.blockX, pos.blockY, pos.blockZ);
+                        if (bl != null && bl instanceof IBookEntry && player.isSneaking())
+                            pageNum = getPageByID(((IBookEntry) bl).getBookPage(metadata), bookGui);
+                        else {
+                            System.out.println("Hello!");
+                            pos = SimpleUtil.rayTrace(player, world, 8, false, false);
+                            if (pos != null && pos.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY) {
+                                Entity entity = pos.entityHit;
+                                if (entity != null) {
+                                    System.out.println(entity);
+                                    if (entity instanceof EntityItem) {
+                                        ItemStack entityItem = ((EntityItem) entity).getEntityItem();
+                                        if (entityItem != null && entityItem.getItem() != null) {
+                                            Object item = entityItem.getItem();
+                                            if (entityItem.getItem() instanceof ItemBlock)
+                                                item = Block.getBlockFromItem(entityItem.getItem());
+                                            if (item != null && item instanceof IBookEntry)
+                                                pageNum = getPageByID(((IBookEntry) item).getBookPage(entityItem.getItemDamage()), bookGui);
+                                        }
                                     }
-                                } else if (item.getItem() instanceof IBookEntry) {
-                                    String key = ((IBookEntry) item.getItem()).getBookPage(item.getItemDamage());
-                                    if (key != null)
-                                        pageNum = getPageByID(key, bookGui);
                                 }
                             }
                         }
+
                     }
+
+                    bookGui.setGuiTexture(new ResourceLocation(ModLibs.MOD_ID.toLowerCase() + ":gui/book.png"));
                     if (pageNum > 0 && pageNum < bookGui.avaliablePages.size()) {
                         Rings.pktHandler.sendToServer(new PacketSavePage(player, pageNum));
                         bookGui.setPageNumber(pageNum);

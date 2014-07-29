@@ -58,14 +58,16 @@ public class ItemMaterial extends ItemRings implements IPlantable {
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         if (stack.getItemDamage() == 6) {
-            if (Rings.proxy.manaHandler.playerHasSession(player)) {
-                IPlayerSession session = Rings.proxy.manaHandler.getPlayerSession(player);
-                if (session != null && session.getMana() < session.getMaxMana()) {
-                    session.adjustMana(session.getMaxMana() - session.getMana(), false);
-                    if (!world.isRemote)
+            if (!world.isRemote) {
+                if (Rings.proxy.manaHandler.playerHasSession(player)) {
+                    IPlayerSession session = Rings.proxy.manaHandler.getPlayerSession(player);
+                    if (session != null && session.getMana() < session.getMaxMana()) {
+                        session.adjustMana(session.getMaxMana() - session.getMana(), false);
+
                         Rings.proxy.manaHandler.updatePlayerSession(session, world.provider.dimensionId);
-                    if (!player.capabilities.isCreativeMode)
-                        stack.stackSize--;
+                        if (!player.capabilities.isCreativeMode)
+                            stack.stackSize--;
+                    }
                 }
             }
         }

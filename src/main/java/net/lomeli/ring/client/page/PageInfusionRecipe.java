@@ -32,6 +32,7 @@ public class PageInfusionRecipe extends PageRecipe {
         this.recipe = Rings.proxy.infusionRegistry.getRecipeFromOut(itemStack);
         this.cost = Rings.proxy.infusionRegistry.getCostFromOutput(itemStack);
         this.mainItem = Rings.proxy.infusionRegistry.getBaseFromOutput(itemStack);
+        this.currentDegree = rand.nextInt();
     }
 
     public PageInfusionRecipe(IBookGui gui, ItemStack itemStack) {
@@ -52,7 +53,6 @@ public class PageInfusionRecipe extends PageRecipe {
         if (mainItem != null)
             this.renderItemObject(this.mainItem, drawX + 48, drawY + 68);
 
-        currentDegree = mc.theWorld.getWorldTime();
         if (this.recipe != null && this.recipe.length > 0) {
             int degreePerInput = 360 / this.recipe.length;
             for (Object obj : recipe) {

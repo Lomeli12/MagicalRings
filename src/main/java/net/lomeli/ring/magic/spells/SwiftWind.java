@@ -111,6 +111,6 @@ public class SwiftWind implements ISpell {
         float g = (rgb >> 8 & 255) / 255.0F;
         float b = (rgb & 255) / 255.0F;
         boolean color = world.rand.nextBoolean();
-        mc.effectRenderer.addEffect(new EntityManaFX(world, x - 0.5 + world.rand.nextFloat(), y - (entity.getEyeHeight()* 10), z - 0.5 + world.rand.nextFloat(), 0.325f, color ? r : 1f, color ? g : 1f, color ? b : 1f, 0.75f, 4));
+        mc.effectRenderer.addEffect(new EntityManaFX(world, x - 0.5 + world.rand.nextFloat(), y - (entity.getEyeHeight() * 10), z - 0.5 + world.rand.nextFloat(), 0.325f, color ? r : 1f, color ? g : 1f, color ? b : 1f, 0.75f, 5));
     }
 }
