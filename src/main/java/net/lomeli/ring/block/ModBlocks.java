@@ -1,6 +1,7 @@
 package net.lomeli.ring.block;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
@@ -9,7 +10,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class ModBlocks {
-    public static Block altar, ringForge, oreBlocks, onionBlock, manaFlower;
+    public static Block altar, ringForge, oreBlocks, onionBlock, manaFlower, ctBlock, manaBrick;
 
     public static void loadBlocks() {
         altar = new BlockAltars("altar").setBlockName("altar");
@@ -26,6 +27,12 @@ public class ModBlocks {
 
         manaFlower = new BlockManaFlower("manaFlower_stage_").setBlockName("manaFlower");
         registerBlock(manaFlower, BlockManaFlower.ItemManaBush.class, "manaFlower");
+
+        ctBlock = new BlockCT(Material.glass, "glass").setBlockName("manaGlass");
+        registerBlock(ctBlock, "manaGlass");
+
+        manaBrick = new BlockRings(Material.rock, "manabrick").setHardness(4f).setResistance(20f).setBlockName("manaBrick");
+        registerBlock(manaBrick, "manaBrick");
 
         OreDictionary.registerOre("oreTungsten", new ItemStack(oreBlocks, 1, 0));
         OreDictionary.registerOre("orePlatinum", new ItemStack(oreBlocks, 1, 1));

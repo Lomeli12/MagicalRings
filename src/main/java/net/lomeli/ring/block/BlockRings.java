@@ -10,10 +10,12 @@ import net.lomeli.ring.lib.ModLibs;
 
 public class BlockRings extends Block {
     protected IIcon blankIcon;
+    protected String texture;
 
     public BlockRings(Material material, String texture) {
         super(material);
         this.setCreativeTab(Rings.modTab);
+        this.texture = texture;
         this.setBlockTextureName(ModLibs.MOD_ID.toLowerCase() + ":" + texture);
     }
 

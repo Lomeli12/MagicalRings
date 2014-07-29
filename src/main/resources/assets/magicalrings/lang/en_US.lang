@@ -14,6 +14,8 @@ tile.magicalrings.ore.4.name=Peridot Ore
 tile.magicalrings.ore.5.name=Ruby Ore
 tile.magicalrings.ore.6.name=Sapphire Ore
 tile.magicalrings.ore.7.name=Amethyst Ore
+tile.magicalrings.manaGlass.name=Mana Infused Glass
+tile.magicalrings.manaBrick.name=Mana Infused Brick
 
 item.magicalrings.ironHammer.name=Iron Hammer
 item.magicalrings.diamondHammer.name=Diamond Hammer

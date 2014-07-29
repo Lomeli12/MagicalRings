@@ -22,6 +22,8 @@ public class RenderConnectedTextures {
 
     public boolean renderCTBlock(IBlockAccess world, int x, int y, int z) {
         Tessellator tess = Tessellator.instance;
+        renderblocks.enableAO = false;
+        tess.setColorOpaque_F(1f, 1f, 1f);
         IIcon blockIcon = ctBlock.getIcon(7, meta);
         boolean flag = false;
         List<IIcon> iconList = new ArrayList<IIcon>();
@@ -31,7 +33,7 @@ public class RenderConnectedTextures {
                 int brightness = ctBlock.getMixedBrightnessForBlock(world, x, y, z);
                 if (side == 2) {
                     iconList.add(icon.getBase());
-                    tess.setBrightness(renderblocks.renderMinZ > 0.0D ? brightness : ctBlock.getMixedBrightnessForBlock(world, x, y, z + 1));
+                    tess.setBrightness(renderblocks.renderMaxZ < 1.0D ? brightness : ctBlock.getMixedBrightnessForBlock(world, x, y, z + 1));
                     if (!doBlocksMatch(world, x - 1, y, z))
                         iconList.add(icon.getLeftEdge());
                     if (!doBlocksMatch(world, x + 1, y, z))
@@ -109,7 +111,7 @@ public class RenderConnectedTextures {
                     }
                 } else if (side == 4) {
                     iconList.add(icon.getBase());
-                    tess.setBrightness(renderblocks.renderMinZ > 0.0D ? brightness : ctBlock.getMixedBrightnessForBlock(world, x + 1, y, z));
+                    tess.setBrightness(renderblocks.renderMaxX < 1.0D ? brightness : ctBlock.getMixedBrightnessForBlock(world, x + 1, y, z));
                     if (!doBlocksMatch(world, x, y, z + 1))
                         iconList.add(icon.getLeftEdge());
                     if (!doBlocksMatch(world, x, y, z - 1))
@@ -120,19 +122,19 @@ public class RenderConnectedTextures {
                         iconList.add(icon.getBottomEdge());
                     if (doBlocksMatch(world, x, y - 1, z) && doBlocksMatch(world, x, y, z + 1)) {
                         if (!doBlocksMatch(world, x, y - 1, z + 1))
-                            iconList.add(icon.getBottomRightCorner());
+                            iconList.add(icon.getBottomLeftCorner());
                     }
                     if (doBlocksMatch(world, x, y - 1, z) && doBlocksMatch(world, x, y, z - 1)) {
                         if (!doBlocksMatch(world, x, y - 1, z - 1))
-                            iconList.add(icon.getBottomLeftCorner());
+                            iconList.add(icon.getBottomRightCorner());
                     }
                     if (doBlocksMatch(world, x, y + 1, z) && doBlocksMatch(world, x, y, z + 1)) {
                         if (!doBlocksMatch(world, x, y + 1, z + 1))
-                            iconList.add(icon.getTopRightCorner());
+                            iconList.add(icon.getTopLeftCorner());
                     }
                     if (doBlocksMatch(world, x, y + 1, z) && doBlocksMatch(world, x, y, z - 1)) {
                         if (!doBlocksMatch(world, x, y + 1, z - 1))
-                            iconList.add(icon.getTopLeftCorner());
+                            iconList.add(icon.getTopRightCorner());
                     }
                     if (renderblocks.renderAllFaces || ctBlock.shouldSideBeRendered(world, x + 1, y, z, side)) {
                         flag = true;
@@ -148,7 +150,7 @@ public class RenderConnectedTextures {
                     }
                 } else if (side == 5) {
                     iconList.add(icon.getBase());
-                    tess.setBrightness(renderblocks.renderMinZ > 0.0D ? brightness : ctBlock.getMixedBrightnessForBlock(world, x - 1, y, z));
+                    tess.setBrightness(renderblocks.renderMinX > 0.0D ? brightness : ctBlock.getMixedBrightnessForBlock(world, x - 1, y, z));
                     if (!doBlocksMatch(world, x, y, z - 1))
                         iconList.add(icon.getLeftEdge());
                     if (!doBlocksMatch(world, x, y, z + 1))
@@ -187,7 +189,10 @@ public class RenderConnectedTextures {
                     }
                 } else if (side == 0 || side == 1) {
                     iconList.add(icon.getBase());
-                    tess.setBrightness(renderblocks.renderMinZ > 0.0D ? brightness : ctBlock.getMixedBrightnessForBlock(world, x, y + (side == 0 ? -1 : 1), z));
+                    if (side == 0)
+                        tess.setBrightness(renderblocks.renderMinY > 0.0D ? brightness : ctBlock.getMixedBrightnessForBlock(world, x, y - 1, z));
+                    else
+                        tess.setBrightness(renderblocks.renderMaxY < 1.0D ? brightness : ctBlock.getMixedBrightnessForBlock(world, x, y + 1, z));
                     if (!doBlocksMatch(world, x - 1, y, z))
                         iconList.add(icon.getLeftEdge());
                     if (!doBlocksMatch(world, x + 1, y, z))

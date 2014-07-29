@@ -4,6 +4,7 @@ import net.minecraftforge.common.MinecraftForge;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.VillagerRegistry;
 
 import net.lomeli.ring.block.ModBlocks;
 import net.lomeli.ring.block.tile.TileAltar;
@@ -15,7 +16,9 @@ import net.lomeli.ring.client.page.PageUtil;
 import net.lomeli.ring.core.handler.*;
 import net.lomeli.ring.core.helper.VersionChecker;
 import net.lomeli.ring.entity.ModEntities;
+import net.lomeli.ring.entity.villager.RingVillager;
 import net.lomeli.ring.item.ModItems;
+import net.lomeli.ring.lib.ModLibs;
 import net.lomeli.ring.magic.InfusionRegistry;
 import net.lomeli.ring.magic.RingMaterialRegistry;
 import net.lomeli.ring.magic.SpellRegistry;
@@ -45,6 +48,9 @@ public class Proxy {
         renderHandler = new RenderHandler();
         tickClient = new TickHandlerClient();
         addonHandler = new AddonHandler();
+
+        VillagerRegistry.instance().registerVillagerId(ModLibs.villagerID);
+        VillagerRegistry.instance().registerVillageTradeHandler(ModLibs.villagerID, new RingVillager());
     }
 
     public void init() {

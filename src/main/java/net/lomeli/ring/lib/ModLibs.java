@@ -107,4 +107,8 @@ public class ModLibs {
 
     public static int manaFlowerQuantity = 3;
     public static int manaFlowerDensity = 2;
+
+    public static int villagerID = 72380;
+
+    public static int ctRenderID;
 }

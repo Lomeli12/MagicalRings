@@ -12,7 +12,7 @@ import net.minecraft.world.IBlockAccess;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 
 public class RenderCTBlock implements ISimpleBlockRenderingHandler {
-    private int renderID;
+    private final int renderID;
 
     public RenderCTBlock(int id) {
         this.renderID = id;

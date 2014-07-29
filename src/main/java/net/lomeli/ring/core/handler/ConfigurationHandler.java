@@ -67,6 +67,8 @@ public class ConfigurationHandler {
         ModLibs.DISPLAY_X = config.getInt("manaDisplayX", clientOptions, ModLibs.DISPLAY_X, 0, Integer.MAX_VALUE, "");
         ModLibs.DISPLAY_Y = config.getInt("manaDisplayY", clientOptions, ModLibs.DISPLAY_Y, 0, Integer.MAX_VALUE, "");
 
+        ModLibs.villagerID = config.getInt("villagerID", modOptions, ModLibs.villagerID, 0, Integer.MAX_VALUE, "");
+
         if (this.config.hasChanged())
             this.config.save();
     }

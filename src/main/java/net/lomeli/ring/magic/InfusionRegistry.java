@@ -10,6 +10,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import net.lomeli.ring.api.interfaces.IInfusionRegistry;
+import net.lomeli.ring.block.ModBlocks;
 import net.lomeli.ring.core.helper.SimpleUtil;
 import net.lomeli.ring.item.ModItems;
 
@@ -25,6 +26,7 @@ public class InfusionRegistry implements IInfusionRegistry {
         registerInfusionRecipe(new ItemStack(Items.potionitem, 1, 16), new ItemStack(ModItems.food, 1, 3), 0, Items.redstone, Items.redstone, "berryMana", "berryMana");
         registerInfusionRecipe(new ItemStack(Items.nether_star), new ItemStack(ModItems.materials, 1, 6), 20, "berryMana", "gemDiamond", "berryMana", "gemDiamond", "berryMana", "gemDiamond", "berryMana", "gemDiamond");
         registerInfusionRecipe(new ItemStack(ModItems.food, 1, 3), new ItemStack(ModItems.food, 1, 2), 60, Blocks.gold_block, "gemMana", new ItemStack(Items.potionitem, 1, 8197));
+        registerInfusionRecipe("blockGlass", new ItemStack(ModBlocks.ctBlock, 9), 15, "berryMana", "berryMana", "berryMana", "berryMana", "blockGlass", "blockGlass", "blockGlass", "blockGlass");
     }
 
     @Override

@@ -19,6 +19,7 @@ import net.lomeli.ring.api.interfaces.IBookGui;
 import net.lomeli.ring.lib.BookText;
 import net.lomeli.ring.lib.ModLibs;
 
+// Forgot to mention, thanks Vazkii for the rendering at an angle and tooltips
 public class PageInfusionRecipe extends PageRecipe {
     private ResourceLocation circle = new ResourceLocation(ModLibs.MOD_ID.toLowerCase() + ":gui/circle.png");
     private Object[] recipe;
