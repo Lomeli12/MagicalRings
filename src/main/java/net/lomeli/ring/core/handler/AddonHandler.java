@@ -27,7 +27,7 @@ public class AddonHandler implements IHarvestHandler {
         ItemStack stack;
         if (block == ModBlocks.onionBlock) {
             if (meta == 7) {
-                stack = new ItemStack(ModItems.food, 1 + world.rand.nextInt(1), 0);
+                stack = new ItemStack(ModItems.food, 1 + world.rand.nextInt(3), 0);
                 if (!world.isRemote)
                     world.spawnEntityInWorld(new EntityItem(world, x, y, z, stack));
                 world.setBlockMetadataWithNotify(x, y, z, 0, 2);
