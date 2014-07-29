@@ -63,7 +63,7 @@ public class PageMaterial extends Page {
                     boost = Rings.proxy.ringMaterials.getGemBoost(stack);
                 this.drawString(StatCollector.translateToLocal(ModLibs.BOOST) + " : " + (boost > 0 ? "+" + boost : boost), this.drawX + 10, this.drawY + 5 + padding, Color.BLACK.getRGB());
             } else
-                mc.fontRenderer.drawStringWithShadow("§k MISSINGITEMISMISSING §r", drawX, drawY + padding, Color.RED.getRGB());
+                mc.fontRenderer.drawStringWithShadow("\u00a7k MISSINGITEMISMISSING \u00a7r", drawX, drawY + padding, Color.RED.getRGB());
         }
     }
 
