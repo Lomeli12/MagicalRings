@@ -1,5 +1,7 @@
 package net.lomeli.ring.magic;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -9,17 +11,19 @@ import net.minecraft.item.ItemStack;
 
 import net.lomeli.ring.api.interfaces.ISpell;
 import net.lomeli.ring.api.interfaces.ISpellRegistry;
-import net.lomeli.ring.item.ModItems;
+import net.lomeli.ring.api.interfaces.recipe.ISpellEntry;
 import net.lomeli.ring.lib.ModLibs;
 import net.lomeli.ring.magic.spells.*;
 
 public class SpellRegistry implements ISpellRegistry {
-    private LinkedHashMap<String, ISpell> registeredSpells;
-    private LinkedHashMap<String, Object[]> spellRecipes;
+    private List<ISpellEntry> spellList;
+    //private LinkedHashMap<String, ISpell> registeredSpells;
+    //private LinkedHashMap<String, Object[]> spellRecipes;
 
     public SpellRegistry() {
-        this.registeredSpells = new LinkedHashMap<String, ISpell>();
-        this.spellRecipes = new LinkedHashMap<String, Object[]>();
+        this.spellList = new ArrayList<ISpellEntry>();
+        //this.registeredSpells = new LinkedHashMap<String, ISpell>();
+        //this.spellRecipes = new LinkedHashMap<String, Object[]>();
         this.registerSpell(new EnderPort(), ModLibs.MOD_ID + ":enderPort", Items.ender_pearl, Items.ender_eye, Blocks.end_stone, Blocks.diamond_block);
         this.registerSpell(new FriendlyFire(), ModLibs.MOD_ID + ":friendlyFire", Items.ender_pearl, Items.diamond_sword, Items.bone, Items.spider_eye, Items.gunpowder, Items.blaze_rod, Items.ghast_tear, Items.magma_cream);
         this.registerSpell(new FireWrath(), ModLibs.MOD_ID + ":fireyWrath", Items.flint_and_steel, Items.blaze_powder, Items.blaze_rod, Items.fire_charge, Items.lava_bucket, "magmaStone");
@@ -35,42 +39,80 @@ public class SpellRegistry implements ISpellRegistry {
 
     @Override
     public void registerSpell(ISpell spell, String id, Object... obj) {
-        if (this.registeredSpells.containsKey(id))
-            return;
-        this.registeredSpells.put(id, spell);
+        Object[] obj1 = new Object[8];
         if (obj.length <= 8)
-            this.spellRecipes.put(id, obj);
+            obj1 = obj;
         else {
-            Object[] obj1 = new Object[8];
-            for (int i = 0; i < 8; i++) {
+            for (int i = 0; i < 8; i++)
                 obj1[i] = obj[i];
-            }
-            this.spellRecipes.put(id, obj1);
         }
+        this.registerSpell(new SpellEntry(spell, id, obj1));
+    }
+
+    public void registerSpell(ISpellEntry entry) {
+        if (!this.spellList.contains(entry))
+            this.spellList.add(entry);
     }
 
     @Override
-    public LinkedHashMap<String, ISpell> getReisteredSpells() {
-        return this.registeredSpells;
+    public List<ISpellEntry> getSpellList() {
+        return this.spellList;
     }
 
     @Override
     public ISpell getSpell(String id) {
-        return this.registeredSpells.get(id);
+        for (int i = 0; i < this.spellList.size(); i++) {
+            ISpellEntry entry = this.spellList.get(i);
+            if (entry != null && entry.getSpellID().equals(id))
+                return entry.getSpell();
+        }
+        return null;
     }
 
     @Override
     public Object[] getSpellRecipe(String id) {
-        return this.spellRecipes.get(id);
+        for (int i = 0; i < this.spellList.size(); i++) {
+            ISpellEntry entry = this.spellList.get(i);
+            if (entry != null && entry.getSpellID().equals(id))
+                return entry.requireMaterials();
+        }
+        return null;
     }
 
     @Override
     public String getSpellID(ISpell spell) {
-        for (Map.Entry<String, ISpell> entry : this.registeredSpells.entrySet()) {
-            ISpell iSpell = entry.getValue();
-            if (iSpell != null && iSpell.getUnlocalizedName().equals(spell.getUnlocalizedName()))
-                return entry.getKey();
+        for (int i = 0; i < this.spellList.size(); i++) {
+            ISpellEntry entry = this.spellList.get(i);
+            if (entry != null && entry.getSpell().getUnlocalizedName().equals(spell.getUnlocalizedName()))
+                return entry.getSpellID();
         }
         return null;
+    }
+
+    public static class SpellEntry implements ISpellEntry {
+        private Object[] items;
+        private String id;
+        private ISpell spell;
+
+        public SpellEntry(ISpell spell, String id, Object...items) {
+            this.spell = spell;
+            this.id = id;
+            this.items = items;
+        }
+
+        @Override
+        public Object[] requireMaterials() {
+            return items;
+        }
+
+        @Override
+        public String getSpellID() {
+            return id;
+        }
+
+        @Override
+        public ISpell getSpell() {
+            return spell;
+        }
     }
 }

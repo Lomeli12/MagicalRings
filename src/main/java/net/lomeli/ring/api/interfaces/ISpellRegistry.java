@@ -1,6 +1,8 @@
 package net.lomeli.ring.api.interfaces;
 
-import java.util.LinkedHashMap;
+import java.util.List;
+
+import net.lomeli.ring.api.interfaces.recipe.ISpellEntry;
 
 /**
  * Do NOT implement! Use instance in RingAPI to use these methods.
@@ -14,7 +16,7 @@ public interface ISpellRegistry {
     /**
      * Get a list of all registered spells
      */
-    public LinkedHashMap<String, ISpell> getReisteredSpells();
+    public List<ISpellEntry> getSpellList();
 
     /**
      * Get spell by it's id

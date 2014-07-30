@@ -16,6 +16,7 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import net.lomeli.ring.Rings;
 import net.lomeli.ring.api.interfaces.IBookGui;
+import net.lomeli.ring.api.interfaces.recipe.IInfusionRecipe;
 import net.lomeli.ring.lib.BookText;
 import net.lomeli.ring.lib.ModLibs;
 
@@ -30,9 +31,12 @@ public class PageInfusionRecipe extends PageRecipe {
     public PageInfusionRecipe(IBookGui gui, ItemStack itemStack, int color) {
         super(gui, itemStack, null, color);
         this.output = itemStack;
-        this.recipe = Rings.proxy.infusionRegistry.getRecipeFromOut(itemStack);
-        this.cost = Rings.proxy.infusionRegistry.getCostFromOutput(itemStack);
-        this.mainItem = Rings.proxy.infusionRegistry.getBaseFromOutput(itemStack);
+        IInfusionRecipe infusionRecipe = Rings.proxy.infusionRegistry.getRecipeFromOutput(itemStack);
+        if (infusionRecipe != null) {
+            this.recipe = infusionRecipe.getIngredients();
+            this.cost = infusionRecipe.getManaCost();
+            this.mainItem = infusionRecipe.getBaseItem();
+        }
         this.currentDegree = rand.nextInt();
     }
 

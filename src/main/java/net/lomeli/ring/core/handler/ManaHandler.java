@@ -5,7 +5,6 @@ import java.util.Map;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.WorldServer;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
@@ -18,16 +17,17 @@ import net.lomeli.ring.api.event.SessionUpdatedEvent;
 import net.lomeli.ring.api.interfaces.IManaHandler;
 import net.lomeli.ring.api.interfaces.IPlayerSession;
 import net.lomeli.ring.core.helper.LogHelper;
-import net.lomeli.ring.lib.ModLibs;
 import net.lomeli.ring.magic.PlayerSession;
 import net.lomeli.ring.magic.RingSaveData;
 
 public class ManaHandler implements IManaHandler {
     private HashMap<Integer, HashMap<String, IPlayerSession>> dimensionSession;
     private RingSaveData saveData;
+    private boolean initialized;
 
     public ManaHandler() {
         dimensionSession = new HashMap<Integer, HashMap<String, IPlayerSession>>();
+        initialized = false;
     }
 
     public IPlayerSession getPlayerData(EntityPlayer player) {
@@ -173,6 +173,7 @@ public class ManaHandler implements IManaHandler {
         LogHelper.info("Clearing data...");
         saveData = null;
         dimensionSession.clear();
+        setInitialized(false);
     }
 
     public void playerChangedDimension(EntityPlayer player, int oldDim, int newDim) {
@@ -198,6 +199,22 @@ public class ManaHandler implements IManaHandler {
         }
     }
 
+    public RingSaveData getSaveData() {
+        return saveData;
+    }
+
+    public void setSaveData(RingSaveData data) {
+        saveData = data;
+    }
+
+    public void setInitialized(boolean initialized) {
+        this.initialized = initialized;
+    }
+
+    public boolean isInitialized() {
+        return initialized;
+    }
+
     @SubscribeEvent
     public void onWorldUnload(WorldEvent.Unload event) {
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
@@ -217,17 +234,10 @@ public class ManaHandler implements IManaHandler {
     @SubscribeEvent
     public void onWorldLoad(WorldEvent.Load event) {
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
-            if (event.world.provider.dimensionId == 0) {
-                WorldServer world = (WorldServer) event.world;
-                RingSaveData ringSaveData = (RingSaveData) world.perWorldStorage.loadData(RingSaveData.class, ModLibs.SAVE_DATA);
-                if (ringSaveData == null) {
-                    ringSaveData = new RingSaveData(ModLibs.SAVE_DATA);
-                    world.perWorldStorage.setData(ModLibs.SAVE_DATA, ringSaveData);
-                }
-                Rings.proxy.manaHandler.saveData = ringSaveData;
+            if (!dimensionSession.containsKey(event.world.provider.dimensionId) && isInitialized()) {
+                LogHelper.info("Beginning new session " + event.world.provider.dimensionId + "!");
+                Rings.proxy.manaHandler.beginNewSession(event.world.provider.dimensionId);
             }
-            LogHelper.info("Beginning new session " + event.world.provider.dimensionId + "!");
-            Rings.proxy.manaHandler.beginNewSession(event.world.provider.dimensionId);
         }
     }
 }

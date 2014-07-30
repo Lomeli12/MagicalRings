@@ -18,6 +18,7 @@ import net.lomeli.ring.core.helper.SimpleUtil;
 import net.lomeli.ring.item.ModItems;
 import net.lomeli.ring.lib.ModLibs;
 
+// TODO Fix this unholy mess!
 public class RingMaterialRegistry implements IMaterialRegistry {
     public LinkedHashMap<Object, Integer> validMaterial = new LinkedHashMap<Object, Integer>();
     public LinkedHashMap<Object, Integer> gemMaterial = new LinkedHashMap<Object, Integer>();

@@ -16,6 +16,7 @@ import cpw.mods.fml.common.registry.VillagerRegistry;
 
 import net.lomeli.ring.Rings;
 import net.lomeli.ring.api.interfaces.ISpell;
+import net.lomeli.ring.api.interfaces.recipe.ISpellEntry;
 import net.lomeli.ring.block.ModBlocks;
 import net.lomeli.ring.item.ModItems;
 import net.lomeli.ring.lib.ModLibs;
@@ -49,12 +50,13 @@ public class RingVillager implements VillagerRegistry.IVillageTradeHandler {
         outputs.add(new ItemStack(ModItems.ironHammer));
         outputs.add(new ItemStack(ModItems.book, 1, 0));
         outputs.add(new ItemStack(ModItems.book, 1, 1));
-        for (Map.Entry<String, ISpell> entry : Rings.proxy.spellRegistry.getReisteredSpells().entrySet()) {
-            if (entry.getValue() != null) {
+        for (int i = 0; i < Rings.proxy.spellRegistry.getSpellList().size(); i++) {
+            ISpellEntry entry = Rings.proxy.spellRegistry.getSpellList().get(i);
+            if (entry != null && entry.getSpell() != null) {
                 ItemStack stack = new ItemStack(ModItems.spellParchment);
                 if (!stack.hasTagCompound())
                     stack.stackTagCompound = new NBTTagCompound();
-                stack.getTagCompound().setString(ModLibs.SPELL_ID, entry.getKey());
+                stack.getTagCompound().setString(ModLibs.SPELL_ID, entry.getSpellID());
                 outputs.add(stack);
             }
         }

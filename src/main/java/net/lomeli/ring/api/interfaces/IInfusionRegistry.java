@@ -2,6 +2,8 @@ package net.lomeli.ring.api.interfaces;
 
 import net.minecraft.item.ItemStack;
 
+import net.lomeli.ring.api.interfaces.recipe.IInfusionRecipe;
+
 /**
  * Do NOT implement! Use instance in RingAPI to use these methods.
  */
@@ -9,19 +11,11 @@ public interface IInfusionRegistry {
     /** Add new Infusion Recipe. Can use Item, Block, or OreDictionary name for the base item */
     public void registerInfusionRecipe(Object baseItem, ItemStack output, int manaCost, Object... additionalInputs);
 
-    public Object getBaseFromOutput(ItemStack output);
+    public void registerInfusionRecipe(IInfusionRecipe recipe);
 
-    /** Get mana cost for recipe */
-    public int getCostFromBase(Object item);
+    public IInfusionRecipe getRecipeFromOutput(ItemStack out);
 
-    /** Get mana cost for recipe */
-    public int getCostFromOutput(ItemStack output);
-
-    public Object[] getRecipeFromOut(ItemStack output);
-
-    public Object[] getRecipeFromBase(Object item);
-
-    public ItemStack getOutputFromBase(Object item);
+    public IInfusionRecipe getRecipeFromItems(ItemStack... ingredients);
 
     /** Check if object is valid base */
     public boolean isItemValid(Object item);

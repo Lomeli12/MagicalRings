@@ -18,6 +18,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.StatCollector;
 
 import net.lomeli.ring.Rings;
+import net.lomeli.ring.api.interfaces.recipe.IInfusionRecipe;
 import net.lomeli.ring.api.interfaces.IPlayerSession;
 import net.lomeli.ring.api.interfaces.ISpell;
 import net.lomeli.ring.core.helper.SimpleUtil;
@@ -30,7 +31,7 @@ public class TileAltar extends TileItemAltar {
     private boolean startRingInfusion, startItemInfusion, infoCollected;
     private List<TileItemAltar> tiles = new ArrayList<TileItemAltar>(), tilesToGetFrom = new ArrayList<TileItemAltar>();
     private List<ItemStack> tempInventory = new ArrayList<ItemStack>();
-    private ItemStack output;
+    private IInfusionRecipe infusionRecipe;
 
     public TileAltar() {
         super();
@@ -94,11 +95,12 @@ public class TileAltar extends TileItemAltar {
         return true;
     }
 
+    //<editor-fold desc="Item Infusion">
     // Item Infusion code
     private void itemInfusion() {
         if (!basicCheck(1))
             return;
-        if (output != null) {
+        if (infusionRecipe != null) {
             if (!this.infoCollected)
                 this.matchInfusionRecipe();
             else {
@@ -118,11 +120,10 @@ public class TileAltar extends TileItemAltar {
                     }
                 }
                 if (tilesToGetFrom.isEmpty()) {
-
                     if (++timer >= 30) {
                         ItemStack stack = getStackInSlot(0);
                         if (stack != null && stack.getItem() != null && Rings.proxy.infusionRegistry.isItemValid(stack)) {
-                            this.setInventorySlotContents(0, output);
+                            this.setInventorySlotContents(0, infusionRecipe.getOutput());
                             this.markDirty();
                         } else
                             resetItem();
@@ -138,7 +139,7 @@ public class TileAltar extends TileItemAltar {
     }
 
     private void matchInfusionRecipe() {
-        Object[] ingredients = Rings.proxy.infusionRegistry.getRecipeFromBase(getStackInSlot(0));
+        Object[] ingredients = infusionRecipe.getIngredients();
         if (ingredients == null) {
             resetItem();
             return;
@@ -207,7 +208,7 @@ public class TileAltar extends TileItemAltar {
     }
 
     private void simpleItemReset() {
-        this.output = null;
+        this.infusionRecipe = null;
         this.timer = 0;
         this.tiles.clear();
         for (TileItemAltar tile : this.tilesToGetFrom) {
@@ -224,7 +225,7 @@ public class TileAltar extends TileItemAltar {
     }
 
     private void resetItem(boolean i) {
-        this.output = null;
+        this.infusionRecipe = null;
         this.timer = 0;
         this.tiles.clear();
         this.tilesToGetFrom.clear();
@@ -242,7 +243,9 @@ public class TileAltar extends TileItemAltar {
         if (i)
             worldObj.playSound(xCoord, yCoord, zCoord, "random.fizz", 0.5F, 0.4F / ((float) worldObj.rand.nextDouble() * 0.4F + 0.8F), false);
     }
+    //</editor-fold>
 
+    //<editor-fold desc="Ring Infusion">
     // Ring Infusion
     private void ringInfusion() {
         if (!basicCheck(0))
@@ -403,6 +406,7 @@ public class TileAltar extends TileItemAltar {
         }
         return true;
     }
+    //</editor-fold>
 
     public void startInfusion(EntityPlayer player, String spellId) {
         resetItem(false);
@@ -410,10 +414,16 @@ public class TileAltar extends TileItemAltar {
         String noEXP = StatCollector.translateToLocal(ModLibs.NO_EXP);
         if (getStackInSlot(0) != null) {
             if (spellId == null) {
-                if (Rings.proxy.infusionRegistry.isItemValid(getStackInSlot(0))) {
-                    ItemStack out = Rings.proxy.infusionRegistry.getOutputFromBase(getStackInSlot(0)).copy();
-                    if (out != null && out.getItem() != null && out.stackSize > 0) {
-                        int cost = Rings.proxy.infusionRegistry.getCostFromOutput(out);
+                basicCheck(1);
+                ItemStack[] items = new ItemStack[tiles.size()];
+                for (int i = 0; i < tiles.size(); i++) {
+                    items[i] = tiles.get(i).getStackInSlot(0);
+                }
+                IInfusionRecipe recipe = Rings.proxy.infusionRegistry.getRecipeFromItems(items);
+                tiles.clear();
+                if (recipe != null && recipe.getOutput() != null && recipe.getOutput().getItem() != null) {
+                    if (SimpleUtil.areItemObjectsSame(recipe.getBaseItem(), this.getStackInSlot(0))) {
+                        int cost = recipe.getManaCost();
                         IPlayerSession session = Rings.proxy.manaHandler.getPlayerSession(player);
                         if (session != null && session.hasEnoughMana(cost)) {
                             if (!player.capabilities.isCreativeMode) {
@@ -422,7 +432,7 @@ public class TileAltar extends TileItemAltar {
                                 if (!worldObj.isRemote)
                                     Rings.proxy.manaHandler.updatePlayerSession(session, worldObj.provider.dimensionId);
                             }
-                            this.output = out;
+                            this.infusionRecipe = recipe;
                             this.startItemInfusion = true;
                         } else {
                             if (!worldObj.isRemote)
@@ -430,6 +440,7 @@ public class TileAltar extends TileItemAltar {
                         }
                     }
                 }
+
             } else {
                 if (this.hasBeenInfused(getStackInSlot(0))) {
                     if (player.experienceLevel >= 35 || player.capabilities.isCreativeMode) {
