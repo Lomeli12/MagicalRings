@@ -20,10 +20,10 @@ public class ModItems {
         book = new ItemSpellBook("spellbook").setUnlocalizedName("book");
         registerItem(book, "book");
 
-        ironHammer = new ItemHammer("hammerIron", 15).setUnlocalizedName("ironHammer");
+        ironHammer = new ItemHammer("hammerIron", 50).setUnlocalizedName("ironHammer");
         registerItem(ironHammer, "ironHammer");
 
-        diamondHammer = new ItemHammer("hammerDiamond", 40).setUnlocalizedName("diamondHammer");
+        diamondHammer = new ItemHammer("hammerDiamond", 110).setUnlocalizedName("diamondHammer");
         registerItem(diamondHammer, "diamondHammer");
 
         spellParchment = new ItemSpellParchment("parchment").setUnlocalizedName("spellParchment");
@@ -57,7 +57,8 @@ public class ModItems {
         OreDictionary.registerOre("tentacle", new ItemStack(materials, 1, 4));
         OreDictionary.registerOre("berryMana", new ItemStack(materials, 1, 5));
         OreDictionary.registerOre("gemMana", new ItemStack(materials, 1, 6));
-
+        OreDictionary.registerOre("hammer", new ItemStack(ironHammer, 1, OreDictionary.WILDCARD_VALUE));
+        OreDictionary.registerOre("hammer", new ItemStack(diamondHammer, 1, OreDictionary.WILDCARD_VALUE));
     }
 
     private static void registerItem(Item item, String id) {

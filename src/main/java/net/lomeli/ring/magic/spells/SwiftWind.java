@@ -10,9 +10,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import net.lomeli.ring.Rings;
 import net.lomeli.ring.api.interfaces.IPlayerSession;
 import net.lomeli.ring.api.interfaces.ISpell;

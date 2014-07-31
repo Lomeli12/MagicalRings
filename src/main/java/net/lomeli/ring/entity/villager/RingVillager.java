@@ -2,7 +2,6 @@ package net.lomeli.ring.entity.villager;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import net.minecraft.entity.passive.EntityVillager;
@@ -15,7 +14,6 @@ import net.minecraft.village.MerchantRecipeList;
 import cpw.mods.fml.common.registry.VillagerRegistry;
 
 import net.lomeli.ring.Rings;
-import net.lomeli.ring.api.interfaces.ISpell;
 import net.lomeli.ring.api.interfaces.recipe.ISpellEntry;
 import net.lomeli.ring.block.ModBlocks;
 import net.lomeli.ring.item.ModItems;

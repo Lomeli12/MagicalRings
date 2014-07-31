@@ -18,9 +18,9 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.StatCollector;
 
 import net.lomeli.ring.Rings;
-import net.lomeli.ring.api.interfaces.recipe.IInfusionRecipe;
 import net.lomeli.ring.api.interfaces.IPlayerSession;
 import net.lomeli.ring.api.interfaces.ISpell;
+import net.lomeli.ring.api.interfaces.recipe.IInfusionRecipe;
 import net.lomeli.ring.core.helper.SimpleUtil;
 import net.lomeli.ring.item.ItemMagicRing;
 import net.lomeli.ring.lib.ModLibs;
@@ -122,7 +122,9 @@ public class TileAltar extends TileItemAltar {
                 if (tilesToGetFrom.isEmpty()) {
                     if (++timer >= 30) {
                         ItemStack stack = getStackInSlot(0);
-                        if (stack != null && stack.getItem() != null && Rings.proxy.infusionRegistry.isItemValid(stack)) {
+                        if (stack != null && stack.getItem() != null && SimpleUtil.areItemObjectsSame(stack, infusionRecipe.getBaseItem())) {
+                            this.setInventorySlotContents(0, null);
+                            this.markDirty();
                             this.setInventorySlotContents(0, infusionRecipe.getOutput());
                             this.markDirty();
                         } else

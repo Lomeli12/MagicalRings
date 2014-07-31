@@ -14,6 +14,7 @@ public class BookText {
     public static final String BAT_WING = BASE + "batWings";
     public static final String TENTACLE = BASE + "tentacle";
     public static final String MANA_BERRY = BASE + "manaBerry";
+    public static final String MANA_GLASS = BASE + "manaGlass";
     // Spell Book
     public static final String INTRO = BASE + "introPage";
     public static final String RING = BASE + "ring";

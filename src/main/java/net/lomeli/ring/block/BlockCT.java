@@ -10,17 +10,19 @@ import net.minecraft.world.IBlockAccess;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-import net.lomeli.ring.lib.ModLibs;
+import net.lomeli.ring.api.interfaces.IBookEntry;
 import net.lomeli.ring.client.render.IconCT;
+import net.lomeli.ring.lib.ModLibs;
 
-public class BlockCT extends BlockRings {
+public class BlockCT extends BlockRings implements IBookEntry {
     @SideOnly(Side.CLIENT)
     private IconCT connectedIcon;
 
-    public BlockCT(Material mat, String texture) {
+    private boolean opaque;
+
+    public BlockCT(Material mat, String texture, boolean opaque) {
         super(mat, texture);
-        this.setHardness(4f);
-        this.setResistance(20);
+        this.opaque = opaque;
     }
 
     @Override
@@ -56,16 +58,21 @@ public class BlockCT extends BlockRings {
 
     @Override
     public boolean isOpaqueCube() {
-        return false;
-    }
-
-    @Override
-    public boolean renderAsNormalBlock() {
-        return false;
+        return opaque;
     }
 
     @Override
     public int getRenderType() {
         return ModLibs.ctRenderID;
+    }
+
+    @Override
+    public String getBookPage(int metadata) {
+        return ModLibs.MOD_ID.toLowerCase() + "." + this.texture;
+    }
+
+    @Override
+    public int getData() {
+        return 0;
     }
 }

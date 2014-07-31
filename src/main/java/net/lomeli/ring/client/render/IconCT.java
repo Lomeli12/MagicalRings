@@ -6,6 +6,7 @@ import net.minecraft.util.IIcon;
 public class IconCT implements IIcon {
     private final IIcon[] icons = new IIcon[10];
     private int type;
+
     public IconCT(IIconRegister register, String iconName, String folder, String modid) {
         this(register.registerIcon(modid.toLowerCase() + ":" + folder + "full_" + iconName),          //0
                 register.registerIcon(modid.toLowerCase() + ":" + folder + "base_" + iconName),       //1
@@ -30,12 +31,12 @@ public class IconCT implements IIcon {
         }
     }
 
-    public void setType(int i) {
-        type = i;
-    }
-
     public int getType() {
         return type;
+    }
+
+    public void setType(int i) {
+        type = i;
     }
 
     @Override

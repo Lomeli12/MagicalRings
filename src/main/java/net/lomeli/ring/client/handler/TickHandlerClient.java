@@ -16,6 +16,7 @@ import net.lomeli.ring.lib.ModLibs;
 
 public class TickHandlerClient {
     public boolean display;
+
     @SubscribeEvent
     public void renderTick(RenderTickEvent tick) {
         if (tick.phase == TickEvent.Phase.END) {

@@ -1,10 +1,15 @@
 package net.lomeli.ring.core.handler;
 
+import java.util.List;
+
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
+import net.minecraftforge.oredict.OreDictionary;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -15,7 +20,6 @@ import cpw.mods.fml.relauncher.Side;
 import net.lomeli.ring.Rings;
 import net.lomeli.ring.api.interfaces.IPlayerSession;
 import net.lomeli.ring.core.helper.SimpleUtil;
-import net.lomeli.ring.item.ItemHammer;
 import net.lomeli.ring.item.ItemMaterial;
 import net.lomeli.ring.item.ModItems;
 import net.lomeli.ring.lib.ModLibs;
@@ -44,6 +48,19 @@ public class GameEventHandler {
         }
     }
 
+    private boolean isHammer(Item item) {
+        if (item != null) {
+            List<ItemStack> stackList = OreDictionary.getOres("hammer");
+            if (stackList != null && !stackList.isEmpty()) {
+                for (ItemStack stack : stackList) {
+                    if (stack != null && stack.getItem() != null && stack.getItem() == item)
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
+
     @SubscribeEvent
     public void onCrafting(PlayerEvent.ItemCraftedEvent event) {
         IInventory craftMatrix = event.craftMatrix;
@@ -53,7 +70,7 @@ public class GameEventHandler {
         for (int i = 0; i < craftMatrix.getSizeInventory(); i++) {
             ItemStack itemstack = craftMatrix.getStackInSlot(i);
             if (itemstack != null && itemstack.getItem() != null) {
-                if (itemstack.getItem() instanceof ItemHammer) {
+                if (isHammer(itemstack.getItem())) {
                     ItemStack damaged = new ItemStack(itemstack.getItem(), 2, itemstack.getItemDamage() + 1);
                     if (itemstack.hasTagCompound())
                         damaged.readFromNBT(itemstack.getTagCompound());

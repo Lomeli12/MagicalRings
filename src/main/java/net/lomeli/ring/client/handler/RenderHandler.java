@@ -21,26 +21,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class RenderHandler {
     public boolean clearFog = false;
 
-    @SideOnly(Side.CLIENT)
-    @SubscribeEvent
-    public void onSetupFog(EntityViewRenderEvent.FogDensity event) {
-        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-        if (clearFog && player != null && player.isInWater())
-            event.density = 0f;//.025F;
-    }
-
-    @SideOnly(Side.CLIENT)
-    @SubscribeEvent
-    public void onSetupFog(EntityViewRenderEvent.FogColors event) {
-        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-        if (clearFog && player != null && player.isInWater()) {
-            float multi = 7.5F;
-            event.red *= multi;
-            event.blue *= multi;
-            event.green *= multi;
-        }
-    }
-
     public static void renderItemToolTip(int x, int y, ItemStack stack) {
         int color = 0x505000ff;
         int color2 = 0xf0100010;
@@ -48,9 +28,9 @@ public class RenderHandler {
         List<String> parsedTooltip = new ArrayList();
         boolean first = true;
 
-        for(String s : toolTipData) {
+        for (String s : toolTipData) {
             String s_ = s;
-            if(!first)
+            if (!first)
                 s_ = EnumChatFormatting.GRAY + s;
             parsedTooltip.add(s_);
             first = false;
@@ -60,7 +40,7 @@ public class RenderHandler {
 
     public static void renderTooltip(int x, int y, List<String> tooltipData, int color, int color2) {
         boolean lighting = GL11.glGetBoolean(GL11.GL_LIGHTING);
-        if(lighting)
+        if (lighting)
             net.minecraft.client.renderer.RenderHelper.disableStandardItemLighting();
 
         if (!tooltipData.isEmpty()) {
@@ -100,7 +80,7 @@ public class RenderHandler {
             }
             GL11.glEnable(GL11.GL_DEPTH_TEST);
         }
-        if(!lighting)
+        if (!lighting)
             net.minecraft.client.renderer.RenderHelper.disableStandardItemLighting();
         GL11.glColor4f(1F, 1F, 1F, 1F);
     }
@@ -132,5 +112,25 @@ public class RenderHandler {
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glEnable(GL11.GL_ALPHA_TEST);
         GL11.glEnable(GL11.GL_TEXTURE_2D);
+    }
+
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public void onSetupFog(EntityViewRenderEvent.FogDensity event) {
+        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        if (clearFog && player != null && player.isInWater())
+            event.density = 0f;//.025F;
+    }
+
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public void onSetupFog(EntityViewRenderEvent.FogColors event) {
+        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        if (clearFog && player != null && player.isInWater()) {
+            float multi = 7.5F;
+            event.red *= multi;
+            event.blue *= multi;
+            event.green *= multi;
+        }
     }
 }

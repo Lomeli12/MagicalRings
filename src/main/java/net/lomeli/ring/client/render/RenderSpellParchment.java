@@ -1,6 +1,5 @@
 package net.lomeli.ring.client.render;
 
-import static org.lwjgl.opengl.GL11.*;
 import org.lwjgl.opengl.GL12;
 
 import java.util.ArrayList;
@@ -30,6 +29,8 @@ import net.lomeli.ring.api.Page;
 import net.lomeli.ring.api.interfaces.ISpell;
 import net.lomeli.ring.core.helper.SimpleUtil;
 import net.lomeli.ring.lib.ModLibs;
+
+import static org.lwjgl.opengl.GL11.*;
 
 public class RenderSpellParchment implements IItemRenderer {
     protected static RenderItem itemRenderer = new RenderItem();

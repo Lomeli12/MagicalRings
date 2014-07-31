@@ -1,7 +1,6 @@
 package net.lomeli.ring.core;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
@@ -20,7 +19,6 @@ import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 import net.lomeli.ring.Rings;
-import net.lomeli.ring.api.interfaces.ISpell;
 import net.lomeli.ring.api.interfaces.recipe.ISpellEntry;
 import net.lomeli.ring.block.ModBlocks;
 import net.lomeli.ring.item.ModItems;
@@ -56,7 +54,7 @@ public class ModRecipe {
         hammerRecipe(ModItems.diamondHammer, Blocks.diamond_block);
         addShaped(new ItemStack(ModBlocks.altar, 1, 1), "ISI", " I ", "ISI", 'I', "ingotIron", 'S', "stone");
         addShaped(new ItemStack(ModBlocks.altar, 1, 0), "ISI", " I ", "IEI", 'I', "ingotIron", 'S', "stone", 'E', Items.ender_pearl);
-        addShaped(ModBlocks.ringForge, "OOO", "ICI", "IAI", 'O', Blocks.obsidian, 'I', "ingotIron", 'C', Blocks.crafting_table, 'A', Blocks.anvil);
+        addShaped(ModBlocks.ringForge, "OOO", "ICI", "IAI", 'O', Blocks.obsidian, 'I', "plateIron", 'C', Blocks.crafting_table, 'A', Blocks.anvil);
         addShaped(new ItemStack(ModItems.materials, 1, 1), "CNC", "NDN", "CNC", 'C', "cobblestone", 'N', Blocks.netherrack, 'D', Blocks.dirt);
         addShaped(new ItemStack(ModItems.materials, 1, 3), "RIR", "IDI", "RIR", 'R', Blocks.redstone_block, 'I', "ingotIron", 'D', "gemDiamond");
         addShaped(new ItemStack(ModItems.food, 1, 3), "RMR", "MPM", "RMR", 'R', Items.redstone, 'M', "berryMana", 'P', new ItemStack(Items.potionitem, 1, 16));
@@ -65,10 +63,9 @@ public class ModRecipe {
     private static void shapelessRecipes() {
         addShapeless(new ItemStack(ModItems.spellParchment, 2), ModItems.spellParchment, Items.paper, Items.ender_pearl);
         addShapeless(new ItemStack(ModItems.book, 1, 0), Items.book, "ingotIron");
-        addShapeless(new ItemStack(ModItems.book, 1, 1), new ItemStack(ModItems.book, 1, 0), new ItemStack(ModItems.ironHammer, 1, OreDictionary.WILDCARD_VALUE));
-        addShapeless(new ItemStack(ModItems.book, 1, 1), new ItemStack(ModItems.book, 1, 0), new ItemStack(ModItems.diamondHammer, 1, OreDictionary.WILDCARD_VALUE));
-        addShapeless(ModItems.sigil, Items.paper, ModItems.ironHammer, "berryMana", Items.ender_pearl);
-        addShapeless(ModItems.sigil, Items.paper, ModItems.diamondHammer, "berryMana", Items.ender_pearl);
+        addShapeless(new ItemStack(ModItems.book, 1, 1), new ItemStack(ModItems.book, 1, 0), "hammer");
+        addShapeless(ModItems.sigil, Items.paper, "hammer", "berryMana", Items.ender_pearl);
+        addShapeless(new ItemStack(ModBlocks.metalPlate, 4), "ingotIron", "ingotIron", "ingotIron", "ingotIron", "hammer");
     }
 
     private static void furnaceRecipes() {

@@ -1,7 +1,5 @@
 package net.lomeli.ring.client.render;
 
-import static org.lwjgl.opengl.GL11.*;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -15,6 +13,8 @@ import net.lomeli.ring.block.tile.TileAltar;
 import net.lomeli.ring.block.tile.TileItemAltar;
 import net.lomeli.ring.client.model.ModelAltar;
 import net.lomeli.ring.lib.ModLibs;
+
+import static org.lwjgl.opengl.GL11.*;
 
 public class RenderAltar extends TileEntitySpecialRenderer {
 
@@ -84,6 +84,6 @@ public class RenderAltar extends TileEntitySpecialRenderer {
     }
 
     private float getItemScaleFactor(ItemStack itemStack) {
-        return itemStack != null ? (itemStack.getItem() instanceof ItemBlock ? 0.9f : 0.75f) : 1f;
+        return itemStack != null ? (itemStack.getItem() instanceof ItemBlock ? 0.9f : 0.85f) : 1f;
     }
 }

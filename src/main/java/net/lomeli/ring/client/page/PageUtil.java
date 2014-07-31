@@ -1,7 +1,8 @@
 package net.lomeli.ring.client.page;
 
 import java.awt.Color;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.item.ItemStack;
 
@@ -43,6 +44,7 @@ public class PageUtil implements IPageRegistry {
         screen.avaliablePages.add(new PageRecipe(screen, new ItemStack(ModBlocks.ringForge), BookText.FORGE2));
         screen.avaliablePages.add(new PageRecipe(screen, new ItemStack(ModItems.ironHammer)).setID(ModLibs.MOD_ID.toLowerCase() + ".hammer"));
         screen.avaliablePages.add(new PageRecipe(screen, new ItemStack(ModItems.diamondHammer)));
+        screen.avaliablePages.add(new PageRecipe(screen, new ItemStack(ModBlocks.metalPlate)).setID(ModLibs.MOD_ID.toLowerCase() + ".metal"));
         screen.avaliablePages.add(new PageRecipe(screen, new ItemStack(ModItems.book, 1, 1), BookText.MATERIAL_BOOK).setID(ModLibs.MOD_ID.toLowerCase() + ".materialBook"));
         screen.avaliablePages.add(new PageText(screen, BookText.ALTAR_INTRO, BookText.ALTAR));
         screen.avaliablePages.add(new PageImage(screen, "", BookText.ALTAR_INTRO, BookText.IMAGES, 0, 107, 115, 86));
@@ -87,42 +89,31 @@ public class PageUtil implements IPageRegistry {
         gui.avaliablePages.add(new PageItem(gui, new ItemStack(ModItems.materials, 1, 5), BookText.MANA_BERRY, goldColor));
         gui.avaliablePages.add(new PageItem(gui, new ItemStack(ModItems.materials, 1, 6), BookText.MANA_STAR, goldColor));
         gui.avaliablePages.add(new PageInfusionRecipe(gui, new ItemStack(ModItems.materials, 1, 6), goldColor));
+        gui.avaliablePages.add(new PageItem(gui, new ItemStack(ModBlocks.manaGlass), BookText.MANA_GLASS, goldColor));
+        gui.avaliablePages.add(new PageInfusionRecipe(gui, new ItemStack(ModBlocks.manaGlass), goldColor));
+        gui.avaliablePages.add(new PageInfusionRecipe(gui, new ItemStack(ModBlocks.manaBrick), goldColor));
         gui.avaliablePages.add(new PageTitle(gui, BookText.RING_MATERIAL, goldColor));
-        for (int i = 0; i < Rings.proxy.ringMaterials.validMaterial.size(); i++) {
+        for (int i = 0; i < Rings.proxy.ringMaterials.materialList.size(); i++) {
             Object[] objects = new Object[5];
             for (int j = 0; j < 5; j++) {
-                if (i < Rings.proxy.ringMaterials.validMaterial.size())
-                    objects[j] = getObjectByIndex(i, Rings.proxy.ringMaterials.validMaterial);
+                if (i < Rings.proxy.ringMaterials.materialList.size())
+                    objects[j] = Rings.proxy.ringMaterials.materialList.get(i).getMaterial();
                 i++;
             }
             gui.avaliablePages.add(new PageMaterial(gui, goldColor, objects));
             i--;
         }
         gui.avaliablePages.add(new PageTitle(gui, BookText.RING_GEM, goldColor));
-        for (int i = 0; i < Rings.proxy.ringMaterials.gemMaterial.size(); i++) {
+        for (int i = 0; i < Rings.proxy.ringMaterials.gemList.size(); i++) {
             Object[] objects = new Object[5];
             for (int j = 0; j < 5; j++) {
-                if (i < Rings.proxy.ringMaterials.gemMaterial.size())
-                    objects[j] = getObjectByIndex(i, Rings.proxy.ringMaterials.gemMaterial);
+                if (i < Rings.proxy.ringMaterials.gemList.size())
+                    objects[j] = Rings.proxy.ringMaterials.gemList.get(i).getMaterial();
                 i++;
             }
             gui.avaliablePages.add(new PageMaterial(gui, goldColor, objects));
             i--;
         }
-    }
-
-    private static Object getObjectByIndex(int index, LinkedHashMap<Object, Integer> map) {
-        if (map != null) {
-            Iterator it = map.entrySet().iterator();
-            int n = 0;
-            while (it.hasNext()) {
-                Map.Entry<Object, Integer> entry = (Map.Entry<Object, Integer>) it.next();
-                if (n == index)
-                    return entry.getKey();
-                n++;
-            }
-        }
-        return null;
     }
 
     @Override

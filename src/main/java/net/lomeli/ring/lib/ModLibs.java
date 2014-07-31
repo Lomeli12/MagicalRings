@@ -2,6 +2,8 @@ package net.lomeli.ring.lib;
 
 public class ModLibs {
     public static final String MOD_ID = "MagicalRings";
+    // Ring NBTTags
+    public static final String RING_TAG = MOD_ID + "_ringData";
     public static final String MOD_NAME = "Magical Rings";
     public static final int MAJOR = 1, MINOR = 0, REVISION = 0;
     public static final String VERSION = MAJOR + "." + MINOR + "." + REVISION;
@@ -9,8 +11,6 @@ public class ModLibs {
     public static final String PROXY_SERVER = PACKAGE + "core.Proxy";
     public static final String PROXY_CLIENT = PACKAGE + "client.ProxyClient";
     public static final String CONFIG_FACTORY = "net.lomeli.ring.client.gui.GuiConfigFactory";
-    // Ring NBTTags
-    public static final String RING_TAG = MOD_ID + "_ringData";
     // Player NBTTags
     public static final String SAVE_DATA = "RingSaveData";
     public static final String BAUBLES = "Baubles";

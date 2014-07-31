@@ -14,7 +14,6 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -31,8 +30,8 @@ import net.lomeli.ring.lib.BookText;
  * Some of this based off of NEI. Thanks ChickenBones
  */
 public class PageRecipe extends Page {
-    private PageUtil.StackPosition[] recipe;
     protected ItemStack output, toolTipStack;
+    private PageUtil.StackPosition[] recipe;
     private String itemDescription;
     private int color;
     private boolean shapeless;

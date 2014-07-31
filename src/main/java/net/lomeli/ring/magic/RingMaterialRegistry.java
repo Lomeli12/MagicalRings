@@ -1,8 +1,8 @@
 package net.lomeli.ring.magic;
 
 import java.awt.Color;
-import java.util.LinkedHashMap;
-import java.util.Map.Entry;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
@@ -14,18 +14,19 @@ import net.minecraft.util.MathHelper;
 
 import net.lomeli.ring.Rings;
 import net.lomeli.ring.api.interfaces.IMaterialRegistry;
+import net.lomeli.ring.api.interfaces.recipe.IMaterial;
 import net.lomeli.ring.core.helper.SimpleUtil;
 import net.lomeli.ring.item.ModItems;
 import net.lomeli.ring.lib.ModLibs;
 
 // TODO Fix this unholy mess!
 public class RingMaterialRegistry implements IMaterialRegistry {
-    public LinkedHashMap<Object, Integer> validMaterial = new LinkedHashMap<Object, Integer>();
-    public LinkedHashMap<Object, Integer> gemMaterial = new LinkedHashMap<Object, Integer>();
-    private LinkedHashMap<Object, Integer> materialBoost = new LinkedHashMap<Object, Integer>();
-    private LinkedHashMap<Object, Integer> gemBoost = new LinkedHashMap<Object, Integer>();
+    public List<IMaterial> materialList;
+    public List<IMaterial> gemList;
 
     public RingMaterialRegistry() {
+        materialList = new ArrayList<IMaterial>();
+        gemList = new ArrayList<IMaterial>();
         this.registerMaterial("ingotIron", Color.LIGHT_GRAY.getRGB(), 0);
         this.registerMaterial("ingotGold", new Color(0xeded00).getRGB(), 1);
         this.registerMaterial(Blocks.obsidian, new Color(0x3c005f).getRGB(), 2);
@@ -119,12 +120,13 @@ public class RingMaterialRegistry implements IMaterialRegistry {
         return j + MathHelper.floor_float(par2 / 3);
     }
 
+    public void registerGem(IMaterial gem) {
+        this.gemList.add(gem);
+    }
+
     @Override
     public void registerGem(ItemStack stack, int rgb, int boost) {
-        if (!this.gemMaterial.containsKey(stack)) {
-            this.gemMaterial.put(stack, rgb);
-            this.gemBoost.put(stack, boost);
-        }
+        registerGem(new RingMaterial(stack, rgb, boost));
     }
 
     @Override
@@ -141,18 +143,16 @@ public class RingMaterialRegistry implements IMaterialRegistry {
 
     @Override
     public void registerGem(String oreDicName, int rgb, int boost) {
-        if (!this.gemMaterial.containsKey(oreDicName)) {
-            this.gemMaterial.put(oreDicName, rgb);
-            this.gemBoost.put(oreDicName, boost);
-        }
+        registerGem(new RingMaterial(oreDicName, rgb, boost));
+    }
+
+    public void registerMaterial(IMaterial ringMaterial) {
+        this.materialList.add(ringMaterial);
     }
 
     @Override
     public void registerMaterial(ItemStack stack, int rgb, int boost) {
-        if (!this.validMaterial.containsKey(stack)) {
-            this.validMaterial.put(stack, rgb);
-            this.materialBoost.put(stack, boost);
-        }
+        registerMaterial(new RingMaterial(stack, rgb, boost));
     }
 
     @Override
@@ -169,139 +169,114 @@ public class RingMaterialRegistry implements IMaterialRegistry {
 
     @Override
     public void registerMaterial(String oreDicName, int rgb, int boost) {
-        if (!this.validMaterial.containsKey(oreDicName)) {
-            this.validMaterial.put(oreDicName, rgb);
-            this.materialBoost.put(oreDicName, boost);
-        }
+        registerMaterial(new RingMaterial(oreDicName, rgb, boost));
     }
 
     public int getMaterialColor(Object obj0) {
         if (obj0 instanceof ItemStack) {
-            ItemStack stack = (ItemStack) obj0;
-            for (Entry<Object, Integer> set : this.validMaterial.entrySet()) {
-                Object obj = set.getKey();
-                if (obj != null) {
-                    if (obj instanceof ItemStack) {
-                        ItemStack st = (ItemStack) obj;
-                        if ((st.getItem() == stack.getItem()) && (st.getItemDamage() == stack.getItemDamage()))
-                            return set.getValue();
-                    }
-                    if (obj instanceof String) {
-                        if (SimpleUtil.isStackRegisteredAsOreDic(stack, (String) obj))
-                            return set.getValue();
-                    }
-                }
-            }
+            IMaterial material = (IMaterial) getMaterialInfo((ItemStack) obj0, 0);
+            if (material != null)
+                return material.getColor();
         }
         return Color.WHITE.getRGB();
     }
 
     public int getGemColor(Object obj0) {
         if (obj0 instanceof ItemStack) {
-            ItemStack stack = (ItemStack) obj0;
-            for (Entry<Object, Integer> set : this.gemMaterial.entrySet()) {
-                Object obj = set.getKey();
-                if (obj != null) {
-                    if (obj instanceof ItemStack) {
-                        ItemStack st = (ItemStack) obj;
-                        if ((st.getItem() == stack.getItem()) && (st.getItemDamage() == stack.getItemDamage()))
-                            return set.getValue();
-                    }
-                    if (obj instanceof String) {
-                        if (SimpleUtil.isStackRegisteredAsOreDic(stack, (String) obj))
-                            return set.getValue();
-                    }
-                }
-            }
+            IMaterial material = (IMaterial) getMaterialInfo((ItemStack) obj0, 1);
+            if (material != null)
+                return material.getColor();
         }
         return Color.WHITE.getRGB();
     }
 
     public boolean doesGemMatch(ItemStack stack) {
-        boolean match = false;
-        for (Entry<Object, Integer> set : this.gemMaterial.entrySet()) {
-            Object obj = set.getKey();
-            if (obj != null) {
-                if (obj instanceof ItemStack) {
-                    ItemStack st = (ItemStack) obj;
-                    match = (st.getItem() == stack.getItem()) && (st.getItemDamage() == stack.getItemDamage());
-                }
-                if (obj instanceof String) {
-                    if (SimpleUtil.isStackRegisteredAsOreDic(stack, (String) obj)) {
-                        match = true;
-                        break;
-                    }
-                }
-                if (match)
-                    break;
-            }
-        }
-        return match;
+        return getMaterialInfo(stack, 1) != null;
     }
 
     public boolean doesMaterialMatch(ItemStack stack) {
-        boolean match = false;
-        materialLoop:
-        for (Entry<Object, Integer> set : this.validMaterial.entrySet()) {
-            Object obj = set.getKey();
-            if (obj != null) {
-                if (obj instanceof ItemStack) {
-                    ItemStack st = (ItemStack) obj;
-                    if (st.getItem() == stack.getItem() && st.getItemDamage() == stack.getItemDamage()) {
-                        match = true;
-                        break materialLoop;
-                    }
-                }
-                if (obj instanceof String) {
-                    if (SimpleUtil.isStackRegisteredAsOreDic(stack, (String) obj)) {
-                        match = true;
-                        break materialLoop;
-                    }
-                }
-            }
-        }
-        return match;
+        return getMaterialInfo(stack, 0) != null;
     }
 
     public int getMaterialBoost(Object obj0) {
         if (obj0 instanceof ItemStack) {
-            ItemStack stack = (ItemStack) obj0;
-            for (Entry<Object, Integer> set : this.materialBoost.entrySet()) {
-                Object obj = set.getKey();
-                if (obj != null) {
-                    if (obj instanceof ItemStack) {
-                        ItemStack st = (ItemStack) obj;
-                        if ((st.getItem() == stack.getItem()) && (st.getItemDamage() == stack.getItemDamage()))
-                            return set.getValue();
-                    }
-                    if (obj instanceof String) {
-                        if (SimpleUtil.isStackRegisteredAsOreDic(stack, (String) obj))
-                            return set.getValue();
-                    }
-                }
-            }
+            IMaterial material = (IMaterial) getMaterialInfo((ItemStack) obj0, 0);
+            if (material != null)
+                return material.getBoost();
         }
         return 0;
     }
 
     public int getGemBoost(Object obj0) {
         if (obj0 instanceof ItemStack) {
-            ItemStack stack = (ItemStack) obj0;
-            for (Entry<Object, Integer> set : this.gemBoost.entrySet()) {
-                Object obj = set.getKey();
-                if (obj != null) {
+            IMaterial material = (IMaterial) getMaterialInfo((ItemStack) obj0, 1);
+            if (material != null)
+                material.getBoost();
+        }
+        return 0;
+    }
+
+    public Object getMaterialInfo(ItemStack stack, int type) {
+        if (type == 0) {
+            for (int i = 0; i < this.materialList.size(); i++) {
+                IMaterial material = this.materialList.get(i);
+                if (material != null) {
+                    Object obj = material.getMaterial();
                     if (obj instanceof ItemStack) {
                         ItemStack st = (ItemStack) obj;
                         if ((st.getItem() == stack.getItem()) && (st.getItemDamage() == stack.getItemDamage()))
-                            return set.getValue();
+                            return material;
                     }
                     if (obj instanceof String) {
                         if (SimpleUtil.isStackRegisteredAsOreDic(stack, (String) obj))
-                            return set.getValue();
+                            return material;
+                    }
+                }
+            }
+        } else {
+            for (int i = 0; i < this.gemList.size(); i++) {
+                IMaterial material = this.gemList.get(i);
+                if (material != null) {
+                    Object obj = material.getMaterial();
+                    if (obj instanceof ItemStack) {
+                        ItemStack st = (ItemStack) obj;
+                        if ((st.getItem() == stack.getItem()) && (st.getItemDamage() == stack.getItemDamage()))
+                            return material;
+                    }
+                    if (obj instanceof String) {
+                        if (SimpleUtil.isStackRegisteredAsOreDic(stack, (String) obj)) {
+                            return material;
+                        }
                     }
                 }
             }
         }
-        return 0;
+        return null;
+    }
+
+    public static class RingMaterial implements IMaterial {
+        private Object material;
+        private int color, boost;
+
+        public RingMaterial(Object material, int color, int boost) {
+            this.material = material;
+            this.color = color;
+            this.boost = boost;
+        }
+
+        @Override
+        public Object getMaterial() {
+            return material;
+        }
+
+        @Override
+        public int getColor() {
+            return color;
+        }
+
+        @Override
+        public int getBoost() {
+            return boost;
+        }
     }
 }

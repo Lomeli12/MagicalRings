@@ -1,6 +1,6 @@
 package net.lomeli.ring.api.interfaces.recipe;
 
-public interface IGemMaterial {
+public interface IMaterial {
     public Object getMaterial();
 
     public int getColor();

@@ -207,12 +207,12 @@ public class ManaHandler implements IManaHandler {
         saveData = data;
     }
 
-    public void setInitialized(boolean initialized) {
-        this.initialized = initialized;
-    }
-
     public boolean isInitialized() {
         return initialized;
+    }
+
+    public void setInitialized(boolean initialized) {
+        this.initialized = initialized;
     }
 
     @SubscribeEvent

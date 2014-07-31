@@ -28,6 +28,7 @@ public interface IPlayerSession {
 
     /**
      * Basically the same as adjustMana, but integer will become negative
+     *
      * @param j
      * @param simulated
      * @return
@@ -36,6 +37,7 @@ public interface IPlayerSession {
 
     /**
      * Check if player has enough mana
+     *
      * @param i
      * @return
      */

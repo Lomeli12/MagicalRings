@@ -16,6 +16,7 @@ tile.magicalrings.ore.6.name=Sapphire Ore
 tile.magicalrings.ore.7.name=Amethyst Ore
 tile.magicalrings.manaGlass.name=Mana Infused Glass
 tile.magicalrings.manaBrick.name=Mana Infused Brick
+tile.magicalrings.metalPlate.name=Metal Plate
 
 item.magicalrings.ironHammer.name=Iron Hammer
 item.magicalrings.diamondHammer.name=Diamond Hammer
@@ -126,6 +127,7 @@ magicalrings.book.batWings=As the name clearly says, the wing of a &4bat&0 that 
 magicalrings.book.tentacle=As the name states, the appendage of a &4Squid&0 that was slain. A slightly uncommon drop of the &4squid&0.
 magicalrings.book.manaBerry=Mana Berrys are small little berries full of &4Mana&0. Although inedible, it can be used to create &4Mana Potions&0 and other useful items. They can also be replanted to produce a new &4Mana Flower&0 to grow even more &4Mana Berries&0.
 magicalrings.book.manaStar=Mana Stars are extremely powerful items. It stores a monstrous amount of Mana, so much so that it can &4restore all of one's mana&0. It's also the only substance that can give the &4Mysterious Potion&0 enough energy to &4increase one's Mana capacity&0.
+magicalrings.book.manaGlass=An appealing looking glass that adjusts it's appearance if surrounded by other blocks of it's kind.
 
 magicalrings.command.basicInfo=§2Type /rings ? or /rings help for more info
 magiaclrings.command.unknown=§cUnknown command!

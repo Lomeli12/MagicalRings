@@ -1,7 +1,5 @@
 package net.lomeli.ring.client.render;
 
-import static org.lwjgl.opengl.GL11.*;
-
 import java.util.Random;
 
 import net.minecraft.client.renderer.ItemRenderer;
@@ -13,6 +11,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 
 import net.minecraftforge.client.IItemRenderer;
+
+import static org.lwjgl.opengl.GL11.*;
 
 public class RenderGhostSword implements IItemRenderer {
     RenderItem renderItem = new RenderItem();

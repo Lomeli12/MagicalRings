@@ -2,8 +2,6 @@ package net.lomeli.ring.magic;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -17,13 +15,9 @@ import net.lomeli.ring.magic.spells.*;
 
 public class SpellRegistry implements ISpellRegistry {
     private List<ISpellEntry> spellList;
-    //private LinkedHashMap<String, ISpell> registeredSpells;
-    //private LinkedHashMap<String, Object[]> spellRecipes;
 
     public SpellRegistry() {
         this.spellList = new ArrayList<ISpellEntry>();
-        //this.registeredSpells = new LinkedHashMap<String, ISpell>();
-        //this.spellRecipes = new LinkedHashMap<String, Object[]>();
         this.registerSpell(new EnderPort(), ModLibs.MOD_ID + ":enderPort", Items.ender_pearl, Items.ender_eye, Blocks.end_stone, Blocks.diamond_block);
         this.registerSpell(new FriendlyFire(), ModLibs.MOD_ID + ":friendlyFire", Items.ender_pearl, Items.diamond_sword, Items.bone, Items.spider_eye, Items.gunpowder, Items.blaze_rod, Items.ghast_tear, Items.magma_cream);
         this.registerSpell(new FireWrath(), ModLibs.MOD_ID + ":fireyWrath", Items.flint_and_steel, Items.blaze_powder, Items.blaze_rod, Items.fire_charge, Items.lava_bucket, "magmaStone");
@@ -34,7 +28,7 @@ public class SpellRegistry implements ISpellRegistry {
         this.registerSpell(new Rearm(), ModLibs.MOD_ID + ":rearm", Items.stone_sword, Items.bow, Items.arrow, Items.flint);
         this.registerSpell(new SwiftWind(), ModLibs.MOD_ID + ":swiftWind", Items.nether_star, Blocks.diamond_block, Items.feather, Items.ender_pearl, Items.fireworks, "batWing");
         this.registerSpell(new BeingDisplacement(), ModLibs.MOD_ID + ":beingDisplacement", Items.lead, Items.ender_pearl, Items.wheat, Items.wheat_seeds, Items.carrot_on_a_stick);
-        this.registerSpell(new ClearWaters(), ModLibs.MOD_ID + ":clearWaters", Blocks.glass, Items.iron_helmet, "tentacle", new ItemStack(Items.fish, 1, 3), new ItemStack(Items.potionitem, 1, 8230));
+        this.registerSpell(new ClearWaters(), ModLibs.MOD_ID + ":clearWaters", "blockGlass", Items.iron_helmet, "tentacle", new ItemStack(Items.fish, 1, 3), new ItemStack(Items.potionitem, 1, 8230));
     }
 
     @Override
@@ -94,7 +88,7 @@ public class SpellRegistry implements ISpellRegistry {
         private String id;
         private ISpell spell;
 
-        public SpellEntry(ISpell spell, String id, Object...items) {
+        public SpellEntry(ISpell spell, String id, Object... items) {
             this.spell = spell;
             this.id = id;
             this.items = items;

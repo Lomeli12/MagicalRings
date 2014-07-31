@@ -10,7 +10,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class ModBlocks {
-    public static Block altar, ringForge, oreBlocks, onionBlock, manaFlower, ctBlock, manaBrick;
+    public static Block altar, ringForge, oreBlocks, onionBlock, manaFlower, manaGlass, metalPlate, manaBrick;
 
     public static void loadBlocks() {
         altar = new BlockAltars("altar").setBlockName("altar");
@@ -28,10 +28,13 @@ public class ModBlocks {
         manaFlower = new BlockManaFlower("manaFlower_stage_").setBlockName("manaFlower");
         registerBlock(manaFlower, BlockManaFlower.ItemManaBush.class, "manaFlower");
 
-        ctBlock = new BlockCT(Material.glass, "glass").setBlockName("manaGlass");
-        registerBlock(ctBlock, "manaGlass");
+        manaGlass = new BlockCT(Material.glass, "glass", false).setHardness(0.3F).setResistance(20f).setBlockName("manaGlass");
+        registerBlock(manaGlass, "manaGlass");
 
-        manaBrick = new BlockRings(Material.rock, "manabrick").setHardness(4f).setResistance(20f).setBlockName("manaBrick");
+        metalPlate = new BlockCT(Material.iron, "metal", true).setHardness(2f).setResistance(20f).setBlockName("metalPlate");
+        registerBlock(metalPlate, "metalPlate");
+
+        manaBrick = new BlockRings(Material.rock, "manabrick").setHardness(2f).setResistance(20f).setBlockName("manaBrick");
         registerBlock(manaBrick, "manaBrick");
 
         OreDictionary.registerOre("oreTungsten", new ItemStack(oreBlocks, 1, 0));
@@ -42,6 +45,9 @@ public class ModBlocks {
         OreDictionary.registerOre("oreRuby", new ItemStack(oreBlocks, 1, 5));
         OreDictionary.registerOre("oreSapphire", new ItemStack(oreBlocks, 1, 6));
         OreDictionary.registerOre("oreAmethyst", new ItemStack(oreBlocks, 1, 7));
+        OreDictionary.registerOre("blockGlass", manaGlass);
+        OreDictionary.registerOre("plateIron", metalPlate);
+        OreDictionary.registerOre("manaBrick", new ItemStack(manaBrick));
     }
 
     private static void registerBlock(Block block, String id) {
