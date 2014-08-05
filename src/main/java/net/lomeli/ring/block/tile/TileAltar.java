@@ -125,7 +125,7 @@ public class TileAltar extends TileItemAltar {
                         if (stack != null && stack.getItem() != null && SimpleUtil.areItemObjectsSame(stack, infusionRecipe.getBaseItem())) {
                             this.setInventorySlotContents(0, null);
                             this.markDirty();
-                            this.setInventorySlotContents(0, infusionRecipe.getOutput());
+                            this.setInventorySlotContents(0, infusionRecipe.getOutput().copy());
                             this.markDirty();
                         } else
                             resetItem();
