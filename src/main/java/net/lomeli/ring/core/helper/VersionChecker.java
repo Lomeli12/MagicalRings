@@ -55,6 +55,7 @@ public class VersionChecker {
 
                 if (needsUpdate)
                     version = major + "." + minor + "." + revision;
+                reader.close();
             }
         } catch (Exception e) {
             LogHelper.error("Could not connect to update server!");

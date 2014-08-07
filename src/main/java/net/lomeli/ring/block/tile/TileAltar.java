@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EntityPortalFX;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -55,11 +53,8 @@ public class TileAltar extends TileItemAltar {
                     float r = (rgb >> 16 & 255) / 255.0F;
                     float g = (rgb >> 8 & 255) / 255.0F;
                     float b = (rgb & 255) / 255.0F;
-                    for (int i = 0; i < 16; ++i) {
-                        EntityPortalFX effect = new EntityPortalFX(worldObj, xCoord + 0.5, yCoord + 0.1 + worldObj.rand.nextDouble() * 2.0D, zCoord + 0.5, worldObj.rand.nextGaussian(), 0.0D, worldObj.rand.nextGaussian());
-                        effect.setRBGColorF(r, g, b);
-                        Minecraft.getMinecraft().effectRenderer.addEffect(effect);
-                    }
+                    for (int i = 0; i < 16; ++i)
+                        Rings.proxy.specialFXPortal(worldObj, xCoord + 0.5, yCoord + 0.1 + worldObj.rand.nextDouble() * 2.0D, zCoord + 0.5, r, g, b, worldObj.rand.nextGaussian(), 0.0D, worldObj.rand.nextGaussian());
                 }
                 effectTick = 0;
             }
@@ -76,14 +71,13 @@ public class TileAltar extends TileItemAltar {
     }
 
     private boolean basicCheck(int i) {
-        this.addPossibleTile(-2, -2);
-        this.addPossibleTile(-2, 0);
-        this.addPossibleTile(-2, 2);
-        this.addPossibleTile(0, -2);
-        this.addPossibleTile(0, 2);
-        this.addPossibleTile(2, -2);
-        this.addPossibleTile(2, 0);
-        this.addPossibleTile(2, 2);
+        for (int x = -2; x < 3; x += 2) {
+            for (int y = -2; y < 3; y += 2) {
+                if (x == 0 && y == 0)
+                    continue;
+                this.addPossibleTile(x, y);
+            }
+        }
 
         if (getStackInSlot(0) == null || tiles.isEmpty()) {
             if (i == 0)
@@ -106,16 +100,19 @@ public class TileAltar extends TileItemAltar {
             else {
                 if (++timer >= 30) {
                     if (!tilesToGetFrom.isEmpty()) {
-                        if (tilesToGetFrom.get(0).getStackInSlot(0) == null) {
+                        int i = worldObj.rand.nextInt(tilesToGetFrom.size());
+                        if (tilesToGetFrom.get(i).getStackInSlot(0) == null) {
                             tilesToGetFrom.clear();
                             resetItem();
                             return;
                         }
-                        tempInventory.add(tilesToGetFrom.get(0).getStackInSlot(0));
-                        tilesToGetFrom.get(0).spawnEffects();
-                        tilesToGetFrom.get(0).setInventorySlotContents(0, null);
-                        tilesToGetFrom.get(0).markDirty();
-                        tilesToGetFrom.remove(0);
+                        tempInventory.add(tilesToGetFrom.get(i).getStackInSlot(0));
+                        tilesToGetFrom.get(i).spawnEffects();
+                        if (!worldObj.isRemote) {
+                            tilesToGetFrom.get(i).setInventorySlotContents(0, null);
+                            tilesToGetFrom.get(i).markDirty();
+                        }
+                        tilesToGetFrom.remove(i);
                         timer = 0;
                     }
                 }

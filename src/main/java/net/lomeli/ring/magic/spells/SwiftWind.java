@@ -2,7 +2,6 @@ package net.lomeli.ring.magic.spells;
 
 import java.awt.Color;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,7 +12,6 @@ import net.minecraft.world.World;
 import net.lomeli.ring.Rings;
 import net.lomeli.ring.api.interfaces.IPlayerSession;
 import net.lomeli.ring.api.interfaces.ISpell;
-import net.lomeli.ring.client.entity.EntityManaFX;
 import net.lomeli.ring.lib.ModLibs;
 import net.lomeli.ring.network.PacketAllowFlying;
 
@@ -102,12 +100,11 @@ public class SwiftWind implements ISpell {
     }
 
     public void spawnParticle(World world, EntityLivingBase entity, double x, double y, double z) {
-        Minecraft mc = Minecraft.getMinecraft();
         int rgb = Color.CYAN.getRGB();
         float r = (rgb >> 16 & 255) / 255.0F;
         float g = (rgb >> 8 & 255) / 255.0F;
         float b = (rgb & 255) / 255.0F;
         boolean color = world.rand.nextBoolean();
-        mc.effectRenderer.addEffect(new EntityManaFX(world, x - 0.5 + world.rand.nextFloat(), y - (entity.getEyeHeight() * 10), z - 0.5 + world.rand.nextFloat(), 0.325f, color ? r : 1f, color ? g : 1f, color ? b : 1f, 0.75f, 5));
+        Rings.proxy.specialFXWisp(world, x - 0.5 + world.rand.nextFloat(), y - (entity.getEyeHeight() * 10), z - 0.5 + world.rand.nextFloat(), 0.325f, color ? r : 1f, color ? g : 1f, color ? b : 1f, 0.75f, 8);
     }
 }

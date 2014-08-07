@@ -6,6 +6,7 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -162,5 +163,27 @@ public class SimpleUtil {
             }
         }
         return false;
+    }
+
+    public static boolean displayHud(EntityPlayer player) {
+        if (player != null && player.getEntityData().hasKey(EntityPlayer.PERSISTED_NBT_TAG)) {
+            NBTTagCompound tag = player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
+            if (tag.hasKey("displayHud"))
+                return tag.getBoolean("displayHud");
+        }
+        return false;
+    }
+
+    public static void changeHudSettings(EntityPlayer player) {
+        if (player == null)
+            return;
+        if (!player.getEntityData().hasKey(EntityPlayer.PERSISTED_NBT_TAG))
+            player.getEntityData().setTag(EntityPlayer.PERSISTED_NBT_TAG, new NBTTagCompound());
+        NBTTagCompound tag = player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
+        if (!tag.hasKey("displayHud")) {
+            tag.setBoolean("displayHud", true);
+            return;
+        }
+        tag.setBoolean("displayHud", !tag.getBoolean("displayHud"));
     }
 }

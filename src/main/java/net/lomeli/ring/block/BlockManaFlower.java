@@ -3,6 +3,7 @@ package net.lomeli.ring.block;
 import java.util.Random;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockBush;
 import net.minecraft.block.IGrowable;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -18,27 +19,26 @@ import net.minecraft.world.World;
 
 import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.IPlantable;
-import net.minecraftforge.common.util.ForgeDirection;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+import net.lomeli.ring.Rings;
 import net.lomeli.ring.api.interfaces.IBookEntry;
 import net.lomeli.ring.item.ModItems;
 import net.lomeli.ring.lib.ModLibs;
 
-public class BlockManaFlower extends BlockRings implements IGrowable, IPlantable, IBookEntry {
+public class BlockManaFlower extends BlockBush implements IGrowable, IPlantable, IBookEntry {
     private String texture;
     @SideOnly(Side.CLIENT)
     private IIcon[] iconArray;
 
     public BlockManaFlower(String texture) {
-        super(Material.leaves, texture);
-        this.setHardness(0.1F);
+        super(Material.plants);
         this.setStepSound(soundTypeGrass);
         this.setTickRandomly(true);
+        this.setCreativeTab(Rings.modTab);
         this.texture = texture;
-        this.setBlockBounds(0.3F, 0.0F, 0.3F, 0.8F, 0.7f, 0.8F);
     }
 
     @Override
@@ -93,13 +93,6 @@ public class BlockManaFlower extends BlockRings implements IGrowable, IPlantable
     }
 
     @Override
-    public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
-        if (!this.canBlockStay(world, x, y, z))
-            world.func_147480_a(x, y, z, true);
-        this.checkAndDropBlock(world, x, y, z);
-    }
-
-    @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
         int meta = world.getBlockMetadata(x, y, z);
         if (meta >= 3) {
@@ -140,23 +133,6 @@ public class BlockManaFlower extends BlockRings implements IGrowable, IPlantable
                 }
             }
         }
-    }
-
-    protected void checkAndDropBlock(World p_149855_1_, int p_149855_2_, int p_149855_3_, int p_149855_4_) {
-        if (!this.canBlockStay(p_149855_1_, p_149855_2_, p_149855_3_, p_149855_4_)) {
-            this.dropBlockAsItem(p_149855_1_, p_149855_2_, p_149855_3_, p_149855_4_, 0, 0);
-            p_149855_1_.setBlock(p_149855_2_, p_149855_3_, p_149855_4_, getBlockById(0), 0, 2);
-        }
-    }
-
-    @Override
-    public boolean canBlockStay(World world, int x, int y, int z) {
-        return world.getBlock(x, y - 1, z).canSustainPlant(world, x, y - 1, z, ForgeDirection.UP, this);
-    }
-
-    @Override
-    public boolean canPlaceBlockAt(World world, int x, int y, int z) {
-        return super.canPlaceBlockAt(world, x, y, z) && this.canBlockStay(world, x, y, z);
     }
 
     @Override
@@ -200,6 +176,11 @@ public class BlockManaFlower extends BlockRings implements IGrowable, IPlantable
     @Override
     public int getData() {
         return 0;
+    }
+
+    @Override
+    public Block setBlockName(String p_149663_1_) {
+        return super.setBlockName(ModLibs.MOD_ID.toLowerCase() + "." + p_149663_1_);
     }
 
     public static class ItemManaBush extends ItemBlock implements IPlantable {

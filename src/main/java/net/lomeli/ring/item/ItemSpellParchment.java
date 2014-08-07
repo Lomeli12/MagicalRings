@@ -47,12 +47,12 @@ public class ItemSpellParchment extends ItemRings implements IBookEntry {
     public void getSubItems(Item item, CreativeTabs tab, List list) {
         for (int i = 0; i < Rings.proxy.spellRegistry.getSpellList().size(); i++) {
             ISpellEntry entry = Rings.proxy.spellRegistry.getSpellList().get(i);
-                if (entry != null && entry.getSpell() != null) {
-                    ItemStack stack = new ItemStack(ModItems.spellParchment);
-                    if (!stack.hasTagCompound())
-                        stack.stackTagCompound = new NBTTagCompound();
-                    stack.getTagCompound().setString(ModLibs.SPELL_ID, entry.getSpellID());
-                    list.add(stack);
+            if (entry != null && entry.getSpell() != null) {
+                ItemStack stack = new ItemStack(ModItems.spellParchment);
+                if (!stack.hasTagCompound())
+                    stack.stackTagCompound = new NBTTagCompound();
+                stack.getTagCompound().setString(ModLibs.SPELL_ID, entry.getSpellID());
+                list.add(stack);
             }
         }
     }

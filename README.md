@@ -1,7 +1,17 @@
-ModJam4
+Magical Rings
 =======
 
-Repo for ModJam 4 entry.
+Magical Rings, a mod I made for Modjam 4
+
+### How to Compile
+##
+
+1. Download the source.
+2. **This is only required the first time you compile the mod.** Run `gradlew.bat setupDevWorkspace` (Windows) or `./gradlew setupDevWorkspace` (Unix).
+3. Run `gradlew.bat build` (Windows) or `./gradlew build` (Unix)
+4. You can find the compiled jar int *build/libs*.
+
+#### Links
 
 LiveStream: [http://twitch.tv/lomeli12](http://twitch.tv/Lomeli12)
 

@@ -37,12 +37,12 @@ public class RingMaterialRegistry implements IMaterialRegistry {
         this.registerMaterial("ingotSilver", new Color(0xa5a5a5).getRGB(), 3);
         this.registerMaterial("ingotTungsten", new Color(0x2d223a).getRGB(), 5);
         this.registerMaterial("ingotPlatinum", new Color(0x64CDED).getRGB(), 4);
-        this.registerMaterial("ingotThaumium", new Color(0x51437D).getRGB(), 6);
+        this.registerMaterial("ingotThaumium", new Color(0x51437D).getRGB(), 4);
         this.registerMaterial("ingotRedAlloy", new Color(0xD40404).getRGB(), 2);
         this.registerMaterial("ingotBlueAlloy", new Color(0x404d4).getRGB(), 2);
         this.registerMaterial("ingotManasteel", new Color(0x47E2D8).getRGB(), 2);
         this.registerMaterial("ingotElvenElementium", new Color(0xfb67ff).getRGB(), 4);
-        this.registerMaterial("ingotTerrasteel", new Color(0x2fac2d).getRGB(), 10);
+        this.registerMaterial("ingotTerrasteel", new Color(0x2fac2d).getRGB(), 5);
 
         this.registerGem("gemDiamond", new Color(0x64dcff).getRGB(), 5);
         this.registerGem("gemEmerald", new Color(0xd200).getRGB(), 6);
@@ -211,7 +211,7 @@ public class RingMaterialRegistry implements IMaterialRegistry {
         if (obj0 instanceof ItemStack) {
             IMaterial material = (IMaterial) getMaterialInfo((ItemStack) obj0, 1);
             if (material != null)
-                material.getBoost();
+                return material.getBoost();
         }
         return 0;
     }

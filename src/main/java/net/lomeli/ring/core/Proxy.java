@@ -1,8 +1,11 @@
 package net.lomeli.ring.core;
 
+import net.minecraft.world.World;
+
 import net.minecraftforge.common.MinecraftForge;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.VillagerRegistry;
 
@@ -33,7 +36,6 @@ public class Proxy {
     public PageUtil pageUtil;
     public InfusionRegistry infusionRegistry;
     public RenderHandler renderHandler;
-    public AddonHandler addonHandler;
 
     public void preInit() {
         ModItems.loadItems();
@@ -47,7 +49,6 @@ public class Proxy {
         infusionRegistry = new InfusionRegistry();
         renderHandler = new RenderHandler();
         tickClient = new TickHandlerClient();
-        addonHandler = new AddonHandler();
 
         VillagerRegistry.instance().registerVillagerId(ModLibs.villagerID);
         VillagerRegistry.instance().registerVillageTradeHandler(ModLibs.villagerID, new RingVillager());
@@ -74,7 +75,8 @@ public class Proxy {
 
         ModEntities.registerEntities();
 
-        addonHandler.registerHarvestHandler();
+        if (Loader.isModLoaded("AWWayofTime"))
+            AddonHandler.registerHarvestHandler();
     }
 
     public void postInit() {
@@ -83,5 +85,11 @@ public class Proxy {
         VersionChecker.checkForUpdates();
         if (VersionChecker.needUpdate())
             VersionChecker.sendMessage();
+    }
+
+    public void specialFXPortal(World world, double x, double y, double z, float r, float g, float b, double motionX, double motionY, double motionZ) {
+    }
+
+    public void specialFXWisp(World world, double x, double y, double z, float size, float r, float g, float b, float alpha, int lifespan){
     }
 }

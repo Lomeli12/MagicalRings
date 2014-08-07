@@ -17,9 +17,9 @@ import net.lomeli.ring.item.ModItems;
 @Interface(iface = "WayofTime.alchemicalWizardry.api.harvest.IHarvestHandler", modid = "AWWayofTime")
 public class AddonHandler implements IHarvestHandler {
 
-    public void registerHarvestHandler() {
+    public static void registerHarvestHandler() {
         if (Loader.isModLoaded("AWWayofTime"))
-            HarvestRegistry.registerHarvestHandler(this);
+            HarvestRegistry.registerHarvestHandler(new AddonHandler());
     }
 
     @Override

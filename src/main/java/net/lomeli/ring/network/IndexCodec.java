@@ -15,6 +15,7 @@ public class IndexCodec extends FMLIndexedMessageToMessageCodec<IPacket> {
         this.addDiscriminator(4, PacketSavePage.class);
         this.addDiscriminator(5, PacketUpdateAltar.class);
         this.addDiscriminator(6, PacketClearWater.class);
+        this.addDiscriminator(7, PacketManaHud.class);
     }
 
     @Override

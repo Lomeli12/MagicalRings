@@ -11,12 +11,11 @@ import cpw.mods.fml.common.gameevent.TickEvent.RenderTickEvent;
 
 import net.lomeli.ring.Rings;
 import net.lomeli.ring.api.interfaces.IPlayerSession;
+import net.lomeli.ring.core.helper.SimpleUtil;
 import net.lomeli.ring.item.ItemMagicRing;
 import net.lomeli.ring.lib.ModLibs;
 
 public class TickHandlerClient {
-    public boolean display;
-
     @SubscribeEvent
     public void renderTick(RenderTickEvent tick) {
         if (tick.phase == TickEvent.Phase.END) {
@@ -27,8 +26,8 @@ public class TickHandlerClient {
                 IPlayerSession session;
                 if (Rings.proxy.manaHandler.playerHasSession(mc.thePlayer)) {
                     session = Rings.proxy.manaHandler.getPlayerSession(mc.thePlayer);
-                    if (this.display)
-                        renderMana = true;
+                    if (SimpleUtil.displayHud(mc.thePlayer))
+                        renderMana = SimpleUtil.displayHud(mc.thePlayer);
                     if (hand != null && !renderMana) {
                         if (hand.getItem() instanceof ItemMagicRing) {
                             if (hand.getTagCompound() != null) {

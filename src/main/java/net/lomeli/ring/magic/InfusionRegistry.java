@@ -58,7 +58,6 @@ public class InfusionRegistry implements IInfusionRegistry {
             if (test.isEmpty())
                 continue;
 
-            ingredientLoop:
             for (ItemStack stack : ingredients) {
                 if (stack != null) {
                     recipeLoop:

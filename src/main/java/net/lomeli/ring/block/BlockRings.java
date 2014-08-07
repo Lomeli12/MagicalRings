@@ -29,5 +29,4 @@ public class BlockRings extends Block {
     public Block setBlockName(String p_149663_1_) {
         return super.setBlockName(ModLibs.MOD_ID.toLowerCase() + "." + p_149663_1_);
     }
-
 }

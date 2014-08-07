@@ -58,7 +58,7 @@ public class RenderConnectedTextures {
                         if (!doBlocksMatch(world, x - 1, y + 1, z))
                             iconList.add(icon.getTopLeftCorner());
                     }
-                    if (renderblocks.renderAllFaces || ctBlock.shouldSideBeRendered(world, x, y, z + 1, side)) {
+                    if (ctBlock.shouldSideBeRendered(world, x, y, z + 1, side) || renderblocks.renderAllFaces) {
                         flag = true;
                         if (iconList.size() == 1)
                             renderblocks.renderFaceZPos(ctBlock, x, y, z, getCenterIcon(world, x, y, z, side, icon));
@@ -97,7 +97,7 @@ public class RenderConnectedTextures {
                         if (!doBlocksMatch(world, x - 1, y + 1, z))
                             iconList.add(icon.getTopRightCorner());
                     }
-                    if (renderblocks.renderAllFaces || ctBlock.shouldSideBeRendered(world, x, y, z - 1, side)) {
+                    if (ctBlock.shouldSideBeRendered(world, x, y, z - 1, side) || renderblocks.renderAllFaces) {
                         flag = true;
                         if (iconList.size() == 1)
                             renderblocks.renderFaceZNeg(ctBlock, x, y, z, getCenterIcon(world, x, y, z, side, icon));
@@ -136,7 +136,7 @@ public class RenderConnectedTextures {
                         if (!doBlocksMatch(world, x, y + 1, z - 1))
                             iconList.add(icon.getTopRightCorner());
                     }
-                    if (renderblocks.renderAllFaces || ctBlock.shouldSideBeRendered(world, x + 1, y, z, side)) {
+                    if (ctBlock.shouldSideBeRendered(world, x + 1, y, z, side) || renderblocks.renderAllFaces) {
                         flag = true;
                         if (iconList.size() == 1)
                             renderblocks.renderFaceXPos(ctBlock, x, y, z, getCenterIcon(world, x, y, z, side, icon));
@@ -175,7 +175,7 @@ public class RenderConnectedTextures {
                         if (!doBlocksMatch(world, x, y + 1, z - 1))
                             iconList.add(icon.getTopLeftCorner());
                     }
-                    if (renderblocks.renderAllFaces || ctBlock.shouldSideBeRendered(world, x - 1, y, z, side)) {
+                    if (ctBlock.shouldSideBeRendered(world, x - 1, y, z, side) || renderblocks.renderAllFaces) {
                         flag = true;
                         if (iconList.size() == 1)
                             renderblocks.renderFaceXNeg(ctBlock, x, y, z, getCenterIcon(world, x, y, z, side, icon));
@@ -217,7 +217,7 @@ public class RenderConnectedTextures {
                         if (!doBlocksMatch(world, x + 1, y, z + 1))
                             iconList.add(icon.getBottomRightCorner());
                     }
-                    if (renderblocks.renderAllFaces || ctBlock.shouldSideBeRendered(world, x, y + (side == 0 ? -1 : 1), z, side)) {
+                    if (ctBlock.shouldSideBeRendered(world, x, y + (side == 0 ? -1 : 1), z, side) || renderblocks.renderAllFaces) {
                         flag = true;
                         if (iconList.size() == 1) {
                             IIcon i = getCenterIcon(world, x, y, z, side, icon);

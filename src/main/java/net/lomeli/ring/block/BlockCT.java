@@ -35,15 +35,7 @@ public class BlockCT extends BlockRings implements IBookEntry {
     public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side) {
         Block block = world.getBlock(x, y, z);
 
-        if (block == this) {
-            Block sideBlock = world.getBlock(x - Facing.offsetsXForSide[side], y - Facing.offsetsYForSide[side], z - Facing.offsetsZForSide[side]);
-            if (sideBlock != null) {
-                if (sideBlock.isOpaqueCube()) {
-                    if (world.getBlockMetadata(x, y, z) != world.getBlockMetadata(x - Facing.offsetsXForSide[side], y - Facing.offsetsYForSide[side], z - Facing.offsetsZForSide[side]))
-                        return true;
-                }
-            }
-
+        if (block != null) {
             if (block == this)
                 return false;
         }

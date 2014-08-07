@@ -9,6 +9,7 @@ import net.lomeli.ring.api.interfaces.recipe.ISpellEntry;
  */
 public interface ISpellRegistry {
     public void registerSpell(ISpellEntry entry);
+
     /**
      * Register a new spell and it's required recipe. Can use Items, Blocks, ItemStacks, and OreDictionary names
      */
